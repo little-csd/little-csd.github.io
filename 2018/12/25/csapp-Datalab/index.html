@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="csapp,binary,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta name="keywords" content="csapp,binary">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csapp-Datalab">
+<meta property="og:url" content="http://yoursite.com/2018/12/25/csapp-Datalab/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2018/12/25/csapp-Datalab/firstLab.png">
+<meta property="og:updated_time" content="2018-12-25T04:50:38.350Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="csapp-Datalab">
+<meta name="twitter:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/25/csapp-Datalab/firstLab.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/25/csapp-Datalab/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>csapp-Datalab | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/csapp-Datalab/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">csapp-Datalab</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-25T09:06:12+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/csapp/" itemprop="url" rel="index">
+                    <span itemprop="name">csapp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第一篇文章。本文主要讲一下关于 <a href="http://csapp.cs.cmu.edu/3e/README-datalab" target="_blank" rel="noopener"><strong>datalab [Updated 11/2/18]</strong></a> 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。<br>  注：其中某些题目应该有更优的解法。以下仅供参考</p>
+<h3 id="bitXor"><a href="#bitXor" class="headerlink" title="bitXor"></a>bitXor</h3><p>题意：用 ~ 和 &amp; 运算符实现 Xor 运算符<br>思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp; 是双目运算符，那么我们可以采用 &amp; 运算符获得均为1的位，再取反，同理，用 &amp; 和 ~ 获得均为 0 的位，再取反，最后两者再进行 &amp; ，即可得到答案。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitXor</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ~(x&amp;y)&amp;~(~x&amp;~y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="tmin"><a href="#tmin" class="headerlink" title="tmin"></a>tmin</h3><p>题意：让你输出反码下的最小值<br>思路：水题。。直接由定义得。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tmin</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>&lt;&lt;<span class="number">31</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="isTmax"><a href="#isTmax" class="headerlink" title="isTmax"></a>isTmax</h3><p>题意：判断一个数是否为反码下的最大值<br>思路：若x为Tmax，x+1取反之后应该等于x。故可以采用取反与原数Xor的思路。但要注意，<strong>0xffffffff</strong>也满足该性质，需要排除。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTmax</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !(~(x+<span class="number">1</span>)^x)&amp;!(!(~x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="allOddBits"><a href="#allOddBits" class="headerlink" title="allOddBits"></a>allOddBits</h3><p>题意：判断一个数是否所有的奇数位都为1。(位的序号从0到32)<br>思路：我们知道，若奇数位为均为1，则右移一位后偶数位均为1，两者相与的话为<strong>0xffffffff</strong>。利用该性质可得到答案。不过要注意，偶数位上的1会影响我们的判断，故需要利用掩码将其过滤。(0xA = 1010)<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allOddBits</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	x = x &amp; <span class="number">0xAAAAAAAA</span>;</span><br><span class="line">	<span class="keyword">return</span> !(~(x|(x&gt;&gt;<span class="number">1</span>)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="negate"><a href="#negate" class="headerlink" title="negate"></a>negate</h3><p>题意：求一个数的相反数。<br>思路：水题，由常用结论我们知道，-x = ~x + 1<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">negate</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ~x+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="isAsciiDight"><a href="#isAsciiDight" class="headerlink" title="isAsciiDight"></a>isAsciiDight</h3><p>题意：判断一个数字是否在(0x30和0x39)之间<br>思路：这道题我想不出比较好的解法。只能暴力判断。即先看2进制下的前26六位是否有值，然后在看下后6位。x+6仍然小于0x40，则x小于0x3。.再看下剩下六位中前两位是否均为1，是的话x大于0x30。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isAsciiDigit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> t = x &amp; <span class="number">0xFFFFFFC0</span>;</span><br><span class="line">	x = x &amp; <span class="number">0x3F</span>;</span><br><span class="line">	<span class="keyword">return</span> !t&amp;!((x+<span class="number">6</span>)&amp;<span class="number">0x40</span>)&amp;(x&gt;&gt;<span class="number">4</span>)&amp;(x&gt;&gt;<span class="number">5</span>)&amp;<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="conditional"><a href="#conditional" class="headerlink" title="conditional"></a>conditional</h3><p>题意：实现三目运算符 ？：<br>思路：先用！判断是否为x是否为真。然后在利用与的性质：一个数和<strong>0xffffffff</strong>相与结果为其本身，和<strong>0</strong>相与结果为0。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">conditional</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z)</span> </span>&#123;</span><br><span class="line">	x = !x;</span><br><span class="line">	<span class="keyword">return</span> y&amp;(~(!x)+<span class="number">1</span>) | z&amp;(~x+<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="isLessOrEqual"><a href="#isLessOrEqual" class="headerlink" title="isLessOrEqual"></a>isLessOrEqual</h3><p>题意：判断x是否小于等于y<br>思路：x&lt;=y 则 y - x &gt;= 0。分别取出x和y的符号，进行判断。若y大于0，x小于0，则显然为真。若y小于0，x大于0，则显然为假。剩下的异号的情况则用y + (-x) 判断即可。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isLessOrEqual</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sgnx = (x&gt;&gt;<span class="number">31</span>)&amp;<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> sgny = (y&gt;&gt;<span class="number">31</span>)&amp;<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> !sgny &amp; sgnx | !(sgnx^sgny) &amp; !((y + (~x+<span class="number">1</span>))&amp;(<span class="number">1</span>&lt;&lt;<span class="number">31</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="logicalNeg"><a href="#logicalNeg" class="headerlink" title="logicalNeg"></a>logicalNeg</h3><p>题意：使用其他的逻辑运算符和位运算符实现 ！运算符<br>思路：我们知道，一个数的相反数等于其本身的数只有0(注意：<strong>~0x80000000 + 1 = 0x80000000</strong>)<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">logicalNeg</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ((~x+<span class="number">1</span> | x)&gt;&gt;<span class="number">31</span>)+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="howManyBits"><a href="#howManyBits" class="headerlink" title="howManyBits"></a>howManyBits</h3><p>题意：给一个数字x,求出要表示出x需要的最少的位数。<br>思路：个人觉得，本题难度很大。以下的思路可能并不算很好，不过还是可以通过的。<br>　　首先，我们知道，对于一个n位的二进制数，能表示的数字的范围为 -2<sup>n</sup> ~ 2<sup>n</sup> - 1。故对于输入的整数x，我们可以先将其变成正数，即下方的_mask。现在就只需考虑正数。题目转化为求最高位的1。但最高位的1不是很好求，我们可以将其转化为求二进制下x含有多少个1。<br>　　假设当前最高位的1位于第5位，右移并按位或后，第五位，第四位均为1，再向右移两位并且按位或，第二、三、四、五位均为1，以此类推，我们将最高位的1后的所有位全部变成了1。(假设原数为0x0A0BA973，经过处理之后就会变成0x0FFFFFFF)。<br>　　接下来考虑如何求出所有位上1的总数。我们可以考虑使用分段的办法。考虑以下的32位二进制数,我们将其分成四个部分：<br>　　00000010 | 00100111 | 11010010 | 00110001<br>接下来我们采用掩码分别将其各个部分的1的总数做一个累加，掩码应为：<br>　　00000001 | 00000001 | 00000001 | 00000001<br>即对每一个部分，掩码的值都是1。接下来用&amp;运算符获得最低位的数字，四个部分分别为0,1,0,1. 然后，再将x右移一位，再继续进行&amp;运算，以此类推，最后得到四个部分的值分别为：1,4,4,3。即最后得到的sum为：<br>　　00000001 | 00000100 | 00000100 | 00000011<br>最后再利用掩码0xff(11111111)，分别得到各个部分的值，做一个累加，得到答案(别忘记+1)。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">howManyBits</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line"> 	<span class="keyword">int</span> _mask = (x&amp;(<span class="number">1</span>&lt;&lt;<span class="number">31</span>))&gt;&gt;<span class="number">31</span>;</span><br><span class="line">	x = x^_mask;</span><br><span class="line">	x |= x&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	x |= x&gt;&gt;<span class="number">2</span>;</span><br><span class="line">	x |= x&gt;&gt;<span class="number">4</span>;</span><br><span class="line">	x |= x&gt;&gt;<span class="number">8</span>;</span><br><span class="line">	x |= x&gt;&gt;<span class="number">16</span>;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>, mask = <span class="number">0x1</span> | <span class="number">0x100</span> | <span class="number">0x10000</span> | <span class="number">0x1000000</span>;</span><br><span class="line">	sum += x &amp; mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">1</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">2</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">3</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">4</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">5</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">6</span>) &amp;mask;</span><br><span class="line">	sum += (x&gt;&gt;<span class="number">7</span>) &amp;mask;</span><br><span class="line">	<span class="keyword">return</span> (sum&amp;<span class="number">0xff</span>) + ((sum&gt;&gt;<span class="number">8</span>)&amp;<span class="number">0xff</span>) + ((sum&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0xff</span>) + ((sum&gt;&gt;<span class="number">24</span>)&amp;<span class="number">0xff</span>) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="floatScale2"><a href="#floatScale2" class="headerlink" title="floatScale2"></a>floatScale2</h3><p>题意：本题给一个无符号数，让你把它看成一个浮点数(都是32位)，让你输出x * 2 的值<br>思路：比较简单，按照浮点数1,8,23的分布将符号，指数，尾数分别取出，并分类讨论即可。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">floatScale2</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> frac = uf&amp;<span class="number">0x007fffff</span>;</span><br><span class="line">	uf&gt;&gt;=<span class="number">23</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="built_in">exp</span> = uf&amp;<span class="number">0xff</span>;</span><br><span class="line">	uf&gt;&gt;=<span class="number">8</span>;</span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">exp</span>) &#123;</span><br><span class="line">		frac &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> t = frac&gt;&gt;<span class="number">23</span>;</span><br><span class="line">		<span class="keyword">if</span> (t) 	&#123;</span><br><span class="line">			frac = frac &amp; <span class="number">0x007fffff</span>;</span><br><span class="line">			<span class="built_in">exp</span>++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">exp</span> != <span class="number">0xff</span>)  <span class="built_in">exp</span>++;</span><br><span class="line">	<span class="keyword">return</span> (uf&lt;&lt;<span class="number">31</span>) + (<span class="built_in">exp</span>&lt;&lt;<span class="number">23</span>) + frac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="floatFloat2Int"><a href="#floatFloat2Int" class="headerlink" title="floatFloat2Int"></a>floatFloat2Int</h3><p>题意：给你一个无符号数，并将其看成浮点数(32位)，要求输出(int)x的值<br>思路：本题依然在考察对浮点数的基本理解。解决的思路同上题类似，不再赘述。另外提醒一下，本题有个坑，求得到的bias直接拿来进行右移运算或左移运算会存在问题：&gt;&gt; 和 &lt;&lt; 运算符当偏移量超过32时，会自动进行取模运算，故有可能使得结果出现错误。左移的话有可能还会导致答案溢出。记得分类讨论。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">floatFloat2Int</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> frac = uf &amp; <span class="number">0x007fffff</span>;</span><br><span class="line">	uf &gt;&gt;= <span class="number">23</span>;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">exp</span> = uf &amp; <span class="number">0xff</span>;</span><br><span class="line">	uf &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">	<span class="keyword">int</span> sgn = uf;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">exp</span> == <span class="number">0xff</span>) <span class="keyword">return</span> <span class="number">0x80000000</span>u;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">exp</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		frac |= <span class="number">0x800000</span>;</span><br><span class="line">		<span class="keyword">int</span> bias = <span class="built_in">exp</span> - <span class="number">0x7f</span> - <span class="number">23</span>;</span><br><span class="line">		<span class="keyword">if</span> (bias &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			bias = -bias;</span><br><span class="line">			<span class="keyword">if</span> (bias &gt;= <span class="number">32</span>) bias = <span class="number">31</span>;</span><br><span class="line">			frac &gt;&gt;= bias;</span><br><span class="line">		&#125;	<span class="keyword">else</span> <span class="keyword">if</span> (bias &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">while</span>(bias) &#123;</span><br><span class="line">				frac&lt;&lt;=<span class="number">1</span>;</span><br><span class="line">				bias--;</span><br><span class="line">				<span class="keyword">if</span> (frac &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0x80000000</span>u;</span><br><span class="line">        	&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (sgn) <span class="keyword">return</span> -frac;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">return</span> frac;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="floatPower2"><a href="#floatPower2" class="headerlink" title="floatPower2"></a>floatPower2</h3><p>题意：给一个整数x，要求输出2.0<sup>x</sup>的值。<br>思路：同样，本题依然在考察对浮点数存储的基本理解。要注意的是，+INF的是指exp为0xff，frac为0的值。NaN指的是exp为0xff，frac不为0的值。0的浮点数表示依然为0。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">floatPower2</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sgn = <span class="number">0</span>, <span class="built_in">exp</span> = <span class="number">0</span>, frac = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">-126</span> - <span class="number">23</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (x &lt; <span class="number">-126</span>) frac = <span class="number">1</span> &lt;&lt; (<span class="number">149</span>+x);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">	    <span class="built_in">exp</span> = x + <span class="number">127</span>;</span><br><span class="line">	    <span class="keyword">if</span> (<span class="built_in">exp</span> &gt; <span class="number">0xff</span>) <span class="keyword">return</span> <span class="number">0x7f800000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">exp</span>&lt;&lt;<span class="number">23</span>) + frac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>　　倘若一切顺利，你最终将得到类似这样的一张图片：<br>　　<img src="/2018/12/25/csapp-Datalab/firstLab.png" alt="Datalab_final"><br>　　那么恭喜你，你的第一个实验————Datalab通关啦！</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/csapp/" rel="tag"><i class="fa fa-tag"></i> csapp</a>
+          
+            <a href="/tags/binary/" rel="tag"><i class="fa fa-tag"></i> binary</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/14/First-article/" rel="next" title="First article">
+                <i class="fa fa-chevron-left"></i> First article
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bitXor"><span class="nav-number">1.1.</span> <span class="nav-text">bitXor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tmin"><span class="nav-number">1.2.</span> <span class="nav-text">tmin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isTmax"><span class="nav-number">1.3.</span> <span class="nav-text">isTmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#allOddBits"><span class="nav-number">1.4.</span> <span class="nav-text">allOddBits</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#negate"><span class="nav-number">1.5.</span> <span class="nav-text">negate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isAsciiDight"><span class="nav-number">1.6.</span> <span class="nav-text">isAsciiDight</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#conditional"><span class="nav-number">1.7.</span> <span class="nav-text">conditional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isLessOrEqual"><span class="nav-number">1.8.</span> <span class="nav-text">isLessOrEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#logicalNeg"><span class="nav-number">1.9.</span> <span class="nav-text">logicalNeg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#howManyBits"><span class="nav-number">1.10.</span> <span class="nav-text">howManyBits</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#floatScale2"><span class="nav-number">1.11.</span> <span class="nav-text">floatScale2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#floatFloat2Int"><span class="nav-number">1.12.</span> <span class="nav-text">floatFloat2Int</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#floatPower2"><span class="nav-number">1.13.</span> <span class="nav-text">floatPower2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结尾"><span class="nav-number">2.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">2.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
