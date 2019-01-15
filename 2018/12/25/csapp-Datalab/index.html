@@ -95,19 +95,19 @@
   </script>
 
 
-<meta name="description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta name="description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改(右下角小图标点开即可对话)。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回">
 <meta name="keywords" content="csapp,binary">
 <meta property="og:type" content="article">
 <meta property="og:title" content="csapp-Datalab">
 <meta property="og:url" content="http://yoursite.com/2018/12/25/csapp-Datalab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta property="og:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改(右下角小图标点开即可对话)。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/12/25/csapp-Datalab/firstLab.png">
-<meta property="og:updated_time" content="2018-12-28T11:09:34.050Z">
+<meta property="og:updated_time" content="2019-01-15T16:11:08.214Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Datalab">
-<meta name="twitter:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp;amp;">
+<meta name="twitter:description" content="序　　这是csapp系列的第一篇文章。本文主要讲一下关于 datalab [Updated 11/2/18] 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改(右下角小图标点开即可对话)。  注：其中某些题目应该有更优的解法。以下仅供参考 bitXor题意：用 ~ 和 &amp;amp; 运算符实现 Xor 运算符思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回">
 <meta name="twitter:image" content="http://yoursite.com/2018/12/25/csapp-Datalab/firstLab.png">
 
 
@@ -432,7 +432,7 @@
       
 
       
-        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第一篇文章。本文主要讲一下关于 <a href="http://csapp.cs.cmu.edu/3e/README-datalab" target="_blank" rel="noopener"><strong>datalab [Updated 11/2/18]</strong></a> 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改。<br>  注：其中某些题目应该有更优的解法。以下仅供参考</p>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第一篇文章。本文主要讲一下关于 <a href="http://csapp.cs.cmu.edu/3e/README-datalab" target="_blank" rel="noopener"><strong>datalab [Updated 11/2/18]</strong></a> 的解决方法以及简单的思路。如果有哪里写的不清楚或者有问题，欢迎联系我修改(右下角小图标点开即可对话)。<br>  注：其中某些题目应该有更优的解法。以下仅供参考</p>
 <h3 id="bitXor"><a href="#bitXor" class="headerlink" title="bitXor"></a>bitXor</h3><p>题意：用 ~ 和 &amp; 运算符实现 Xor 运算符<br>思路：我们知道Xor运算符是对每一个位，相同的话返回0，不同的话返回1。题目中仅有 &amp; 是双目运算符，那么我们可以采用 &amp; 运算符获得均为1的位，再取反，同理，用 &amp; 和 ~ 获得均为 0 的位，再取反，最后两者再进行 &amp; ，即可得到答案。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitXor</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ~(x&amp;y)&amp;~(~x&amp;~y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="tmin"><a href="#tmin" class="headerlink" title="tmin"></a>tmin</h3><p>题意：让你输出反码下的最小值<br>思路：水题。。直接由定义得。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tmin</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>&lt;&lt;<span class="number">31</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="isTmax"><a href="#isTmax" class="headerlink" title="isTmax"></a>isTmax</h3><p>题意：判断一个数是否为反码下的最大值<br>思路：若x为Tmax，x+1取反之后应该等于x。故可以采用取反与原数Xor的思路。但要注意，<strong>0xffffffff</strong>也满足该性质，需要排除。<br>解：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTmax</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !(~(x+<span class="number">1</span>)^x)&amp;!(!(~x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -580,7 +580,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -691,7 +691,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">13.7k</span>
+    <span title="Site words total count">16.4k</span>
   
 </div>
 

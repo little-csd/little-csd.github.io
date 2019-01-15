@@ -95,19 +95,19 @@
   </script>
 
 
-<meta name="description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起来难度还是不大的，建议尝试着不看任何其他教程自己独立完成。 attacklab 实验要求　　这个实验要求我们使用缓冲区溢出对c">
+<meta name="description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。本文主要讲csapp中的attacklab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起">
 <meta name="keywords" content="csapp,overflow,assembly">
 <meta property="og:type" content="article">
 <meta property="og:title" content="csapp-Attacklab">
 <meta property="og:url" content="http://yoursite.com/2019/01/15/csapp-Attacklab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起来难度还是不大的，建议尝试着不看任何其他教程自己独立完成。 attacklab 实验要求　　这个实验要求我们使用缓冲区溢出对c">
+<meta property="og:description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。本文主要讲csapp中的attacklab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/01/15/csapp-Attacklab/1.png">
-<meta property="og:updated_time" content="2019-01-15T09:57:37.346Z">
+<meta property="og:updated_time" content="2019-01-15T16:10:39.488Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Attacklab">
-<meta name="twitter:description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起来难度还是不大的，建议尝试着不看任何其他教程自己独立完成。 attacklab 实验要求　　这个实验要求我们使用缓冲区溢出对c">
+<meta name="twitter:description" content="序　　这是csapp系列的第三篇文章。具体题目请见官网。本文主要讲csapp中的attacklab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的资料看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起">
 <meta name="twitter:image" content="http://yoursite.com/2019/01/15/csapp-Attacklab/1.png">
 
 
@@ -432,7 +432,7 @@
       
 
       
-        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第三篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。<br>　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的<a href="http://csapp.cs.cmu.edu/3e/bomblab.pdf" target="_blank" rel="noopener">资料</a>看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起来难度还是不大的，建议尝试着不看任何其他教程自己独立完成。</p>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第三篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的attacklab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。<br>　　个人觉得这个实验比起前面两个还是要稍微简单一点的，但是强烈建议把官网给的<a href="http://csapp.cs.cmu.edu/3e/bomblab.pdf" target="_blank" rel="noopener">资料</a>看一下，看完相信对完成这个实验还是有很大帮助的。整个实验主要是一开始无从下手以及最后一个level比较麻烦，但结合资料的相关提示的话，做起来难度还是不大的，建议尝试着不看任何其他教程自己独立完成。</p>
 <h2 id="attacklab-实验要求"><a href="#attacklab-实验要求" class="headerlink" title="attacklab 实验要求"></a>attacklab 实验要求</h2><p>　　这个实验要求我们使用缓冲区溢出对ctarget和rtarget进行攻击。总共有五个关卡，其中，前三个要求使用代码注入(code injection)对ctarget进行攻击，后面两个要求使用return-oriented programming(ROP)对rtarget进行攻击。</p>
 <blockquote>
 <p>实验文件：<br>ctarget 和 rtarget：我们需要攻击的对象。<br>hex2raw：帮助我们用来生成攻击字符串的文件。<br>cookie: 识别文件，用来区分不同的用户(一般拿到的值是一个随机的8位16进制数)<br>farm.c：用于提供gadget，与后面两个关卡有关。</p>
@@ -541,6 +541,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/01/15/csapp-Buflab/" rel="prev" title="csapp-Buflab">
+                csapp-Buflab <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -618,7 +622,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -729,7 +733,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">13.7k</span>
+    <span title="Site words total count">16.4k</span>
   
 </div>
 
