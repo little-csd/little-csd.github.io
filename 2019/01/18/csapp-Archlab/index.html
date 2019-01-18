@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="csapp,y86-64,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta name="keywords" content="csapp,y86-64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csapp-Archlab">
+<meta property="og:url" content="http://yoursite.com/2019/01/18/csapp-Archlab/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/2.png">
+<meta property="og:updated_time" content="2019-01-18T09:34:26.085Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="csapp-Archlab">
+<meta name="twitter:description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/18/csapp-Archlab/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>csapp-Archlab | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/csapp-Archlab/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">csapp-Archlab</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-18T15:13:09+08:00">
+                2019-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/csapp/" itemprop="url" rel="index">
+                    <span itemprop="name">csapp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.2k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第四篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。<br>　　同样的，在正式开始实验之前，建议先把官方的<a href="http://csapp.cs.cmu.edu/3e/archlab.pdf" target="_blank" rel="noopener">资料</a>看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十分困难，笔者最后的得分为56.3/60.0，仅供参考。</p>
+<h2 id="architecture-lab-实验要求"><a href="#architecture-lab-实验要求" class="headerlink" title="architecture lab 实验要求"></a>architecture lab 实验要求</h2><p>　　这个实验总共分为三个部分，part A, part B, part C。其中，第一部分要求我们将三个用C写的函数翻译成y86-64指令，第二部分要求我们往seq ISA中添加一个新的指令iaddq。第三个部分给了我们一个ncopy的函数和一个pipeline的hcl文件，要求我尽可能地加快程序运行的速度。结果是用CPE(cycles per element)来衡量。达到9.0即算实验通过，7.5为满分。</p>
+<blockquote>
+<p>实验文件(主要用到的在三个文件夹当中)<br>misc：part A 需要用到的文件夹<br>seq： part B 所在文件夹<br>pipe：part C 所在文件夹</p>
+</blockquote>
+<blockquote>
+<p>实验目的</p>
+<ol>
+<li>加深对CPU的指令集架构的了解，理解pipeline的基本实现原理</li>
+<li>理解hardware和software之间的基本联系。简单了解它们之间是如何配合协作的</li>
+<li>掌握一些程序优化的简单方法</li>
+</ol>
+</blockquote>
+<h2 id="y86-64-模拟器的配置"><a href="#y86-64-模拟器的配置" class="headerlink" title="y86-64 模拟器的配置"></a>y86-64 模拟器的配置</h2><p>　　个人认为，这个应该是本实验最麻烦的一个点了。话了很长的时间，出了各种bug，下面进行安装过程进行简单的介绍。<br>　　所用系统为:arch-linux。不同版本对同一个问题的解决方法可能不太一样，但大体上有相似之处，下面仅供参考</p>
+<h3 id="tcl-tk"><a href="#tcl-tk" class="headerlink" title="tcl/tk"></a>tcl/tk</h3><p>　　如果不想安装GUI界面的同学可以忽略此步<br>　　首先，本实验比较老，需要用到的tcl/tk版本号为8.5，8.6以上的版本没办法正常使用。然而，现在直接下载默认的应该是8.6版本的，因此我们需要制定版本号。在arch下，本人是直接使用yay（需要自行安装）进行下载。</p>
+<blockquote>
+<p>yay tcl85 // yay tk85</p>
+</blockquote>
+<p>　　这样的命令行即可。然后我们进入sim文件夹下。使用make编译。发现报错了。出现了类似这样的错误信息。</p>
+<p><img src="/2019/01/18/csapp-Archlab/1.png" alt="错误1"></p>
+<p>　　我们需要更改makefile文件。如下图所示(记得对照清楚一下)。<br><img src="/2019/01/18/csapp-Archlab/2.png" alt="错误2"></p>
+<p>　　再次进行编译。又报出新的错误。错误信息大概是这样。</p>
+<blockquote>
+<p>psim.c:23:10: fatal error: tk.h: No such file or directory</p>
+<p>#include &lt;tk.h&gt;<br>compilation terminated.</p>
+</blockquote>
+<p>　　看错误信息，我们发现，编译的时候找不到tk.h这个函数库。因此，我们去系统的函数库里面看一下，进入Root/usr/include文件夹下，ctrl+f搜索，我们发现tk.h放在了tk8.5这个文件夹下，因此编译的时候在include文件夹下找不到tk.h。我们只需要将psim.c中的tk.h更改为tk8.5/tk.h即可。(同理，ssim.c也需要修改)<br>　　好了，这个时候再次编译，我们又发现还是过不了。出现了类似这样的错误信息。</p>
+<blockquote>
+<p>/usr/bin/ld: /tmp/cc44VPBY.o:(.data.rel+0x0): underfined reference to ‘matherr’</p>
+</blockquote>
+<p>　　matherr没有定义？？这是怎么回事。我们进入matherr所在文件(psim.c和ssim.c)看一下。找到了这样的两行代码：</p>
+<blockquote>
+<p>extern int matherr();<br>int *tclDummyMathPtr = (int *) matherr;</p>
+</blockquote>
+<p>　　直接注释掉即可。最后，我们再进行编译。在sim文件夹下make clean; make 我们成功地完成了GUI界面的编译。当然，要是过不了也没有什么关系，我们可以把上面图片中makefile那三行注释掉，这样编译出来的是文本界面，但不需要tcl/tk，也就不会一直报错了。</p>
+<h2 id="实验正文"><a href="#实验正文" class="headerlink" title="实验正文"></a>实验正文</h2><h3 id="part-A"><a href="#part-A" class="headerlink" title="part A"></a>part A</h3><p>　　这部分其实没什么好讲的。就是简单地把一个函数翻译成y86-64代码而已。在misc文件夹下新建文件sum.ys，把自己翻译的代码打进去然后用yas编译，yis运行即可，最终%rax的数据为0xcba即正确了。自己可以进行校对。下面是我的sum.ys的代码。其余两个不贴上来了。主要是注意一下一开是要先设置pos，还有把栈顶放在%rsp上面即可。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">.pos <span class="number">0</span></span><br><span class="line">init: irmovq Stack, %rsp</span><br><span class="line">      call Main</span><br><span class="line">      halt</span><br><span class="line"></span><br><span class="line">	.align <span class="number">8</span></span><br><span class="line">ele1:</span><br><span class="line">	.quad <span class="number">0x00a</span></span><br><span class="line">	.quad ele2</span><br><span class="line">ele2:</span><br><span class="line">	.quad <span class="number">0x0b0</span></span><br><span class="line">	.quad ele3</span><br><span class="line">ele3:</span><br><span class="line">	.quad <span class="number">0xc00</span></span><br><span class="line">	.quad <span class="number">0</span></span><br><span class="line"></span><br><span class="line">Main:</span><br><span class="line">	irmovq ele1,%rdi</span><br><span class="line">	call sum_list</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">sum_list:</span><br><span class="line">	irmovq $<span class="number">0</span>,%rax</span><br><span class="line">	jmp test</span><br><span class="line">loop:</span><br><span class="line">	mrmovq <span class="number">0</span>(%rdi),%rcx</span><br><span class="line">	addq %rcx,%rax</span><br><span class="line">	mrmovq <span class="number">8</span>(%rdi),%rcx</span><br><span class="line">	rrmovq %rcx,%rdi</span><br><span class="line">test:</span><br><span class="line">	andq %rdi,%rdi</span><br><span class="line">	jne loop</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">	.pos <span class="number">0x100</span></span><br><span class="line">Stack:</span><br></pre></td></tr></table></figure></p>
+<h3 id="part-B"><a href="#part-B" class="headerlink" title="part B"></a>part B</h3><p>　　这个部分同样比较简单，添加一个IIADDQ指令。文件位于/seq/seq-full.hcl 我们只需要在以下几个变量中添加IIADDQ的判断即可。</p>
+<ol>
+<li>instr_valid</li>
+<li>need_regids</li>
+<li>need_valC</li>
+<li>dstE中结果为rB的分支</li>
+<li>aluA中结果为valC的分支</li>
+<li>aluB中结果为valB的分支</li>
+<li>setCC</li>
+</ol>
+<p>　　经过资料中的几个测试后，该题顺利解决。</p>
+<h3 id="part-C"><a href="#part-C" class="headerlink" title="part C"></a>part C</h3><p>　　这道题很难，尤其是如果要追求满分的话。当然，要有分也没那么容易。在pipe文件夹下：</p>
+<blockquote>
+<p>./correctness.pl  // 检测自己的答案是否正确<br>./benchmark.pl // 测试自己的分数是多少</p>
+</blockquote>
+<p>　　这道题我们能操作的文件就只有pipe.hcl和ncopy.ys。也就是说，分别从硬件和软件两个方面进行优化。首先是hcl文件，很显然，官方资料已经提示了我们，本题需要实现iaddq指令，这样做起来方便很多，可以将CPE降到13左右吧。虽然还是0分。具体和part B极其相似，这里不再赘述。<br>　　由于资料中还提示我们，建议去看loop unrolling的部分，这告诉了我们，本题最大的优化在循环展开这里。于是，笔者不得不先提前去看了一下书上循环优化部分的内容。为什么循环优化能够提高那么多呢？<br>　　注意到我们的每次循环过程中，迭代器都要+1，并且src和dst两个指针也要对应地发生移动，然而，这样的指令对于我们答案的得出并没有实质性的直接帮助，因此，我们应该尽量减少这样的指令的产生比如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n; i++)</span><br><span class="line">sum += a[i];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n; i+=<span class="number">2</span>)</span><br><span class="line">sum = sum + a[i] + a[i+<span class="number">1</span>];</span><br></pre></td></tr></table></figure></p>
+<p>　　两个程序进行对比，很明显，下面的程序的效率要远远高于上面那个。尤其当n越大时，效果更明显。而题目给的程序中，需要递增的有三个数，这就使得循环优化变得更加重要。对于循环k路的选择上面，个人选择了k = 8。即每次n的变化应该是8。总体上来说，和四路的效率比较接近。具体实现过程中，整体思路是，先将n - k, 然后再进行n/k轮迭代，最后再把余数进行处理。具体可以见最下方的参考<br>　　进行了循环优化以后，我们还发现，程序中有类似这样的两行。</p>
+<blockquote>
+<p>mrmovq (%rdi),%r10<br>rmmovq %r10,(%rsi)</p>
+</blockquote>
+<p>　　记性比较好的读者应该会记得，书中有提到过这样的例子。第二行的rmmovq指令执行到decode stage时，上面那一行还在execute stage，这个时候，我们并不知道(%rdi)的值具体是多少，也就是说，这个时候我们没办法通过data forwarding将数据送往decode stage。于是，rmmovq指令只好停留在本阶段，于是我们浪费了一个clock cycle，这是一种典型的load interlock, 处理办法是将另一个指令插入这两个指令中。然而下面的<b>andq %r10,%r10</b>指令我们也用不了，同样需要读取%r10，无法避免cycle的浪费. 因此，我们选择将下面的一个mrmovq提到上面来，即变成</p>
+<blockquote>
+<p>mrmovq (%rdi),%10<br>mrmovq 8(%rdi),%r9<br>rmmovq %r10,(%rsi)</p>
+</blockquote>
+<p>　　这样以来就不会发生cycle的浪费了。这个时候我们再进行测试的话，分数应该已经挺高了。当然，还有一些小小的优化可以调整。比如余数的处理上等等。这里给一个看到的处理得比较好的<a href="https://zhuanlan.zhihu.com/p/33751460" target="_blank" rel="noopener">文章</a>供参考，这篇文章作者还使用了一个三叉搜索树构造跳转表，再一次提高了效率(已经接近满分了)。这里我就不再赘述了。<br>　　其实我们会看到，想要提高CPE(CPI)，其实最主要就是三个方面，一个是use/load的冲突，如上面的mrmovq和rmmovq，这会消耗掉一个cycle；第二个是return语句，由于pipeline的设计，我们不知到会跳哪个位置，只能等到return执行到memory stage的时候才能确定，这将会浪费掉三个cycle；还有一个就是JXX中的条件跳转(非条件没有影响)，一旦分支预测错误，将会浪费掉两个cycle，而跳转指令在我们的程序中又特别的常见，因此，这是我们很大的一个优化方向，不仅是在这个实验当中。对于一个跳转指令，在特定的ISA下，我们应该尽量想办法在软件层面做处理，提高分支预测的准确率(比如在可能的情况下用data flow替换掉control flow)。书中也提到，现代的处理器的stage是远不止五个的，一旦分支预测出现错误，处理器调整的开销将长达十几个时钟周期。这个应该也是我看第四章留下的印象最深刻的地方吧。<br>　　下面是我的代码(其中也用到了其他一些小优化，比如分支的调整之类的)：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">xorq %rax,%rax	 <span class="meta"># count = 0</span></span><br><span class="line">iaddq $<span class="number">-8</span>,%rdx   <span class="meta"># n - 8</span></span><br><span class="line">jl Test         <span class="meta"># <span class="meta-keyword">if</span> n &lt; 8 jump to Test</span></span><br><span class="line">Loop:</span><br><span class="line">  mrmovq (%rdi),%r10</span><br><span class="line">  mrmovq <span class="number">8</span>(%rdi),%r9</span><br><span class="line">  andq %r10,%r10</span><br><span class="line">  rmmovq %r10,(%rsi)</span><br><span class="line">  jle Npos1</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos1:</span><br><span class="line">  andq %r9,%r9</span><br><span class="line">  rmmovq %r9,<span class="number">8</span>(%rsi)</span><br><span class="line">  jle Npos2</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos2:</span><br><span class="line"></span><br><span class="line">  mrmovq <span class="number">16</span>(%rdi),%r10</span><br><span class="line">  mrmovq <span class="number">24</span>(%rdi),%r9</span><br><span class="line">  andq %r10,%r10</span><br><span class="line">  rmmovq %r10,<span class="number">16</span>(%rsi)</span><br><span class="line">  jle Npos3</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos3:</span><br><span class="line">  andq %r9,%r9</span><br><span class="line">  rmmovq %r9,<span class="number">24</span>(%rsi)</span><br><span class="line">  jle Npos4</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos4:</span><br><span class="line"></span><br><span class="line">  mrmovq <span class="number">32</span>(%rdi),%r10</span><br><span class="line">  mrmovq <span class="number">40</span>(%rdi),%r9</span><br><span class="line">  andq %r10,%r10</span><br><span class="line">  rmmovq %r10,<span class="number">32</span>(%rsi)</span><br><span class="line">  jle Npos5</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos5:</span><br><span class="line">  andq %r9,%r9</span><br><span class="line">  rmmovq %r9,<span class="number">40</span>(%rsi)</span><br><span class="line">  jle Npos6</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos6:</span><br><span class="line"></span><br><span class="line">  mrmovq <span class="number">48</span>(%rdi),%r10</span><br><span class="line">  mrmovq <span class="number">56</span>(%rdi),%r9</span><br><span class="line">  andq %r10,%r10</span><br><span class="line">  rmmovq %r10,<span class="number">48</span>(%rsi)</span><br><span class="line">  jle Npos7</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos7:</span><br><span class="line">  andq %r9,%r9</span><br><span class="line">  rmmovq %r9,<span class="number">56</span>(%rsi)</span><br><span class="line">  jle Npos8</span><br><span class="line">  iaddq $<span class="number">1</span>,%rax</span><br><span class="line">Npos8:</span><br><span class="line"></span><br><span class="line">  iaddq $<span class="number">64</span>, %rdi  <span class="meta"># add the *src, *dst</span></span><br><span class="line">  iaddq $<span class="number">64</span>, %rsi</span><br><span class="line">  iaddq $<span class="number">-8</span>, %rdx  <span class="meta"># sub i</span></span><br><span class="line">  jge Loop         <span class="meta"># loop</span></span><br><span class="line"></span><br><span class="line">Test:              <span class="meta"># n + 8 to deal with remaining numbers</span></span><br><span class="line">  iaddq $<span class="number">8</span>,%rdx</span><br><span class="line">  jne Rem1</span><br><span class="line">  ret</span><br><span class="line">Rem1:</span><br><span class="line">  mrmovq (%rdi), %r10</span><br><span class="line">  mrmovq <span class="number">8</span>(%rdi), %r9</span><br><span class="line">  andq %r10, %r10</span><br><span class="line">  jle Pos1</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos1:</span><br><span class="line">  rmmovq %r10, (%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem2</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem2:</span><br><span class="line">  andq %r9, %r9</span><br><span class="line">  jle Pos2</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos2:</span><br><span class="line">  rmmovq %r9, <span class="number">8</span>(%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem3</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem3:</span><br><span class="line">  mrmovq <span class="number">16</span>(%rdi), %r10</span><br><span class="line">  mrmovq <span class="number">24</span>(%rdi), %r9</span><br><span class="line">  andq %r10, %r10</span><br><span class="line">  jle Pos3</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos3:</span><br><span class="line">  rmmovq %r10, <span class="number">16</span>(%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem4</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem4:</span><br><span class="line">  andq %r9, %r9</span><br><span class="line">  jle Pos4</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos4:</span><br><span class="line">  rmmovq %r9, <span class="number">24</span>(%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem5</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem5:</span><br><span class="line">  mrmovq <span class="number">32</span>(%rdi), %r10</span><br><span class="line">  mrmovq <span class="number">40</span>(%rdi), %r9</span><br><span class="line">  mrmovq <span class="number">48</span>(%rdi), %r8</span><br><span class="line">  andq %r10, %r10</span><br><span class="line">  jle Pos5</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos5:</span><br><span class="line">  rmmovq %r10, <span class="number">32</span>(%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem6</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem6:</span><br><span class="line">  andq %r9, %r9</span><br><span class="line">  jle Pos6</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos6:</span><br><span class="line">  rmmovq %r9, <span class="number">40</span>(%rsi)</span><br><span class="line">  iaddq $<span class="number">-1</span>, %rdx</span><br><span class="line">  jne Rem7</span><br><span class="line">  ret</span><br><span class="line"></span><br><span class="line">Rem7:</span><br><span class="line">  andq %r8, %r8</span><br><span class="line">  jle Pos7</span><br><span class="line">  iaddq $<span class="number">1</span>, %rax</span><br><span class="line">Pos7:</span><br><span class="line">  rmmovq %r8, <span class="number">48</span>(%rsi)</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　这个实验本身来说难度并不能算大，甚至比课后练习还要稍微容易一点，但是需要对CPU的pipeline有比较清晰的了解，否则做起来会特别的吃力。由于我自己本身是读软件方面的，对硬件很多东西其实也不怎么了解(基本上师兄在说的时候也是觉得这一章可以不用怎么看)，加上现在才大一，很多知识，比如电路方面的都还没学，看得时候都要查一下一些概念什么的。当然最后我还是坚持顽强地把它啃下来了(算上实验和各种其他杂七杂八的东西，总共花了一个星期多一点吧)。花了很长的时间，尤其是pipeline那一块，到现在都觉得自己的理解并不是很到位，还有一些小细节没有搞清楚。我也不知到为什么一个读软件的要对涉及到已经几乎是硬件层面的东西要这么花时间，我也不知到自己花了这么长的时间去看这个究竟有没有意义。可能这就是对计算机的热爱吧(逃</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/csapp/" rel="tag"><i class="fa fa-tag"></i> csapp</a>
+          
+            <a href="/tags/y86-64/" rel="tag"><i class="fa fa-tag"></i> y86-64</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/15/csapp-Buflab/" rel="next" title="csapp-Buflab">
+                <i class="fa fa-chevron-left"></i> csapp-Buflab
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#architecture-lab-实验要求"><span class="nav-number">2.</span> <span class="nav-text">architecture lab 实验要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#y86-64-模拟器的配置"><span class="nav-number">3.</span> <span class="nav-text">y86-64 模拟器的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tcl-tk"><span class="nav-number">3.1.</span> <span class="nav-text">tcl/tk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验正文"><span class="nav-number">4.</span> <span class="nav-text">实验正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#part-A"><span class="nav-number">4.1.</span> <span class="nav-text">part A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#part-B"><span class="nav-number">4.2.</span> <span class="nav-text">part B</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#part-C"><span class="nav-number">4.3.</span> <span class="nav-text">part C</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">19.5k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
