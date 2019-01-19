@@ -95,20 +95,20 @@
   </script>
 
 
-<meta name="description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta name="description" content="序　　这是csapp系列的第五篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
 <meta name="keywords" content="csapp,y86-64">
 <meta property="og:type" content="article">
 <meta property="og:title" content="csapp-Archlab">
 <meta property="og:url" content="http://yoursite.com/2019/01/18/csapp-Archlab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta property="og:description" content="序　　这是csapp系列的第五篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/2.png">
-<meta property="og:updated_time" content="2019-01-18T09:34:26.085Z">
+<meta property="og:updated_time" content="2019-01-19T00:41:56.155Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Archlab">
-<meta name="twitter:description" content="序　　这是csapp系列的第四篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
+<meta name="twitter:description" content="序　　这是csapp系列的第五篇文章。具体题目请见官网。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。　　同样的，在正式开始实验之前，建议先把官方的资料看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十">
 <meta name="twitter:image" content="http://yoursite.com/2019/01/18/csapp-Archlab/1.png">
 
 
@@ -433,7 +433,7 @@
       
 
       
-        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第四篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。<br>　　同样的，在正式开始实验之前，建议先把官方的<a href="http://csapp.cs.cmu.edu/3e/archlab.pdf" target="_blank" rel="noopener">资料</a>看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十分困难，笔者最后的得分为56.3/60.0，仅供参考。</p>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第五篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的architecture lab的流程和心得。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话)。<br>　　同样的，在正式开始实验之前，建议先把官方的<a href="http://csapp.cs.cmu.edu/3e/archlab.pdf" target="_blank" rel="noopener">资料</a>看一遍，保证对实验需要做什么，怎么做有一定的了解。总体来说，本实验在不追求满分的情况下，还是很容易通过的。主要难度都是在part C上，尤其要优化到高分十分困难，笔者最后的得分为56.3/60.0，仅供参考。</p>
 <h2 id="architecture-lab-实验要求"><a href="#architecture-lab-实验要求" class="headerlink" title="architecture lab 实验要求"></a>architecture lab 实验要求</h2><p>　　这个实验总共分为三个部分，part A, part B, part C。其中，第一部分要求我们将三个用C写的函数翻译成y86-64指令，第二部分要求我们往seq ISA中添加一个新的指令iaddq。第三个部分给了我们一个ncopy的函数和一个pipeline的hcl文件，要求我尽可能地加快程序运行的速度。结果是用CPE(cycles per element)来衡量。达到9.0即算实验通过，7.5为满分。</p>
 <blockquote>
 <p>实验文件(主要用到的在三个文件夹当中)<br>misc：part A 需要用到的文件夹<br>seq： part B 所在文件夹<br>pipe：part C 所在文件夹</p>
