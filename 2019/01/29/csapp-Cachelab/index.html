@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="csapp,cache,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="序　　这是csapp系列的第六篇文章。具体题目请见官网。本文主要讲csapp中的cache lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。如果有时间的话，也可以看一下web aside里面blocking相关的一些知识，对于理解题目思路有一定帮助。 cache lab　　这个实验总共">
+<meta name="keywords" content="csapp,cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csapp-Cachelab">
+<meta property="og:url" content="http://yoursite.com/2019/01/29/csapp-Cachelab/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="序　　这是csapp系列的第六篇文章。具体题目请见官网。本文主要讲csapp中的cache lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。如果有时间的话，也可以看一下web aside里面blocking相关的一些知识，对于理解题目思路有一定帮助。 cache lab　　这个实验总共">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/01/29/csapp-Cachelab/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/29/csapp-Cachelab/2.png">
+<meta property="og:updated_time" content="2019-01-30T02:57:37.806Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="csapp-Cachelab">
+<meta name="twitter:description" content="序　　这是csapp系列的第六篇文章。具体题目请见官网。本文主要讲csapp中的cache lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。如果有时间的话，也可以看一下web aside里面blocking相关的一些知识，对于理解题目思路有一定帮助。 cache lab　　这个实验总共">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/29/csapp-Cachelab/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/29/csapp-Cachelab/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>csapp-Cachelab | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/29/csapp-Cachelab/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">csapp-Cachelab</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-29T22:34:49+08:00">
+                2019-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/csapp/" itemprop="url" rel="index">
+                    <span itemprop="name">csapp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.9k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="序"><a href="#序" class="headerlink" title="序"></a>序</h3><p>　　这是csapp系列的第六篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的cache lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。<br>　　建议在开始实验以前，先把官方的<a href="http://csapp.cs.cmu.edu/3e/cachelab.pdf" target="_blank" rel="noopener">资料</a>看下。如果有时间的话，也可以看一下web aside里面blocking相关的一些知识，对于理解题目思路有一定帮助。</p>
+<h3 id="cache-lab"><a href="#cache-lab" class="headerlink" title="cache lab"></a>cache lab</h3><p>　　这个实验总共只有两个部分，part A 要求我们写一个cache simulator, 总体来说比较简单，注意好各个指令间的区别就可以了。part B 是要求我们在特定的条件下对矩阵转置进行适当的优化，有一定难度。</p>
+<blockquote>
+<p>主要实验文件<br>traces 文件夹 存放用于part A测试的一些文件<br>csim.c 完成part A 需要填写的文件<br>trans.c 完成part B 需要填写的文件<br>test-csim 和 test-trans 分别用于对part A 和 part B的测试<br>driver.py 用于对part A 和 part B 整体进行测试</p>
+</blockquote>
+<blockquote>
+<p>实验目的：<br>part A 主要加深了我们对于缓存的理解，要求能够理解最简单的缓存在机器中是怎样实现的，能够解决写入缓存，读取缓存的一些问题。<br>part B 主要通过优化转置这个任务，加深我们对cache miss的理解，懂得如何尽量减少cache miss 的产生，以提高程序效率。</p>
+</blockquote>
+<h3 id="实验正文"><a href="#实验正文" class="headerlink" title="实验正文"></a>实验正文</h3><h4 id="part-A"><a href="#part-A" class="headerlink" title="part A"></a>part A</h4><p>　　part A 总体没有什么比较好讲的地方。最主要就是确定好数据结构，理解清楚L S M三个指令之间的区别就可以了。不过笔者在这道题上面却卡了特别久，原因在于对于这几个指令的理解不够深，然后没怎么思考就直接写，导致出了一些问题，找bug花了很长时间，最后发现从一开始的思路就错了，于是才推倒重来。<br>　　首先，我们需要用到getopt函数来解析命令行参数。这个函数的用法网上有很多，直接搜索就可以找到很多有用的资料，这里不赘述了。<br>　　然后，我们来看一下对于四个指令，I指令我们不需要管，可以直接忽略。剩下L S M三个。一个合格的cache应该做到：</p>
+<ol>
+<li>对于load指令，从内存中读取，首先我们需要判断要读取的地址是否有放在缓存当中，有的话就是cache hits，直接返回。没有的话就是cache misses，这个时候需要从内存中读取，然后我们还要将这个地址及其对应的值放入缓存当中。</li>
+<li>对于store指令，往内存中写入，首先我们还是需要判断要存储的目标地址是否放在缓存当中。如果有的话，由于我们采用的是write back策略，我们只需要将值存储在cache当中，只有当其要被替换时，我们才将其写入到内存当中。如果没有的话，发生cache misses这个时候我们需要从内存中读取，在放入缓存当中，在缓存中进行修改。</li>
+<li>对于modify指令，其实就是先执行load指令，再执行store指令。</li>
+</ol>
+<p>　　实验要求我们输出hits，misses, evicts的次数，并不需要保存缓存中每一个block的值，并且，题目保证了load和store的时候不会越过某一个block的边界，进一步使题目变简单。细心的你可能会发现，我们不需要对三种指令分别进行相应操作。load 和 store指令在本题中没有区别。我们可以将这两个指令分别拆分成两个部分：</p>
+<ol>
+<li>search 搜索对应的set块中是否存在缓存，存在的话则cache hits，更新lru后直接返回，否则发生cache misses，进行第二步</li>
+<li>insert 首先判断当前set块中是否还存在空的line，存在的话我们将其填上，然后返回。不存在的话发生cache evicts，这个时候，由于我们不需要管各个地址中的值，只需要更新一下lru和tag即可。</li>
+</ol>
+<p>　　对于modify，由于load如果缓存中不存在的时候，会从内存中找并且放入缓存当中，因此，store指令一定是cache hits。我们相当与只需要执行load，然后hits++即可。<br>　　附：lru(least recently use)在本题中用时间戳表示。每读取一个指令时间戳+1。因此可以保证后一个进缓存的或者后一个被访问到的lru一定更大。我们每次替换的时候只需要找lru最小的那个即可。</p>
+<p>　　核心代码如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">fscanf</span>(fs, <span class="string">"%s %llx,%d"</span>, is, &amp;address, &amp;size) != EOF) &#123;</span><br><span class="line">    <span class="keyword">if</span> (is[<span class="number">0</span>] == <span class="string">'I'</span>) <span class="keyword">continue</span>;</span><br><span class="line">    address &gt;&gt;= blockSize;</span><br><span class="line">    <span class="built_in">set</span> = address % maxSet;</span><br><span class="line">    address &gt;&gt;= setNum;</span><br><span class="line">    tag = address;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Line</span>* <span class="title">line</span> = <span class="title">sets</span>[<span class="title">set</span>].<span class="title">line</span>;</span></span><br><span class="line">    <span class="keyword">int</span> m = sets[<span class="built_in">set</span>].m;                           <span class="comment">// m 表示编号为set中已经用了的行数(m &lt;= E)</span></span><br><span class="line">    <span class="keyword">if</span> (search(line, m, tag, lru) != <span class="number">-1</span>) hits++;   <span class="comment">// cache hits 时search返回-1</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        misses++;</span><br><span class="line">        <span class="keyword">int</span> pos = try_insert(line, m, tag, lru);   <span class="comment">// try insert 如果有空位，返回-1，没有空位，则返回lru最小的那个值</span></span><br><span class="line">        <span class="keyword">if</span> (pos != <span class="number">-1</span>) &#123;</span><br><span class="line">            evicts++;</span><br><span class="line">            evict(line, pos, tag, lru);            <span class="comment">// 将lru最小的那个line替换掉</span></span><br><span class="line">        &#125; <span class="keyword">else</span> sets[<span class="built_in">set</span>].m++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (is[<span class="number">0</span>] == <span class="string">'M'</span>) hits++;</span><br><span class="line">    lru++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="part-B"><a href="#part-B" class="headerlink" title="part B"></a>part B</h4><p>　　这道题总体来说还是挺难的。尤其是64 * 64的那个部分。笔者最后也想不出比较好的办法。在参考了网上的一些资料之后，最终才拿到了满分。当然32 * 32和61 * 67那块还是比较简单的。题目所给的cache的参数为s = 5, b = 5, E = 1，于是我们知道，这是一个直接映射的cache，sets总数为32。记住cache的参数对于题目的解决及其重要。</p>
+<h5 id="32-32"><a href="#32-32" class="headerlink" title="32 * 32"></a>32 * 32</h5><p>　　首先，这道题其实和之前的performance lab很像。不过我们的目的是减少cache misses的次数，而不是减少cpe，因此重心应该放在cache上。我们可以画一个表来表示出各个元素映射到的set编号。由于32byte的block恰好可以放8个int变量，而一行一共有32个，也就是说每一行占用了4个set，8行可以将所有set填满。第九行开始则有重复之前的周期。因此，我们可以采用8 * 8的分块法，尽可能地减少miss数。<br>　　当然，如果你直接这样做，你会发现，这样还是通不了，miss数为三百多，而满分是300以内。其实还有一个重要的可以用到的优化(笔者一开始也没有注意到)。<br>　　官方给的文档中有提示，我们最多只能用到12个局部变量。而目前我们仅用了4个(四个循环)。还有8个可以用，并且8个还恰好就是一个set能存放的int数，这个时候我们发现，我们可以先将A矩阵中一整个块(8个变量)取出来，放在局部变量当中，然后再逐一赋值给B矩阵中对应的位置，这样可以避免掉很多不必要的miss(A矩阵每一个块最多只会发生1次miss，而且是必要的)，避免了A矩阵和B矩阵相互争夺某一个set导致的conflict miss。于是我们就可以成功地将miss数减少到300以内。成功解决。代码如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> K 8</span></span><br><span class="line"><span class="keyword">int</span> t1, t2, t3, t4, t5, t6, t7, t0;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i+=K)</span><br><span class="line"><span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; M; j+=K)</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> l = i; l &lt; i+K &amp;&amp; l &lt; N; l++) &#123;</span><br><span class="line">  t0 = A[l][j];</span><br><span class="line">  t1 = A[l][j+<span class="number">1</span>];</span><br><span class="line">  t2 = A[l][j+<span class="number">2</span>];</span><br><span class="line">  t3 = A[l][j+<span class="number">3</span>];</span><br><span class="line">  t4 = A[l][j+<span class="number">4</span>];</span><br><span class="line">  t5 = A[l][j+<span class="number">5</span>];</span><br><span class="line">  t6 = A[l][j+<span class="number">6</span>];</span><br><span class="line">  t7 = A[l][j+<span class="number">7</span>];</span><br><span class="line">  B[j][l] = t0;</span><br><span class="line">  B[j+<span class="number">1</span>][l] = t1;</span><br><span class="line">  B[j+<span class="number">2</span>][l] = t2;</span><br><span class="line">  B[j+<span class="number">3</span>][l] = t3;</span><br><span class="line">  B[j+<span class="number">4</span>][l] = t4;</span><br><span class="line">  B[j+<span class="number">5</span>][l] = t5;</span><br><span class="line">  B[j+<span class="number">6</span>][l] = t6;</span><br><span class="line">  B[j+<span class="number">7</span>][l] = t7;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="61-67"><a href="#61-67" class="headerlink" title="61 * 67"></a>61 * 67</h5><p>　　为什么要把这个放在这个地方呢？当然是因为这个比较简单了。61 * 67长宽均是质数，很大一定程度上使得miss数会少一些，当然，这也使得很难通过一些优化将miss减少到一个很低的数值。题目要求的miss数是2000以内，其实只要分块的大小选取得当就很简单了。笔者选择的是16 * 8的块，当然，16 * 16的听说也可以。这个比较随意了，就是一个调参的过程而已。理解清楚之后，和前面那道32 * 32的基本没有区别，代码就不贴了，意义不大。</p>
+<h5 id="64-64"><a href="#64-64" class="headerlink" title="64 * 64"></a>64 * 64</h5><p>　　这个应该就是这个lab最难的一个点了。由于每一行有64个int值，因此，每一行需要占用8个set，即4行就可以把set填满。因此，如果还是采用8 * 8的分块的话，第5～8行占用的set和第1～4行是一样的，这就会导致B矩阵每一次取值都是miss。总的miss率会特别高，显然不恰当。<br>　　而如果我们尝试这采用4 * 4的分块法呢？很明显，4 * 4可以避免上面的这种情况。然而又带来了另一个问题，4 * 4中cache的利用率太低了，每次读取8个int，最后用到的却只有4个，因此，这种做法最后miss数大概是1600+，离满分还有很大距离。笔者就是在这里想了很久还是不懂。最后还是去网上看了一下一些其他的思路，最后才恍然大悟(但总觉得这道题有点太取巧了)。下面是我最后获得满分的一个思路(如果涉及侵权，请及时联系我删除)：<br>　　为了使得cache的利用率达到最大，我们还是得采用8 * 8的分块法，但是，同样的又要避免第5～8行和第1～4行发生conflict miss，我们不能一次性对一整列8个数字进行填充。最后我们采用的策略基于矩阵转置以下的性质：<br>　　对于任意矩阵A，我们将A的转置矩阵记为A<sup>T</sup>。对于每一个8 * 8的块，我们可以将其分成4个4 * 4的子矩阵。分别记为A<sub>1</sub>，A<sub>2</sub>，A<sub>3</sub>，A<sub>4</sub>。对与A的转置操作，我们可以分解为如下：<br><img src="/2019/01/29/csapp-Cachelab/1.png" width="300" height="400" alt="分解" align="center"><br>　　由此，我们可以将整个8 * 8的矩阵的转置分解为以下的三个步骤。</p>
+<ol>
+<li>对A矩阵的上半部分处理，每次读取A的一行，将A坐上角部分转置后放在B的左上角处，将A右上角转置后放在B的<b>右上角</b></li>
+<li>对A矩阵的左下角部分进行处理，<b>按列读取</b>A的右下角中的每一列(4个数字)，再<b>按行读取</b>B右上角中的每一行，然后将A读取到的四个数字横放在B的右上角，再将B读取到的四个数字放在B的左下角。本质上其实就等价于将左下角转置后放在B的右上角，将B右上角中上一步得到的数字放在了B的左下角。</li>
+<li>对A矩阵的右下角部分进行处理，将A<sub>右下</sub>转置并放到B<sub>右下</sub>当中</li>
+</ol>
+<p>　　其中，第二步是最关键的部分。为什么这样能够减少miss数呢？如果我们假设4 * 4矩阵平均的miss数为n的话，对于上面三个步骤，我们每一步产生的miss数均大致为n，也就是说，对于一个8 * 8的矩阵，我们的miss数由原先所需的4n降低到了3n。第一步和第三步为n这个很好理解，第二步建议自己再画图理解清楚。最后我们得到的miss数为1100+，而4 * 4的分块约为1600，这也和我们的估计值基本相当。<br><img src="/2019/01/29/csapp-Cachelab/2.png" width="80%" height="50%" alt="步骤" align="center"></p>
+<p>　　以下是代码，仅供参考：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> t1, t2, t3, t4, t5, t6, t7, t0;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i+=K) &#123;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; M; j+=K) &#123;</span><br><span class="line">        <span class="comment">// 以下循环将A左上转置后移动到B坐上</span></span><br><span class="line">        <span class="comment">// 将A右上转置后移动到B右上</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> ii = i; ii &lt; i + <span class="number">4</span>; ii++) &#123;</span><br><span class="line">            t0 = A[ii][j];</span><br><span class="line">            t1 = A[ii][j+<span class="number">1</span>];</span><br><span class="line">            t2 = A[ii][j+<span class="number">2</span>];</span><br><span class="line">            t3 = A[ii][j+<span class="number">3</span>];</span><br><span class="line">            t4 = A[ii][j+<span class="number">4</span>];</span><br><span class="line">            t5 = A[ii][j+<span class="number">5</span>];</span><br><span class="line">            t6 = A[ii][j+<span class="number">6</span>];</span><br><span class="line">            t7 = A[ii][j+<span class="number">7</span>];</span><br><span class="line">            B[j][ii] = t0;</span><br><span class="line">            B[j+<span class="number">1</span>][ii] = t1;</span><br><span class="line">            B[j+<span class="number">2</span>][ii] = t2;</span><br><span class="line">            B[j+<span class="number">3</span>][ii] = t3;</span><br><span class="line">            B[j][ii+<span class="number">4</span>] = t4;</span><br><span class="line">            B[j+<span class="number">1</span>][ii+<span class="number">4</span>] = t5;</span><br><span class="line">            B[j+<span class="number">2</span>][ii+<span class="number">4</span>] = t6;</span><br><span class="line">            B[j+<span class="number">3</span>][ii+<span class="number">4</span>] = t7;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将A左下角转置并移动到B右上角</span></span><br><span class="line">        <span class="comment">// 将B右上角移动到B左下角</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> jj = j; jj &lt; j + <span class="number">4</span>; jj++) &#123;</span><br><span class="line">            t0 = A[i+<span class="number">4</span>][jj];</span><br><span class="line">            t1 = A[i+<span class="number">5</span>][jj];</span><br><span class="line">            t2 = A[i+<span class="number">6</span>][jj];</span><br><span class="line">            t3 = A[i+<span class="number">7</span>][jj];</span><br><span class="line">            t4 = B[jj][i+<span class="number">4</span>];</span><br><span class="line">            t5 = B[jj][i+<span class="number">5</span>];</span><br><span class="line">            t6 = B[jj][i+<span class="number">6</span>];</span><br><span class="line">            t7 = B[jj][i+<span class="number">7</span>];</span><br><span class="line">            B[jj][i+<span class="number">4</span>] = t0;</span><br><span class="line">            B[jj][i+<span class="number">5</span>] = t1;</span><br><span class="line">            B[jj][i+<span class="number">6</span>] = t2;</span><br><span class="line">            B[jj][i+<span class="number">7</span>] = t3;</span><br><span class="line">            B[jj+<span class="number">4</span>][i] = t4;</span><br><span class="line">            B[jj+<span class="number">4</span>][i+<span class="number">1</span>] = t5;</span><br><span class="line">            B[jj+<span class="number">4</span>][i+<span class="number">2</span>] = t6;</span><br><span class="line">            B[jj+<span class="number">4</span>][i+<span class="number">3</span>] = t7;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将A右下转置后移动到B右下</span></span><br><span class="line">        t0 = A[i+<span class="number">4</span>][j+<span class="number">4</span>];</span><br><span class="line">        t1 = A[i+<span class="number">4</span>][j+<span class="number">5</span>];</span><br><span class="line">        t2 = A[i+<span class="number">4</span>][j+<span class="number">6</span>];</span><br><span class="line">        t3 = A[i+<span class="number">4</span>][j+<span class="number">7</span>];</span><br><span class="line">        t4 = A[i+<span class="number">5</span>][j+<span class="number">4</span>];</span><br><span class="line">        t5 = A[i+<span class="number">5</span>][j+<span class="number">5</span>];</span><br><span class="line">        t6 = A[i+<span class="number">5</span>][j+<span class="number">6</span>];</span><br><span class="line">        t7 = A[i+<span class="number">5</span>][j+<span class="number">7</span>];</span><br><span class="line">        B[j+<span class="number">4</span>][i+<span class="number">4</span>] = t0;</span><br><span class="line">        B[j+<span class="number">5</span>][i+<span class="number">4</span>] = t1;</span><br><span class="line">        B[j+<span class="number">6</span>][i+<span class="number">4</span>] = t2;</span><br><span class="line">        B[j+<span class="number">7</span>][i+<span class="number">4</span>] = t3;</span><br><span class="line">        B[j+<span class="number">4</span>][i+<span class="number">5</span>] = t4;</span><br><span class="line">        B[j+<span class="number">5</span>][i+<span class="number">5</span>] = t5;</span><br><span class="line">        B[j+<span class="number">6</span>][i+<span class="number">5</span>] = t6;</span><br><span class="line">        B[j+<span class="number">7</span>][i+<span class="number">5</span>] = t7;</span><br><span class="line"></span><br><span class="line">        t0 = A[i+<span class="number">6</span>][j+<span class="number">4</span>];</span><br><span class="line">        t1 = A[i+<span class="number">6</span>][j+<span class="number">5</span>];</span><br><span class="line">        t2 = A[i+<span class="number">6</span>][j+<span class="number">6</span>];</span><br><span class="line">        t3 = A[i+<span class="number">6</span>][j+<span class="number">7</span>];</span><br><span class="line">        t4 = A[i+<span class="number">7</span>][j+<span class="number">4</span>];</span><br><span class="line">        t5 = A[i+<span class="number">7</span>][j+<span class="number">5</span>];</span><br><span class="line">        t6 = A[i+<span class="number">7</span>][j+<span class="number">6</span>];</span><br><span class="line">        t7 = A[i+<span class="number">7</span>][j+<span class="number">7</span>];</span><br><span class="line">        B[j+<span class="number">4</span>][i+<span class="number">6</span>] = t0;</span><br><span class="line">        B[j+<span class="number">5</span>][i+<span class="number">6</span>] = t1;</span><br><span class="line">        B[j+<span class="number">6</span>][i+<span class="number">6</span>] = t2;</span><br><span class="line">        B[j+<span class="number">7</span>][i+<span class="number">6</span>] = t3;</span><br><span class="line">        B[j+<span class="number">4</span>][i+<span class="number">7</span>] = t4;</span><br><span class="line">        B[j+<span class="number">5</span>][i+<span class="number">7</span>] = t5;</span><br><span class="line">        B[j+<span class="number">6</span>][i+<span class="number">7</span>] = t6;</span><br><span class="line">        B[j+<span class="number">7</span>][i+<span class="number">7</span>] = t7;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于driver-py文件"><a href="#关于driver-py文件" class="headerlink" title="关于driver.py文件"></a>关于driver.py文件</h3><p>　　driver.py是用python语言编写的脚本文件。在做这个任务时，笔者电脑中python的版本是3.7。运行driver.py的时候，出现了异常错误。经打开后发现，这个文件中的python的版本应该是3.0以前的，由于python2.x 和 python3.x的一些语法做了大幅度的修改，因此该文件无法正常运行。如果你也遇到了同样的错误，可以尝试这用以下方法解决：</p>
+<ol>
+<li>将文件中所有print 后面的表达式加上一个括号。如print “Hello world” 应改为 print(“Hello world”)。python3.0开始就已经不再使用print x这种类型的表达式了。</li>
+<li>将所有调用到subprocess.Popen函数的式子括号内再加上<b>universal_newlines=True</b>参数。如83～84行应该改为<b>p = subprocess.Popen(“./test-trans -M 61 -N 67 | grep TEST_TRANS_RESULTS”, shell=True, stdout=subprocess.PIPE, universal_newlines=True)</b></li>
+<li>89行改为<b>csim_cscore  = list(map(int, resultsim[0:1]))</b></li>
+</ol>
+<h3 id="关于前面的archlab-32和performance-lab"><a href="#关于前面的archlab-32和performance-lab" class="headerlink" title="关于前面的archlab-32和performance-lab"></a>关于前面的archlab-32和performance-lab</h3><p>　　这两个实验没有写博客。archlab-32和archlab题目上基本没有什么很大的差别，大体的解决思路类似，因此基本上没有什么重复写博客的必要。然后performance-lab则是因为这个实验难度比较小，没有什么可以写的(虽然这个实验我还是有做的)，基本上就是简单的loop unrolling加上分块就可以拿到比较好的分数了。而且题目和Chapter 6的最后两道课后题很类似。这里就不再赘述了。</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/csapp/" rel="tag"><i class="fa fa-tag"></i> csapp</a>
+          
+            <a href="/tags/cache/" rel="tag"><i class="fa fa-tag"></i> cache</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/18/csapp-Archlab/" rel="next" title="csapp-Archlab">
+                <i class="fa fa-chevron-left"></i> csapp-Archlab
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-lab"><span class="nav-number">2.</span> <span class="nav-text">cache lab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验正文"><span class="nav-number">3.</span> <span class="nav-text">实验正文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#part-A"><span class="nav-number">3.1.</span> <span class="nav-text">part A</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#part-B"><span class="nav-number">3.2.</span> <span class="nav-text">part B</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#32-32"><span class="nav-number">3.2.1.</span> <span class="nav-text">32 * 32</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#61-67"><span class="nav-number">3.2.2.</span> <span class="nav-text">61 * 67</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#64-64"><span class="nav-number">3.2.3.</span> <span class="nav-text">64 * 64</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于driver-py文件"><span class="nav-number">4.</span> <span class="nav-text">关于driver.py文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于前面的archlab-32和performance-lab"><span class="nav-number">5.</span> <span class="nav-text">关于前面的archlab-32和performance-lab</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">23.4k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
