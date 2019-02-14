@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/09/Machine-learning-ex2/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/09/Machine-learning-ex2/3.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/09/Machine-learning-ex2/4.png">
-<meta property="og:updated_time" content="2019-02-09T02:48:51.866Z">
+<meta property="og:updated_time" content="2019-02-09T02:51:47.398Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Machine-learning-ex2">
 <meta name="twitter:description" content="序　　这个系列是关于coursera上吴恩达的machine learning课程的文章。主要内容将包括每个week的编程练习作业，也可能会有一些笔记，知识的整理等，记录下自己学习这个课程的一些心得和体会。本文的主要内容是week 3的编程练习。　　关于任务提交，octave的安装中的一些小问题，在上一篇文章中已经有所提及，这里不再赘述。 任务正文　　其实上一期任务如果能顺利做下来的话，这一周的任">
@@ -451,7 +451,7 @@
 <p>　　注意’./‘符号作用是用1去除以向量z中的所有元素，得到另一个和z维度相同的向量。exp(x)用于求e<sup>x</sup>。<br>　　另，关于这个g(x)函数，也就是logistic regression和linear regression的一个重要区别。因为在logistic regression，用h(x)表示预测值的话，h(x)的范围应该在(0, 1)当中，且应该是关于y轴上某一点对称。然后我们发现，g(x) = 1 / (1 + e<sup>-x</sup>)满足了我们所有的需求。当然，这里笔者有个问题，既然我们能采用这个函数来对数据进行转换，我们是不是也可以找到另一个同样满足要求的函数替换掉g(x)呢？</p>
 <h3 id="costFunction"><a href="#costFunction" class="headerlink" title="costFunction"></a>costFunction</h3><p>　　在logistic regression中我们用h(x)=g(θ<sup>T</sup>X)代替了h(x)=θ<sup>T</sup>X。并且，我们不再采用平方差的形式，而是使用了log的形式，并且，对于y==0或者y==1的情况的计算公式应该是有区别的，因此，最后采用了这样的计算方法<br><img src="/2019/02/09/Machine-learning-ex2/1.png" alt="h(x)"><br>　　为了更便于我们的计算，我们将这两个公式合并在一起，就变成了下面的公式。当y==0或y==1时，这个公式分别变成了上面的两个公式。<br><img src="/2019/02/09/Machine-learning-ex2/2.png" alt="h(x)"><br>　　然后，就是关于梯度的计算。和之前的做法其实是一样的。如果不能理解的话还是建议画图。<br>　　具体计算方法如下：</p>
 <blockquote>
-<p>z = X <em> theta;<br>h = sigmoid(z);<br>J = -(y’ </em> log(h) + (1 - y’) <em> log(1 - h))/ m<br>grad = X’ </em> (h - y) / m;</p>
+<p>z = X * theta;<br>h = sigmoid(z);<br>J = -(y’ * log(h) + (1 - y’) * log(1 - h))/ m<br>grad = X’ * (h - y) / m;</p>
 </blockquote>
 <h3 id="prediction"><a href="#prediction" class="headerlink" title="prediction"></a>prediction</h3><p>　　对于给定的theta和X，我们可以求得当前theta和数据集的情况下θ<sup>T</sup>X的值，我们知道当x大于等于0.5的时候，我们得到的预测值为1，否则预测值为0。由此可以得到以下的写法：</p>
 <blockquote>
@@ -460,8 +460,8 @@
 <h3 id="costFunctionReg"><a href="#costFunctionReg" class="headerlink" title="costFunctionReg"></a>costFunctionReg</h3><p>　　对于正则化下的代价函数，难度稍微增大了一些。<br>　　首先是J的计算。和之前相比，现在的代价函数多了一个平方项，由于这一个项的存在，当足够多次的迭代过后，theta总会趋向与0，这就使得在预测函数中，某些项的系数会很快地趋近于0，这样就相当与去掉该项，从而避免了过拟合(overfit)的发生。当然，lambda的值必须取好一点。若取值过大，则会导致前面的log项的作用被稀释，甚至被忽略。最后导致求得的结果连我们给定的数据集都没办法拟合。若取值过小，起不到相应的作用，函数千方百计地拟合我们给定的数据集，使得曲线十分奇怪，过拟合依旧会发生。<br><img src="/2019/02/09/Machine-learning-ex2/3.png" alt="h(x)"><br><img src="/2019/02/09/Machine-learning-ex2/4.png" alt="h(x)"><br>　　接着，是梯度值的计算。为了向量化计算，这里引入了mtheta变量，其中除了第一个位置以外和theta完全相同，即θ<sub>0</sub>=0。这样的话，在计算的时候就不会造成影响。注意到正则化是不会对去涉及θ<sub>0</sub>=0的，笔者一开始在这里没注意，导致预测值出现了问题。</p>
 <blockquote>
 <p>mtheta = theta;<br>mtheta(1) = 0;</p>
-<p>z = X <em> theta;<br>h = sigmoid(z);<br>J = -(y’ </em> log(h) + (1 - y’) <em> log(1 - h))/ m + mtheta’ </em> mtheta <em> lambda / (2 </em> m);</p>
-<p>grad = X’ <em> (h - y) / m + mtheta </em> lambda / m;</p>
+<p>z = X * theta;<br>h = sigmoid(z);<br>J = -(y’ * log(h) + (1 - y’) * log(1 - h))/ m + mtheta’ * mtheta * lambda / (2 * m);</p>
+<p>grad = X’ * (h - y) / m + mtheta * lambda / m;</p>
 </blockquote>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　整体上来说，这个练习确实是偏简单了一些，更多的可能是想让我们稍微了解一下该如何去实现某一个特定的算法而已。当然，这个练习中还没有涉及multiple-class的情况，如果有的话，难度应该会更上一层了。接下来下一个周貌似就有相关的练习了，并且将要涉及到Neural Networks的一些东西了。加油吧。</p>
 
@@ -515,6 +515,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/14/csapp-Malloclab/" rel="prev" title="csapp-Malloclab">
+                csapp-Malloclab <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -593,7 +597,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -615,7 +619,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -704,7 +708,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">27.1k</span>
+    <span title="Site words total count">32.6k</span>
   
 </div>
 
