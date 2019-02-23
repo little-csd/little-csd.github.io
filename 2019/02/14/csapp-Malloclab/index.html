@@ -95,23 +95,23 @@
   </script>
 
 
-<meta name="description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显示分配列表的地方看得">
+<meta name="description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显式分配列表的地方看得">
 <meta name="keywords" content="csapp,memory">
 <meta property="og:type" content="article">
 <meta property="og:title" content="csapp-Malloclab">
 <meta property="og:url" content="http://yoursite.com/2019/02/14/csapp-Malloclab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显示分配列表的地方看得">
+<meta property="og:description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显式分配列表的地方看得">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/3.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/4.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/5.png">
-<meta property="og:updated_time" content="2019-02-14T13:36:15.968Z">
+<meta property="og:updated_time" content="2019-02-22T14:53:26.780Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Malloclab">
-<meta name="twitter:description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显示分配列表的地方看得">
+<meta name="twitter:description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显式分配列表的地方看得">
 <meta name="twitter:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/1.png">
 
 
@@ -436,7 +436,7 @@
       
 
       
-        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第七篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。<br>　　建议在开始实验以前，先把官方的<a href="http://csapp.cs.cmu.edu/3e/malloclab.pdf" target="_blank" rel="noopener">资料</a>看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显示分配列表的地方看得十分清楚再开始写，不然一开始会无从下手。同样的，本实验需要对数据的存储(chapter 2)，指针等内容有一定的了解，需要经常用到各种类型转换。<br>　　倘若你是在官网上下的文件的话，建议找一下<a href="https://github.com/Ethan-Yan27/CSAPP-Labs/tree/master/yzf-malloclab-handout/traces" target="_blank" rel="noopener">完整的trace文件</a>，官网中仅含有两个简单的测试文件，没办法进行较大的数据的测试。</p>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第七篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。<br>　　建议在开始实验以前，先把官方的<a href="http://csapp.cs.cmu.edu/3e/malloclab.pdf" target="_blank" rel="noopener">资料</a>看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显式分配列表的地方看得十分清楚再开始写，不然一开始会无从下手。同样的，本实验需要对数据的存储(chapter 2)，指针等内容有一定的了解，需要经常用到各种类型转换。<br>　　倘若你是在官网上下的文件的话，建议找一下<a href="https://github.com/Ethan-Yan27/CSAPP-Labs/tree/master/yzf-malloclab-handout/traces" target="_blank" rel="noopener">完整的trace文件</a>，官网中仅含有两个简单的测试文件，没办法进行较大的数据的测试。</p>
 <h2 id="malloc-lab"><a href="#malloc-lab" class="headerlink" title="malloc lab"></a>malloc lab</h2><p>　　这个实验，要求我们完成一个动态内存分配器，即模拟libc库中的malloc, free, realloc等函数的功能。本实验我们仅需在mm.c文件中修改，其他的文件我们不需要进行改动（原始的mdriver.c可能会报错，根据提示自行修改即可，或者也可以无视）。最后我们的成绩是用时间效率(每秒操作数)和空间效率(共用了多少空间)衡量。当然，在本实验中，最大的难点在于空间效率的利用上。</p>
 <blockquote>
 <p>实验文件：<br>mm.c 我们需要填写的文件<br>mdriver.c 用于测试我们的程序<br>memlib.c 模拟内存系统，含有mem_sbrk等函数</p>
@@ -531,6 +531,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/02/14/csapp-Proxylab/" rel="prev" title="csapp-Proxylab">
+                csapp-Proxylab <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -608,7 +612,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -630,7 +634,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -719,7 +723,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">32.6k</span>
+    <span title="Site words total count">36.7k</span>
   
 </div>
 
