@@ -95,20 +95,20 @@
   </script>
 
 
-<meta name="description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。 malloc lab　　这个实验，">
+<meta name="description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。  malloc lab　　这个实验">
 <meta name="keywords" content="csapp,proxy">
 <meta property="og:type" content="article">
 <meta property="og:title" content="csapp-Proxylab">
 <meta property="og:url" content="http://yoursite.com/2019/02/22/csapp-Proxylab/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。 malloc lab　　这个实验，">
+<meta property="og:description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。  malloc lab　　这个实验">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/02/22/csapp-Proxylab/proxy.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/22/csapp-Proxylab/end.jpeg">
-<meta property="og:updated_time" content="2019-02-23T07:30:41.389Z">
+<meta property="og:updated_time" content="2019-02-24T09:23:58.508Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Proxylab">
-<meta name="twitter:description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。 malloc lab　　这个实验，">
+<meta name="twitter:description" content="序　　这是csapp系列的第八篇文章。具体题目请见官网。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。  malloc lab　　这个实验">
 <meta name="twitter:image" content="http://yoursite.com/2019/02/22/csapp-Proxylab/proxy.png">
 
 
@@ -396,6 +396,11 @@
           
 
           
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
 
           
             <div class="post-wordcount">
@@ -433,7 +438,7 @@
       
 
       
-        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第八篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。<br>　　建议在开始实验以前，先把官方的<a href="http://csapp.cs.cmu.edu/3e/proxylab.pdf" target="_blank" rel="noopener">资料</a>看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。</p>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这是csapp系列的第八篇文章。具体题目请见<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener">官网</a>。本文主要讲csapp中的proxy lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。<br>　　建议在开始实验以前，先把官方的<a href="http://csapp.cs.cmu.edu/3e/proxylab.pdf" target="_blank" rel="noopener">资料</a>看下。不然很可能不知道应该从哪里开始下手。当然，对实验的要求理解清楚之后，做起来还是很简单的(比起上一个实验的话)。 </p>
 <h2 id="malloc-lab"><a href="#malloc-lab" class="headerlink" title="malloc lab"></a>malloc lab</h2><p>　　这个实验，要求我们完成一个网络代理，共分为三个部分：</p>
 <blockquote>
 <p>A. 完成基础的代理的功能<br>B. 在上一步的基础上实现多线程<br>C. 在上一步的基础上添加缓存功能</p>
@@ -727,6 +732,26 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
 
 
 
