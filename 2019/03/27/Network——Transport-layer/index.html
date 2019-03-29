@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="summary,">
+  <meta name="keywords" content="Network,">
 
 
 
@@ -95,20 +95,24 @@
   </script>
 
 
-<meta name="description" content="2018年的一个小总结：　　首先，其实不知道应该说什么比较好，整个2018年的话，应该还是算过得去吧。不知道该写什么，就还是按照时间的顺序写一下一些对我影响比较大的事情吧。 年初　　记得2018年刚开始的时候，感慨还是挺深的，毕竟处在高三的中期，各个科目也基本都开始了总复习，心情还是略有些紧张的。尽管对很多事情都不确定，但还是硬着头皮往前走，当时基本上就一个目标，把高考考好。那段时间也算是挺努力的">
-<meta name="keywords" content="summary">
+<meta name="description" content="序　　这篇系列主要是Computer Networking A Top-Down Approach的一些笔记和心得之类的东西。不过不知到能不能坚持下去。这篇文章主要是运输层相关的一些知识点的笔记。希望能加深自己对网络这块的理解。在经典的五层协议模型中，运输层位于应用层和网络层中间，为应用程序的进程之间的通信起着重要的作用。其中，我们重点研究的对象是运输层协议，包括TCP和UDP。 socket">
+<meta name="keywords" content="Network">
 <meta property="og:type" content="article">
-<meta property="og:title" content="summary-2018">
-<meta property="og:url" content="http://yoursite.com/2019/01/01/summary-2018/index.html">
+<meta property="og:title" content="Network——Transport_layer">
+<meta property="og:url" content="http://yoursite.com/2019/03/27/Network——Transport-layer/index.html">
 <meta property="og:site_name" content="Little csd&#39;s blog">
-<meta property="og:description" content="2018年的一个小总结：　　首先，其实不知道应该说什么比较好，整个2018年的话，应该还是算过得去吧。不知道该写什么，就还是按照时间的顺序写一下一些对我影响比较大的事情吧。 年初　　记得2018年刚开始的时候，感慨还是挺深的，毕竟处在高三的中期，各个科目也基本都开始了总复习，心情还是略有些紧张的。尽管对很多事情都不确定，但还是硬着头皮往前走，当时基本上就一个目标，把高考考好。那段时间也算是挺努力的">
+<meta property="og:description" content="序　　这篇系列主要是Computer Networking A Top-Down Approach的一些笔记和心得之类的东西。不过不知到能不能坚持下去。这篇文章主要是运输层相关的一些知识点的笔记。希望能加深自己对网络这块的理解。在经典的五层协议模型中，运输层位于应用层和网络层中间，为应用程序的进程之间的通信起着重要的作用。其中，我们重点研究的对象是运输层协议，包括TCP和UDP。 socket">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/01/01/summary-2018/image.jpg">
-<meta property="og:updated_time" content="2019-01-01T04:41:47.165Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/TCP_CLIENT.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/TCP_SERVER.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/UDP.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/TCP.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/TCPReno.png">
+<meta property="og:updated_time" content="2019-03-29T14:35:19.419Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="summary-2018">
-<meta name="twitter:description" content="2018年的一个小总结：　　首先，其实不知道应该说什么比较好，整个2018年的话，应该还是算过得去吧。不知道该写什么，就还是按照时间的顺序写一下一些对我影响比较大的事情吧。 年初　　记得2018年刚开始的时候，感慨还是挺深的，毕竟处在高三的中期，各个科目也基本都开始了总复习，心情还是略有些紧张的。尽管对很多事情都不确定，但还是硬着头皮往前走，当时基本上就一个目标，把高考考好。那段时间也算是挺努力的">
-<meta name="twitter:image" content="http://yoursite.com/2019/01/01/summary-2018/image.jpg">
+<meta name="twitter:title" content="Network——Transport_layer">
+<meta name="twitter:description" content="序　　这篇系列主要是Computer Networking A Top-Down Approach的一些笔记和心得之类的东西。不过不知到能不能坚持下去。这篇文章主要是运输层相关的一些知识点的笔记。希望能加深自己对网络这块的理解。在经典的五层协议模型中，运输层位于应用层和网络层中间，为应用程序的进程之间的通信起着重要的作用。其中，我们重点研究的对象是运输层协议，包括TCP和UDP。 socket">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/27/Network——Transport-layer/TCP_CLIENT.png">
 
 
 
@@ -138,7 +142,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/01/summary-2018/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/27/Network——Transport-layer/">
 
 
 
@@ -156,7 +160,7 @@
         }
     })();
 </script>
-  <title>summary-2018 | Little csd's blog</title>
+  <title>Network——Transport_layer | Little csd's blog</title>
   
 
 
@@ -324,7 +328,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/01/summary-2018/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/27/Network——Transport-layer/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="little csd">
@@ -341,7 +345,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">summary-2018</h1>
+          <h1 class="post-title" itemprop="name headline">Network——Transport_layer</h1>
         
 
         <div class="post-meta">
@@ -353,8 +357,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-01T11:05:28+08:00">
-                2019-01-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-27T19:12:43+08:00">
+                2019-03-27
               </time>
             
 
@@ -376,8 +380,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/summary/" itemprop="url" rel="index">
-                    <span itemprop="name">summary</span>
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
                   </a>
                 </span>
 
@@ -393,7 +397,7 @@
 
           
           
-             <span id="/2019/01/01/summary-2018/" class="leancloud_visitors" data-flag-title="summary-2018">
+             <span id="/2019/03/27/Network——Transport-layer/" class="leancloud_visitors" data-flag-title="Network——Transport_layer">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -418,7 +422,7 @@
                   <span class="post-meta-item-text">Words count in article&#58;</span>
                 
                 <span title="Words count in article">
-                  2.7k
+                  2.4k
                 </span>
               
 
@@ -443,27 +447,36 @@
       
 
       
-        <h3 id="2018年的一个小总结："><a href="#2018年的一个小总结：" class="headerlink" title="2018年的一个小总结："></a>2018年的一个小总结：</h3><p>　　首先，其实不知道应该说什么比较好，整个2018年的话，应该还是算过得去吧。不知道该写什么，就还是按照时间的顺序写一下一些对我影响比较大的事情吧。</p>
-<h4 id="年初"><a href="#年初" class="headerlink" title="年初"></a>年初</h4><p>　　记得2018年刚开始的时候，感慨还是挺深的，毕竟处在高三的中期，各个科目也基本都开始了总复习，心情还是略有些紧张的。尽管对很多事情都不确定，但还是硬着头皮往前走，当时基本上就一个目标，把高考考好。那段时间也算是挺努力的了，寒假也没玩什么游戏，基本上花了挺多时间来学习。</p>
-<h4 id="四五月份"><a href="#四五月份" class="headerlink" title="四五月份"></a>四五月份</h4><p>　　这段时间就算是出生以来最难熬的一段时期了。天气十分的炎热，坐在教室里也几乎静不下心来学习。整个人的状态很乱。每天基本上就是刷题，除了题目还是题目，整个人真的十分的疲惫，但也没有任何办法，只能继续坚持下去。也许，那段时间也算是大学之前一段十分快乐的时光吧， 毕竟全班的同学一起向着同一个目标努力，这种机会以后基本上也都不会再有了。</p>
-<h4 id="六月七号-八号"><a href="#六月七号-八号" class="headerlink" title="六月七号 八号"></a>六月七号 八号</h4><p>　　每一年的这两天我想对全国的几百万考生来说都是及其难忘的。即便现在已经过了半年，那个时候自己的状态，心情，甚至在什么时间干了什么事，至今都记忆犹新。还有印象六月七号的那个晚上，下课时分，和另一个同学一起，在教室里谈论着未来。将来会发生什么事呢？考试要是砸了会怎么样呢？恩，基本上整个人都在那样的状态下，坐立不安。</p>
-<p>　　到了六月八号下午，也许那是在那段时间心态最平和的时候了，什么也没说，什么也没想。考完恍若隔世，也是吧，毕竟十几年的读书最终换来的，最主要的也便是那一张写着成绩的白纸罢了。和父母一起，走在学校的街道上，心情说不上好，说不上坏。考完了，理论上来说应该是要比较开心的，可是在这种场合下却也怎么都开心不起来。是的，一个强烈的直觉告诉我：这次考试考得并不好，或者说很差。</p>
-<p>　　接下来的一段时间里，基本上还是尽量让自己不要再去回忆考试的事情了。考得好坏都已经注定，再去想确实也没有任何意义。那段时间和母亲一起去珠海找我哥，又去普宁了一个同学家玩，接下来就是毕业典礼，然后就是揭晓成绩的时刻。</p>
-<h4 id="成绩揭晓"><a href="#成绩揭晓" class="headerlink" title="成绩揭晓"></a>成绩揭晓</h4><p>　　恩，看到成绩出来的那一刻，就像高考完铃声响起的刹那，脑子是空白的，不知该说些什么。然后就是不敢相信自己–我拿到了自己几乎未曾想过的分数，甚至都不敢去再看它一眼。还有印象，那个中午我啥也没吃，就躺在床上发呆，想想自己今后的路该怎么走。是要复读吗？不，绝对不行，我没有勇气去再面对一次高三。就这样吧，差一点就差一点吧，毕竟考试总有人会考得不好的，为什么不能偏偏是我呢？基本上，其实经过了一两天的缓和，也就没有再去想那么多了。尽管现在再次提起还是有些难过的，但也没办法吧。</p>
-<p>　　后面到八月初，就又是一段算是十分快乐的时光了。加入了本地的一个补习社，和几个小伙伴们一起，备课，讲课，每天基本上都是在这样的重复中度过。最多的时候一天能有8节课，常常不得已要利用睡觉的时间来备课。那段时间觉得很累，但是却很舒坦。这里放一张照片纪念一下。<br><img src="/2019/01/01/summary-2018/image.jpg" alt="知新"></p>
-<h4 id="Before-enter-University"><a href="#Before-enter-University" class="headerlink" title="Before enter University"></a>Before enter University</h4><p>　　在忙完了辅导社之后，接下来的时间基本上都是在做一些提前的学习了。毕竟想要在大学考得好，还是需要提前下一番功夫，起码在这一点，要比别人赢在起跑线上，真的不愿意再一次输了。也就是在那段时间，认识了吴晓杰师兄和陈钊燚师兄，也是在他们的帮助下，对大学有了一点了解，也算是更加了解了一下自己究竟想要一些什么。然后就是在不断的学习了。</p>
-<p>　　很奇怪，也许是高考考得不好，也许是因为一些其他什么事情，自从那段时间以来，心里最大的目标就只剩学习（其实还有看番hhh）了。可能是心里那一股不服输的劲吧，以及对自己越来越高的要求，总是不断地告诉自己，必须比别人多付出更多的时间，一定要学得更多，更好。也是从那段时间开始，基本上就已经不再碰任何游戏了，社团也不想参加，变成了一个真真正正的“宅”了。也许这确实有些不好吧。</p>
-<h4 id="Enter-UniqueStudio"><a href="#Enter-UniqueStudio" class="headerlink" title="Enter UniqueStudio"></a>Enter UniqueStudio</h4><p>　　经过了开学以来的努力学习，以及一点运气，最后终于挺过了数轮面试，进入到了联创团队（<a href="https://bbs.hustunique.com/" target="_blank" rel="noopener">uniquestudio</a>）当中。还是很高兴能成为团队的一员的，至少说明了，自己的努力真的还是有回报的。然后再接下来，到年底的时间里面，基本上大部分的课余时间都留给了团队了。平均每周四五十小时以上的学习时间，一周又一周地过去。</p>
-<p>　　刚开始进来的那段时间，也许是最艰难的。很多东西都完全不会，android studio的各种配置什么的问题可以卡好几天。在第一个任务的时候，还啥都不会，所有东西都是边学边做，一个小功能要重复改来改去弄好多遍，往往弄很多遍之后还是不太好，弄到自己也是很烦躁。所以第一个任务做得很差。到了第二个任务的时候，慢慢地开始注意了一些设计模式方面的问题，不会太盲目地想往哪里加功能就往哪里加，不过也是由于经验太少，反复踩了很多坑。好在最后终于算是基本完成了要求了，尽管花的时间比预计的要多一些。基本上对很多东西的了解又加深了一些。</p>
-<p>　　再后面已经接近年末了，第二期任务做完一段时间过后，搭建了自己的第一个博客，也就是这里。也开始尝试这把自己的一些想法记录下来吧。然后也下决心开始看CSAPP这一本书了。说实话，这本书确实很多东西讲得很好（尽管我现在看的还很少），基本上能把我想要知道的东西都讲了，不过语言还是令人很难受的一个坎，毕竟从初中开始英语就不怎么样。好在还有翻译这种神奇的东西，基本上靠半蒙半查加上一点直觉，慢慢地让自己能够静下心来看这本书了，也算是自己的一个进步了吧。</p>
-<p>　　然后就基本上到了年末了，也就是前几天了。慢慢开始减少了一些花在这方面的时间了，稍微把时间分配给了一下课内的一些知识，毕竟说到底，到现在我都没办法确定自己究竟想要读研究生还是直接出来工作，毕竟大一上学期还是不要太早下论断的好吧。还是得看一下这学期末的成绩吧，如果能够考得比较好，将来有希望能保研去清北复交或者浙大中科大之类的，那还是有可能争取一下的。这个寒假应该就需要结合自己的成绩想清楚了吧。</p>
-<h4 id="expection"><a href="#expection" class="headerlink" title="expection"></a>expection</h4><p>　　其实感觉这东西很说不准。毕竟现在真的还没办法未来要做什么。但近期的一些flag还是可以立一下的。尽量在寒假把CSAPP多看一点吧，最好能看完70%以上吧，以及最好多做几个实验，也算是巩固一下自己看书学到的一些知识。然后下学期开始后尽量快点把这本书看完，接着花几个星期的时间把开发艺术探索，源码设计模式等补了，有时间的话看一下争取在大一下学期结束之前把计网和现代操作系统看了吧。基本上大一能把这几本书看完就已经很不错了。</p>
-<p>　　然后如果将来要走偏图形这一块的话，那可能需要稍微为这方面做一点准备了。以及线代一定要学好。如果将来选择争取保研的话，那可能要找一些数学方面的更深入的书籍学习一下，物理可能也需要花一些时间。毕竟理工科无论如何这两个科目一定不能差吧。</p>
-<p>　　然后如果将来选择放弃保研，毕业后就直接出来工作的话，那可能会在大一的暑假看一下linux内核的一些东西或者是Android底层的源码，起码要比现在再深入一些吧。</p>
-<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>　　最后还是再罗嗦一下吧。总的来说，2018年对我自己来说确实可以称得上是转折性的一年。这一年里发生了太多值得我去回忆的事情。我也很庆幸，自己能够变成现在这个样子，尽管它未必很好。很开心，现在身边能有很多优秀的同学值得我去学习，未来的路子还长，还需要一步一个脚印继续慢慢往前走去。<br>　　结尾还是要放点啥，就留下我特别喜欢的一段话吧：</p>
-<blockquote>
-<p>人の人生は、自分の墓へ走る汽车に乗っているようだ。途中は沢山駅があるけど、ずっと最後まで侧にいってくれる人はいない。だから、いってくれた人が降りる前に、いくらさびしくても、感谢の気持ちでさよならと言おう。</p>
-</blockquote>
+        <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>　　这篇系列主要是Computer Networking A Top-Down Approach的一些笔记和心得之类的东西。不过不知到能不能坚持下去。这篇文章主要是运输层相关的一些知识点的笔记。希望能加深自己对网络这块的理解。在经典的五层协议模型中，运输层位于应用层和网络层中间，为应用程序的进程之间的通信起着重要的作用。其中，我们重点研究的对象是运输层协议，包括TCP和UDP。</p>
+<h2 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h2><p>　　socket是不同端系统间进程通信的基本单位，是操作系统提供的进程间通讯机制。<br>　　主要方法有(以python为例)：</p>
+<p>　　创建socket：<br>　　socket = socket(AF_INET, SOCK_STREAM)，其中，第一个参数指定了IPv4协议，第二个参数指定了TCP协议。同样的，UDP协议的第二个参数为SOCK_DGRAM。函数返回建立的socket的文件描述符</p>
+<p>　　发送或接收数据：<br>　　socket.recv() (recv方法会阻塞)<br>　　socket.send()</p>
+<p>　　绑定某个端口：<br>　　socket.bind()，若使用UDP协议发送数据，无需绑定端口<br>Client：<br>　　socket.connect() ，与某个socket建立连接，具体建立链接的过程由内核实现(如三次握手)<br>　　状态序列如下：<br><img src="/2019/03/27/Network——Transport-layer/TCP_CLIENT.png" alt="TCP_CLIENT"></p>
+<p>Server：<br>　　socket.listen() ，作用是通知内核，将该socket由主动套接字转化为被动套接字，处于LISTEN状态，此方法不阻塞。同时，内核为每个监听套接字两个队列：<br>　　未完成连接队列：收到了SYN，等待第三次握手，此时，socket的状态为SYN_RCVD。<br>　　已完成连接队列：三次握手过后，已建立连接，此时，socket状态为ESTABLISHED。</p>
+<p>　　socket.accept()：内核从已完成连接的队列中取出socket，并为之分配相应的内存和文件描述符。如果已完成连接的队列为空，则进程被挂起，直到队列非空。<br>　　状态序列如下：<br><img src="/2019/03/27/Network——Transport-layer/TCP_SERVER.png" alt="TCP_SERVER"></p>
+<p>　　Python下使用TCP协议实现简单的客户端和服务端：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// Client</span><br><span class="line">clientSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">clientSocket.connect((serverName, serverPort))</span><br><span class="line">sentence = input(<span class="string">'Input lowercase sentence:'</span>)</span><br><span class="line">clientSocket.send(sentence.encode())</span><br><span class="line">modifiedMessage = clientSocket.recv(<span class="number">1024</span>)</span><br><span class="line">print(<span class="string">'From Server: '</span>, modifiedMessage.decode())</span><br><span class="line">clientSocket.close()</span><br><span class="line"></span><br><span class="line">// Server</span><br><span class="line">serverSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">serverSocket.bind((<span class="string">''</span>, serverPort))</span><br><span class="line">serverSocket.listen(<span class="number">1</span>)</span><br><span class="line">print(<span class="string">'The server is ready to receive'</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    connectionSocket, addr = serverSocket.accept()</span><br><span class="line">    sentence = connectionSocket.recv(<span class="number">1024</span>).decode()</span><br><span class="line">    capitalizedSentenced = sentence.upper()</span><br><span class="line">    connectionSocket.send(capitalizedSentenced.encode())</span><br><span class="line">    connectionSocket.close()</span><br></pre></td></tr></table></figure></p>
+<h2 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h2><p>　　UDP协议和TCP相比，有以下特点：</p>
+<ol>
+<li>UDP是一种无连接协议，端系统间不需要进行连接就可进行通信。因此，UDP时延较小。</li>
+<li>UDP首部仅8字节，远远小于TCP。甚至我们可以在应用层基于UDP设计自己的协议。</li>
+<li>UDP是一种不可靠的协议，它不能保证数据的按序，准确交付。</li>
+</ol>
+<p>　　以下是UDP报文段的结构：<br><img src="/2019/03/27/Network——Transport-layer/UDP.png" alt="UDP"></p>
+<h2 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h2><p>　　TCP协议具有以下特点：</p>
+<ol>
+<li>面向连接。端系统的进程在相互通信前，需要先进行三次握手，此后才能正式开始连接。(注意：TCP是一种抽象意义上的连接，其状态仅仅保存在两个对应的端系统当中，中间的网络元素不负责维持该连接状态)</li>
+<li>TCP连接提供的是全双工服务，即两个端系统直接可以直接相互发送信息。</li>
+<li>TCP是可靠的运输协议，能保证数据的准确交付，但不能保证数据的按序，按时交付。</li>
+</ol>
+<p>　　以下是TCP报文段的结构：<br><img src="/2019/03/27/Network——Transport-layer/TCP.png" alt="TCP"></p>
+<h3 id="超时时间的估计"><a href="#超时时间的估计" class="headerlink" title="超时时间的估计"></a>超时时间的估计</h3><p>　　TCP通过超时/重传机制来处理报文段丢失问题。超时长度的限定比较复杂，具体公式如下：<br>　　我们可以通过每一次某报文段从发出到收到并确认所需的时间来估计，并且，直觉告诉我们，越近的一次RTT对和下一次传输的RTT的关系应该是比较紧密的，因此，我们可以选择维护一个EstimatedRTT值，每当获得一个新的SampleRTT时，则对其进行更新，具体规则如下：<br>　　EstimatedRTT = (1 - a) * EstimatedRTT + a * SampleRTT<br>　　这种平均被称为指数加权移动平均，能比较好的估计出下一次RTT，其中a的推荐值为0.125。但是，我们超时间隔肯定是要比这个要大一些的。并且，为了尽量传输时延，同时，也要尽量减少不必要的重传，我们可以借助偏离值来估算。具体公式如下：<br>　　DevRTT = (1 - b) * DevRTT + b * |EstimatedRTT - SampleRTT|<br>　　其中，b的推荐值为0.25。这样，我们可以大概估算出近几个包我们的估计值的误差大小，当这个误差比较大时，说明网络情况不是很好，有时发生了阻塞，这个时候我们应该稍微增大超时间隔，以适应网络的波动。于是，我们最终得到的超时重传时间计算公式如下：<br>　　TimeoutInterval = EstimatedRTT + 4 * DevRTT</p>
+<p>　　另外，在发生超时事件后，TCP将不再为超时的包计算RTT，同时，超时间隔加倍，这就提供了某种形式上的拥塞控制，当网络拥塞发生时，TCP会通过阻塞客户端发包的速率来避免加剧拥塞。<br>　　由于有时候超时周期比较长，一个报文段丢失后，要等很久才能重传，而后面的包由于窗口大小的限制无法发送，这就导致了时间的浪费。当接收到大于3个以上的冗余ACK的时候，说明接收方在该ACK后的一个包缺失，这时就会触发快速重传。</p>
+<h3 id="TCP拥塞控制算法"><a href="#TCP拥塞控制算法" class="headerlink" title="TCP拥塞控制算法"></a>TCP拥塞控制算法</h3><p>　　TCP采用的是拥塞窗口(cwnd)来限制发送方向其连接发送流量的。具体是，在发送方中，未被确认的数据量不会超过cwnd与rwnd中的最小值，即：<br>　　LastByteSent - LastByteAcked &lt;= min {cwnd, rwnd}<br>　　我们知道，TCP仅存在与建立连接的两个端系统上，那么，TCP是如何检测网络拥塞的发生呢？答案是RTT。当发生丢包事件时，即告诉发送方：网络可能发生了拥塞，于是TCP就降低了发送速率。而当收到一个非冗余的ACK时，即告诉了发送方：当前网络通畅，可以继续发送。这是TCP拥塞控制基础。</p>
+<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p>　　当一条TCP连接开始时，cwnd通常设置为一个较小值(一个MSS)。当第一个发送的包确认到达时，cwnd的值加上一个MSS，于是，第二次发送了两个报文段，同理，当两个报文段都收到时，第三次发送四个报文段，依次类推。当收到一个超时指示的丢包事件时，TCP发送方将cwnd置为1，并重新开始慢启动过程，并且设置慢启动阈值(ssthresh)记为cwnd/2。此后，若当前的cwnd达到或超过了ssthresh，则不再翻倍，而是进入拥塞避免状态。</p>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>　　为了避免拥塞，在该状态下，每个RTT内(不是每次收到ACK)，cwnd的值只增加一个MSS。TCP发送速率呈较稳定的增长状态。当出现超时指示的丢包事件时，同样的ssthresh被更新为cwnd的一半，同时，cwnd被记为一个MSS。当然，如果出现3个冗余ACK指示的丢包事件时，TCP将cwnd的值减半(为了更好的测量结果，cwnd还应该再加上3个MSS)，更新ssthresh的值，同时进入快速恢复状态。</p>
+<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><p>　　注意，该状态对TCP来说不是必备的。<br>　　在快速回复中，对于造成进入快速恢复状态的ACK，每当收到一个冗余的该ACK时，cwnd增加一个MSS，最终，当丢失报文段的ACK到达时，TCP在降低cwnd后进入拥塞避免状态。同时，如果出现了超时事件，则进入慢启动状态。<br>　　如下为一个TCP拥塞窗口演化实例：<br><img src="/2019/03/27/Network——Transport-layer/TCPReno.png" alt="TCPReno"></p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>　　从上面的拥塞窗口演化图中，我们可以看到，当进入快速回复状态，很明显传输的效率要高一些，当然，我们也发现，如果网络稳定的话，拥塞窗口将呈现一个锯齿状的状态。当今已经有很多算法可以优化这一点，避免了锯齿状的发生。由于慢启动的原因，如果RTT本身就很大的话，这将很大程度上影响用户的体验。对此，有一个解决方式是，部署一个临近用户的前端服务器，在该服务器上利用TCP分岔来分裂TCP连接。即用户向该服务器发送请求，该服务器进行以一个很大的窗口向数据中心维护一条TCP连接，这样的话，响应时间能从大概4RTT降低到RTT。</p>
+<h2 id="Some-Detail"><a href="#Some-Detail" class="headerlink" title="Some Detail"></a>Some Detail</h2><p>　　1. 端口并不是一个物理层面的概念，而是一个抽象概念。它仅仅是协议栈中的两个字节。<br>　　2. TCP和UDP协议可以“监听”同一个端口，两者之间互不干扰。主机在进行多路分解时，是根据{ 协议， 目的端口号， 目的地址， 源端口号， 源地址 }来判断数据是属于哪一个套接字的。<br>　　3. 通常情况下，对于某一个特定的协议而言，一个端口号只能对应一个socket，但有例外。比如在创建socket并调用listen方法后，再fork出子进程，此时由于父子进程之间共享了文件描述符，监听的是同一个socket。在linux3.9(不是很确定)以后，当有连接请求时，内核自动选择唤醒某个进程对请求进行处理。在此之前则会唤醒所有进程，并让其中的某一个处理事件。</p>
 
       
     </div>
@@ -491,7 +504,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/summary/" rel="tag"><i class="fa fa-tag"></i> summary</a>
+            <a href="/tags/Network/" rel="tag"><i class="fa fa-tag"></i> Network</a>
           
         </div>
       
@@ -504,8 +517,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/25/csapp-Datalab/" rel="next" title="csapp-Datalab">
-                <i class="fa fa-chevron-left"></i> csapp-Datalab
+              <a href="/2019/02/22/csapp-Proxylab/" rel="next" title="csapp-Proxylab">
+                <i class="fa fa-chevron-left"></i> csapp-Proxylab
               </a>
             
           </div>
@@ -513,10 +526,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/12/csapp-Bomblab/" rel="prev" title="csapp-Bomblab">
-                csapp-Bomblab <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -672,7 +681,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2018年的一个小总结："><span class="nav-number">1.</span> <span class="nav-text">2018年的一个小总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#年初"><span class="nav-number">1.1.</span> <span class="nav-text">年初</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四五月份"><span class="nav-number">1.2.</span> <span class="nav-text">四五月份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#六月七号-八号"><span class="nav-number">1.3.</span> <span class="nav-text">六月七号 八号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#成绩揭晓"><span class="nav-number">1.4.</span> <span class="nav-text">成绩揭晓</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Before-enter-University"><span class="nav-number">1.5.</span> <span class="nav-text">Before enter University</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Enter-UniqueStudio"><span class="nav-number">1.6.</span> <span class="nav-text">Enter UniqueStudio</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expection"><span class="nav-number">1.7.</span> <span class="nav-text">expection</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary"><span class="nav-number">2.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#socket"><span class="nav-number">2.</span> <span class="nav-text">socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP协议"><span class="nav-number">3.</span> <span class="nav-text">UDP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP协议"><span class="nav-number">4.</span> <span class="nav-text">TCP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#超时时间的估计"><span class="nav-number">4.1.</span> <span class="nav-text">超时时间的估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP拥塞控制算法"><span class="nav-number">4.2.</span> <span class="nav-text">TCP拥塞控制算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#慢启动"><span class="nav-number">4.2.1.</span> <span class="nav-text">慢启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拥塞避免"><span class="nav-number">4.2.2.</span> <span class="nav-text">拥塞避免</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#快速恢复"><span class="nav-number">4.2.3.</span> <span class="nav-text">快速恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">4.2.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-Detail"><span class="nav-number">5.</span> <span class="nav-text">Some Detail</span></a></li></ol></div>
             
 
           </div>
