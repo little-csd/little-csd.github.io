@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/3.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/4.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/14/csapp-Malloclab/5.png">
-<meta property="og:updated_time" content="2019-04-02T06:45:03.575Z">
+<meta property="og:updated_time" content="2019-04-06T11:56:31.652Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="csapp-Malloclab">
 <meta name="twitter:description" content="序　　这是csapp系列的第七篇文章。具体题目请见官网。本文主要讲csapp中的malloc lab的一些问题以及解决办法。如果有什么写得不好的地方，欢迎联系我修改(右下角小图标点开即可对话，可能要稍微等一会)。　　建议在开始实验以前，先把官方的资料看下。然后，本实验总体难度偏高，至少算是笔者目前花的时间最多的一个实验(算上各种调试，以及写博客花了大概三天吧)，强烈建议把书里显式分配列表的地方看得">
@@ -524,7 +524,7 @@
 <li>大小超过128kb的块，将直接使用mmap函数。并且，所有M标记位为1的块，其他的标记位将被忽略，同时，这些块也不会进入到bin当中，当使用free函数时，这些块将直接通过unmmap还给操作系统</li>
 <li>top chunk。这是一个特殊的块，位于堆的顶部。当所有的bin中的块的大小都不满足要求时，将会使用这个chunk。(注意，这依然满足best fit，top chunk被视为无限大)。如果top chunk的大小仍然不够，则会根据所需的大小使用mmap或者sbrk来拓展。</li>
 </ol>
-<h3 id="malloc-amp-free-2"><a href="#malloc-amp-free-2" class="headerlink" title="malloc &amp; free"></a>malloc &amp; free</h3><p>　　当我们调用malloc函数时，首先调用的是<strong>libc_malloc函数，该函数做一些判断处理的工作，最后，malloc的具体实现逻辑交由</strong>int_malloc函数执行。具体步骤如下：</p>
+<h3 id="malloc-amp-free-2"><a href="#malloc-amp-free-2" class="headerlink" title="malloc &amp; free"></a>malloc &amp; free</h3><p>　　当我们调用malloc函数时，首先调用的是__libc_malloc函数，该函数做一些判断处理的工作，最后，malloc的具体实现逻辑交由__int_malloc函数执行。具体步骤如下：</p>
 <ol>
 <li>若是多线程，需要获取分配区的指针并上锁。否则跳过</li>
 <li>计算所需的块的实际大小</li>
@@ -847,8 +847,6 @@
   
 
 
-  
-
 
 
 
@@ -887,11 +885,6 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
