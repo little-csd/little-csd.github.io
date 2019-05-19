@@ -111,11 +111,9 @@
 <meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/binary_indexed_example.jpg">
 <meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/fx.JPG">
 <meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line1.JPG">
-<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line2.JPG">
-<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line3.JPG">
-<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line4.jpg">
-<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line5.jpg">
-<meta property="og:updated_time" content="2019-05-18T11:16:12.087Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line23.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/14/data-structure1/scan_line45.png">
+<meta property="og:updated_time" content="2019-05-19T03:02:27.239Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Data Structure Note(I) —— segment tree">
 <meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第一篇文章。这个系列主要将记录自己在学习数据结构方面的一些笔记等，以加深自己对数据结构的认识。(不知道能不能坚持做下去　　在维基百科中，是这样介绍数据结构的：  In computer science, a data structure is a data organization, management, and storage format that">
@@ -528,7 +526,7 @@
 <li>如果遇到的是左边界，则说明该区间被覆盖。如果遇到的是右边界，则说明该区间不再被对应的某个矩形覆盖。并且更新线段树。</li>
 <li>继续往右扫描，直到遇到边界，假设此时前进了deltaX，则当前答案加上deltaX乘上线段树中区间覆盖的面积，再进入2。直到到达最后一条边，结束循环。</li>
 </ol>
-<p>　　如果还是不太理解，建议结合下面的图看一下。其中，红色为扫描线，深蓝色表示该边当前已覆盖，浅蓝色表示该边已覆盖。<br><div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 100%;"><img src="/2019/05/14/data-structure1/scan_line1.JPG" width="45%"></div></div><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/05/14/data-structure1/scan_line2.JPG"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/05/14/data-structure1/scan_line3.JPG"></div></div><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/05/14/data-structure1/scan_line4.jpg"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/05/14/data-structure1/scan_line5.jpg"></div></div></div></div></p>
+<p>　　如果还是不太理解，建议结合下面的图看一下。其中，红色为扫描线，深蓝色表示该边当前已覆盖，浅蓝色表示该边已覆盖。<br><img src="/2019/05/14/data-structure1/scan_line1.JPG" width="40%"><br><img src="/2019/05/14/data-structure1/scan_line23.png" width="80%"><br><img src="/2019/05/14/data-structure1/scan_line45.png" width="80%"></p>
 <p>　　这就是实现一个扫描线算法的简单思路，当然，具体实现过程中会有许许多多的小细节，各种边界问题什么的需要处理，难度还是比较大的。这里就不再进行叙述了。(毕竟这是数据结构的笔记，这里提到这个算法主要还是想提一下线段树的应用）</p>
 <h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　到这里，我们的数据结构大杂烩系列的第一篇文章就结束了。这里总结一下这篇文章讲的内容吧。首先，由一个简单的问题，我们引入了线段树，并且，讲到了线段树是如何构建的，并且，它是如何实现单点/区间的更新和单点/区间的求和(乘积)，以及线段树的lazy tag思想。在此上拓展开来，我们又简单地提到了树状数组及其应用，这是一种效率很高但同时受限又很大的数据结构，并且我们比较了线段树和树状数组的特点。接下来，我们又讲到了分块算法，在不得已的情况下，我们可能只能采用分块来对区间进行维护，这是一种“暴力”解法的优化版本。接下来，从树状数组的弊端，我们又讲到了在线RMQ算法，这是一种用于多次求解一个固定序列的区间最值的算法，利用到了动态规划的思想。最后，再次回归到了主线，讲线段树的应用问题——扫描线算法，文章也到此结束。</p>
 <p>　　由于是刚开始这个系列，感觉写起来还是很乱的，基本上是想到什么写什么，并且，详略上可能也存在一些小问题。这篇文章总共用了一天多的时间，大概是从早上十点多写到晚上十点多吧，第二天也花了好几个小时做一点修改。东西挺多，并且个人感觉也已经挺全面了，不过很多东西仅仅简单提及。当然，本身就不可能做到全面，但还是希望能继续加油吧。</p>
