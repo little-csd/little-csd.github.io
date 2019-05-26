@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Data Structure,persistent segment tree,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue　　这是数据结构大杂烩系列的第二篇文章。在前一篇文章中，我们学习了线段树及一些相关的数据结构。我们简单地了解了线段树是如何构造，如何维护的，并简单地了解了它的应用。今天，就让我们一起再深入学习它吧。　　今天的主题是可持久化线段树，这是一种能存储区间“历史变化”的数据结构，本身代码量不大，但理解起来还是有一定难度的。　　注：本文假设读者对线段树已经有了一定的了解。如果不知道线段树是什">
+<meta name="keywords" content="Data Structure,persistent segment tree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Structure Note(II) —— persistent segment tree">
+<meta property="og:url" content="http://yoursite.com/2019/05/25/data-structure2/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue　　这是数据结构大杂烩系列的第二篇文章。在前一篇文章中，我们学习了线段树及一些相关的数据结构。我们简单地了解了线段树是如何构造，如何维护的，并简单地了解了它的应用。今天，就让我们一起再深入学习它吧。　　今天的主题是可持久化线段树，这是一种能存储区间“历史变化”的数据结构，本身代码量不大，但理解起来还是有一定难度的。　　注：本文假设读者对线段树已经有了一定的了解。如果不知道线段树是什">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/difference.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/weighted.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/build.JPG">
+<meta property="og:updated_time" content="2019-05-26T05:07:18.726Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Data Structure Note(II) —— persistent segment tree">
+<meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第二篇文章。在前一篇文章中，我们学习了线段树及一些相关的数据结构。我们简单地了解了线段树是如何构造，如何维护的，并简单地了解了它的应用。今天，就让我们一起再深入学习它吧。　　今天的主题是可持久化线段树，这是一种能存储区间“历史变化”的数据结构，本身代码量不大，但理解起来还是有一定难度的。　　注：本文假设读者对线段树已经有了一定的了解。如果不知道线段树是什">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/25/data-structure2/difference.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/25/data-structure2/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Data Structure Note(II) —— persistent segment tree | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/25/data-structure2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Data Structure Note(II) —— persistent segment tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-25T13:25:20+08:00">
+                2019-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index">
+                    <span itemprop="name">Data Structure</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/25/data-structure2/" class="leancloud_visitors" data-flag-title="Data Structure Note(II) —— persistent segment tree">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  5k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>　　这是数据结构大杂烩系列的第二篇文章。在前一篇文章中，我们学习了线段树及一些相关的数据结构。我们简单地了解了线段树是如何构造，如何维护的，并简单地了解了它的应用。今天，就让我们一起再深入学习它吧。<br>　　今天的主题是可持久化线段树，这是一种能存储区间“历史变化”的数据结构，本身代码量不大，但理解起来还是有一定难度的。<br>　　注：本文假设读者对线段树已经有了一定的了解。如果不知道线段树是什么，请先前往<a href="https://littlecsd.net/2019/05/14/data-structure1/#more" target="_blank" rel="noopener">Data Structure Note(I)</a></p>
+<h2 id="a-simple-problem"><a href="#a-simple-problem" class="headerlink" title="a simple problem"></a>a simple problem</h2><p>　　国际惯例，在深入学习相关概念之前，我们先来了解一下这样一种问题。我们知道，线段树能维护区间的最大值最小值，可如果我们要的是区间的第K大值呢？</p>
+<blockquote>
+<p>给定一个数组n，然后有m个询问，每个询问包含三个值L，R，K，要求输出在[L，R]区间上的第K大值(K &lt;= R - L + 1)</p>
+</blockquote>
+<p>　　同样的，最直接的做法就是直接扫描区间[L，R]，拿出所有元素并从大到小排序，最后输出第K个值即可。当然，很明显这样的做法是不可取的——复杂度高达O(mnlogn)，我们发现，在这样一种情况下，我们对元素进行排序实际上做了很多“无用”的操作，我们仅仅需要第K大的值，但排序却得到了所有数字的大小顺序，显然有些冗余。那么有没有什么好的办法呢？有的，就是可持久化线段树(下称主席树)</p>
+<h2 id="before-we-learn"><a href="#before-we-learn" class="headerlink" title="before we learn"></a>before we learn</h2><h3 id="weighted-segment-tree"><a href="#weighted-segment-tree" class="headerlink" title="weighted segment tree"></a>weighted segment tree</h3><p>　　在正式进入主席树之前，我们需要先理解好权值线段树这一概念。本身权值线段树也是一种线段树，和我们在上一篇文章中提到的线段树的主要区别在于，权值线段树中叶子节点的概念不太一样。比如下面的一个数组a[]=[3,2,1,5,5,7,8]。按照之前的线段树的概念，这个时候线段树是根据下标建立的。因此，线段树一共有七个叶子节点，其中每个节点的值分别为3,2,1,5,5,7,8<br>　　那么对于权值线段树呢？由于这是按照值建立的树，通常情况下，这颗树应该有八个叶子节点(数组a中的数字的值域为[1,8])。并且，每个叶子节点中的值表示的应该是某个权值出现的次数。如果还不太理解的话可以看下图。<br><img src="/2019/05/25/data-structure2/difference.jpg" alt="weighted"></p>
+<p>　　为什么要提到权值线段树呢？答案还是在图中。结合之前我们学习的关于线段树相关的知识。我们发现，权值线段树天生就可以被用来查找区间的第K大值，并且还是在logn的复杂度下。下面为伪代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> rt, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l</span><br><span class="line">  <span class="comment">// 当左儿子的权值w&lt;=k时，说明左儿子至少有k个数，第k大的一定在左儿子</span></span><br><span class="line">  <span class="comment">// 否则第k大的数一定在右儿子，且是右儿子中第k-w大的数</span></span><br><span class="line">  <span class="keyword">if</span> (左儿子权值不大于k) search(lson(rt), l, mid, k)</span><br><span class="line">  <span class="keyword">else</span> search(rson(rt), mid+<span class="number">1</span>, r, k - weight(lson(rt)))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　这样，我们就发现，如果对整个数组建立一颗权值线段树的话，我们可以在logn复杂度的前提下，得到整个数组中第k大的数字，我们成功地向答案迈进了第一步!<br>　　再考虑一下，如果我们只是对部分数组建立权值线段树呢？比如，将区间[1,x]的所有数字放在一起，建立一颗权值线段树，按照上面的逻辑，我们就可以获得区间[1,x]中任意第k大的数字了。<br>　　再前进一步，如果我们能够对区间[l,r]建立一颗权值线段树，那么我们是不是就可以得到区间的第k大的数字了呢？恩，这个就是主席树基本原理之一。</p>
+<h3 id="weighted-segment-tree’s-operations"><a href="#weighted-segment-tree’s-operations" class="headerlink" title="weighted segment tree’s operations"></a>weighted segment tree’s operations</h3><p>　　前面我们说，如果能对所有的区间建立线段树的话，我们就可以顺利地解决区间的第k大问题了，但是这样的复杂度未免也太高了。区间总数为O(n^2)，建树的复杂度是O(nlogn)，合起来的复杂度高达O(n^3 logn)，当然，即使时间上能接受，空间上也接受不了。因此，我们必须想办法减少开销。一个可行的办法是，利用<b>权值线段树可以做减法</b>的特点。这是什么意思呢？比如我们现在得到了在区间[1,x]和区间[1,y]上建立的两颗权值线段树(y&gt;x)，这个时候这两颗树之间所有对应的节点之间做减法，我们就可以得到在区间[x+1,y]上建立的权值线段树。如果不能理解，可以参考下图。(这里建议自己画图理解理解，这是解决主席树问题的关键一步)<br><img src="/2019/05/25/data-structure2/weighted.jpg" alt="weighted"></p>
+<h3 id="make-full-use-of-last-tree"><a href="#make-full-use-of-last-tree" class="headerlink" title="make full use of last tree"></a>make full use of last tree</h3><p>　　前面我们得到了这样一个结论：两颗权值线段树[1,x],[1,y]之间做减法，可以直接得到第三颗权值线段树[x+1,y]。因此，我们只需要建立O(n)颗线段树就好了。这样，我们就再次降低了复杂度。但是，我们又发现了另一个问题，对于以区间[1,x]和[1,x+1]建立的两颗线段树来说，其实发生变化的最多只有logn个节点(想想为什么)，因此，它们之前很多信息是重复的，如果我们能够重复利用这段信息的话，那样也许就能降低复杂度了。<br>　　如果要利用前一颗线段树的信息，最直接的办法就是直接复用前一颗线段树的节点，对于当前的节点，如果左儿子的信息需要更新，那么我们就重新开一个点，将当前节点的左儿子连接到新开的点，并赋予新值，将当前节点的右儿子连接到前一颗线段树对应的节点即可。<br>　　这个思想很简单，但却是主席树的精华所在。同样的，如果不是很理解，可以参考下图。当然，这里还是同样建议自己试着画图，更有助于理解。<br><img src="/2019/05/25/data-structure2/build.JPG" alt="build_tree"></p>
+<h2 id="persistent-segment-tree"><a href="#persistent-segment-tree" class="headerlink" title="persistent segment tree"></a>persistent segment tree</h2><p>　　现在，我们终于可以正式进入主席树了。其实，大部分要讲的东西已经讲完了。这里还是贴一下代码吧，结合代码理解起来会更方便一些。这里以<a href="http://poj.org/problem?id=2104" target="_blank" rel="noopener">POJ2104</a>为例子，简单地提一下主席树的写法。</p>
+<h3 id="build"><a href="#build" class="headerlink" title="build"></a>build</h3><p>　　在建树的时候，要注意一个问题，对主席树而言，建树的空间复杂度为O(nlogn)，因此，建议在申请空间时，直接开一个(N&lt;&lt;5)大小的数组，避免空间不够导致的错误。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100111</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXN (N&lt;&lt;5)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mid(l,r) ((l+r)&gt;&gt;1)</span></span><br><span class="line"><span class="keyword">int</span> a[N], b[N]; <span class="comment">// a, b数组用于读入数据，与题目有关</span></span><br><span class="line"><span class="keyword">int</span> tot = <span class="number">0</span>; <span class="comment">// 动态开点，注意，不建议使用malloc，效率过低</span></span><br><span class="line"><span class="keyword">int</span> rt[N], lson[MAXN], rson[MAXN], sum[MAXN];</span><br><span class="line"><span class="comment">// rt[i]表示建立的第i颗树的树根index</span></span><br><span class="line"><span class="comment">// lson[i]和rson[i]分别表示index为i的节点的左右儿子的index，注意到不能用i&lt;&lt;1和i&lt;&lt;1|1表示左右儿子了</span></span><br><span class="line"><span class="comment">// sum[i] 表示当前节点所对应的区间的值的出现次数</span></span><br><span class="line"><span class="comment">// main函数中使用build(rt[0], 1, n)进行建树即可</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span>&amp; x, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    x = ++tot;</span><br><span class="line">    sum[x] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    build(lson[x], l, mid);</span><br><span class="line">    build(rson[x], mid+<span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="update"><a href="#update" class="headerlink" title="update"></a>update</h3><p>　　更新的操作其实和线段树基本一样。但每一个节点都是动态开启的。记得将当前树和上一颗树关联起来即可。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 具体建树的时候，扫描一整个数组，对于每一个值(注意不是下标)，</span></span><br><span class="line"><span class="comment">// 调用update(rt[x], rt[x-1], 1, n, a[x])即可</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span>&amp; x, <span class="keyword">int</span> lrt, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">    x = ++tot;</span><br><span class="line">    sum[x] = sum[lrt] + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">    lson[x] = lson[lrt]; <span class="comment">// 此处将当前节点与上一颗树的左儿子连接在一起</span></span><br><span class="line">    rson[x] = rson[lrt]; <span class="comment">// 右儿子同样</span></span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="comment">// 如果需要更新的在左儿子，将左儿子传入，注意到lson[x]的值在下一层迭代中会被覆盖，即开启了新的节点，右儿子同理</span></span><br><span class="line">    <span class="keyword">if</span> (pos &lt;= mid) update(lson[x], lson[lrt], l, mid, pos);</span><br><span class="line">    <span class="keyword">else</span> update(rson[x], rson[lrt], mid+<span class="number">1</span>, r, pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="query"><a href="#query" class="headerlink" title="query"></a>query</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询区间[L,R]时，调用query(rt[R],rt[L-1],1,n,k)即可</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L, <span class="keyword">int</span> R, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="keyword">int</span> cnt = sum[lson[R]] - sum[lson[L]]; <span class="comment">// 利用权值线段树可减的特性，得到对应区间左儿子的权值</span></span><br><span class="line">    <span class="keyword">if</span> (k &lt;= cnt) <span class="keyword">return</span> query(lson[L], lson[R], l, mid, k);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> query(rson[L], rson[R], mid+<span class="number">1</span>, r, k - cnt); <span class="comment">// 记得减去左儿子权值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="something-else"><a href="#something-else" class="headerlink" title="something else"></a>something else</h3><p>　　在处理实际问题的时候，我们还需要注意一个问题。建立权值线段树的时候，通常权值的范围可能在-2^31~2^31-1之间，对于这样大的一个范围，显然我们是不可能建立线段树的，因此比较合理的做法应该是使用在上一篇文章中提到的离散化，将权值映射到区间[1,n]上，并进行去重操作，这样复杂度就变得很合理了。在C++中，可以这样写：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sort(b+<span class="number">1</span>, b+n+<span class="number">1</span>);</span><br><span class="line"><span class="keyword">int</span> m = unique(b+<span class="number">1</span>, b+n+<span class="number">1</span>) - (b+<span class="number">1</span>);</span><br></pre></td></tr></table></figure></p>
+<p>　　其中，sort用于对数组进行排序，unique用于去重，返回的是尾指针。<br>　　另外，如果理解了主席树的思想的话，我们会发现，一开始我们使用build函数的时候，建立的树rt[0]事实上是空的，因此build函数是可以不用的，直接for循环并且动态地添加每一个点即可。</p>
+<p>　　总的来说，主席树在建立新的树的时候，用的是动态开点，每一次更新操作，时间和空间复杂度均为O(logn)。建树总时间和空间复杂度均为O(nlogn)，对于询问的总复杂度为O(mlogn)，这样就都降低到可以接受的范围内了。并且，主席树最核心的思想在于它<b>充分利用了前一颗树的信息</b>，大幅度降低了复杂度。现在，我们能够成功地解决在文章一开始的时候提出的问题了。(建议做一道模板题以加深理解。</p>
+<h2 id="level-up-count-on-a-tree"><a href="#level-up-count-on-a-tree" class="headerlink" title="level up - count on a tree"></a>level up - count on a tree</h2><p>　　之前，我们利用主席树解决了区间的第k大的问题，现在，我们题目的难度升级了，如果是要求在区间上的第k大值呢？恩，还是用主席树，那么这个时候又该怎么处理呢？之前我们能够求出区间上的第k大的值，是因为区间是连续，而且是线性的，我们能够使用sum[R]-sum[L-1]得到区间[L,R]上的值，然而，如果是在一颗树上的话，它并不满足线性这一条件。那该怎么办呢？<br>　　一个可行解是对我们的答案进行差分。对于在树上的两个点u和v，他们之间有且仅有一条唯一的路径，这个时候，假设他们的最近公共祖先(lca)为t的话，那么u和v上的点的权值的和变成sum[u]+sum[v]-sum[t]-sum[fa[t]]。这里，fa[t]表示t的父亲节点，注意，这里同样用到了权值线段树可以进行减法的特性。并且，这里的sum[x]表示的应该是当前节点x到根节点的所有值建成的权值线段树。如果能理解好这一点的话，那么这个问题也就变得很简单了。<br>　　具体实现时，我们只需要在更新的时候，调用update(rt[x],rt[fa[x]],1,n,a[x])，即<b>使用当前节点的父亲节点去更新当前节点</b>，并且，query需要进行一定的更改，具体如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用的时候为query(1,n,u,v,lca(u,v),fa[lca(u,v)],k)即可</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> lca, <span class="keyword">int</span> f_lca, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="comment">// 这里进行了差分的操作</span></span><br><span class="line">    <span class="keyword">int</span> s = sum[lson[u]] + sum[lson[v]] - sum[lson[lca]] - sum[lson[f_lca]];</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="keyword">if</span> (k &lt;= s) <span class="keyword">return</span> query(l, mid, lson[u], lson[v], lson[lca], lson[f_lca], k);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> query(mid+<span class="number">1</span>, r, rson[u], rson[v], rson[lca], rson[f_lca], k - s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="how-to-find-lca"><a href="#how-to-find-lca" class="headerlink" title="how to find lca"></a>how to find lca</h3><p>　　查询最近公共祖先的方法有很多(不知道这个算不算是数据结构的知识)。其中一种可行的解法就是采用倍增，在O(nlogn)的预处理后，能在O(logn)的复杂度下求得最近公共祖先。另外一种可行的解法是采用树链剖分，也是一种数据结构中的常用算法，这里就不进行赘述了。</p>
+<h2 id="level-up-up"><a href="#level-up-up" class="headerlink" title="level up up!"></a>level up up!</h2><p>　　前面我们处理的都是静态的第k大值的问题，但是实际应用中我们往往会遇到很多动态的情况。比如操作中包含对某些点的更新，在这种情况下区间的第k大值的话，难度就很大了。前面我们处理区间第k大值的时候，是按照从左到右的顺序逐步插入点的，并且建的是权值线段树，这个时候如果我们要更改第x位的数字的话，那么后面rt[x+1]~rt[n]都要进行更改，这样的代价很明显是不可取的。那么我们就必须换一种思路。这里以<a href="https://www.luogu.org/problemnew/show/P2617" target="_blank" rel="noopener">洛谷P2617</a>为例</p>
+<blockquote>
+<p>给一个长度为n的序列，以及m个操作，包含两种类型，一种是求[l,r]区间上的第k大值，另一种是修改当前数组中某个元素的值。</p>
+</blockquote>
+<p>　　对这道题来说，我们要实现的是单点修改和区间查询两种操作。要满足修改操作的话，那么我们又必须对后面的所有数，即区间进行更新。那么我们能不能减少更新的数量呢？仅仅更新一部分主席树即可。像上一篇文章中求前缀和的问题一样，用一个sum数组累计前缀和的话，遇上有单点修改操作的时候，sum数组后面所有数字都要进行修改。当时我们用的是线段树和树状数组解决的。那么对于这个问题，是不是可以采用类似的思路呢？<br>　　结合这道题而言，我们选择采用了树状数组来实现。(理论上也是可以用线段树实现的，但是线段树的复杂度在常数上略输一筹)。注意到，这个时候，<b>每一颗主席树中每一个点代表的是一段前缀和</b>，并且，在更新的时候，<b>只能用自身的信息来更新自身</b>，否则会破坏树状数组的结构。<br>　　并且，由于这道题中有单点修改操作，因此在建树的时候我们必须先进行离线操作，将修改的值也放进数组当中并进行离散化处理。<br>　　几个核心函数如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> pre, <span class="keyword">int</span>&amp; now, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> v, <span class="keyword">int</span> type)</span> </span>&#123;</span><br><span class="line">    now = ++tot;</span><br><span class="line">    sum[now] = sum[pre] + type;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">    lson[now] = lson[pre];</span><br><span class="line">    rson[now] = rson[pre];</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="keyword">if</span> (v &lt;= mid) update(lson[pre], lson[now], l, mid, v, type);</span><br><span class="line">    <span class="keyword">else</span> update(rson[pre], rson[now], mid+<span class="number">1</span>, r, v, type);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// type为1加上，-1表示减去</span></span><br><span class="line"><span class="comment">// x表示的是在原数组a中的下标，使用lower_bound得到其在离散化后的数组的位置</span></span><br><span class="line"><span class="comment">// 注意到使用树状数组，每次更新点x的时候，还要更新x+lowbit(x)的主席树</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pos = lower_bound(b+<span class="number">1</span>, b+m+<span class="number">1</span>, a[x]) - b;</span><br><span class="line">    <span class="keyword">while</span> (x &lt;= n) &#123;</span><br><span class="line">        update(rt[x], rt[x], <span class="number">1</span>, m, pos, type);</span><br><span class="line">        x += lowbit(x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 同样的，由于使用树状数组，这里需要加上(减去)所有沿着树状数组路径上的主席树</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tl; i++) x -= sum[lson[ql[i]]];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tr; i++) x += sum[lson[qr[i]]];</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="keyword">if</span> (k &lt;= x) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tl; i++) ql[i] = lson[ql[i]];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tr; i++) qr[i] = lson[qr[i]];</span><br><span class="line">        <span class="keyword">return</span> query(l, mid, k);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tl; i++) ql[i] = rson[ql[i]];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= tr; i++) qr[i] = rson[qr[i]];</span><br><span class="line">        <span class="keyword">return</span> query(mid+<span class="number">1</span>, r, k - x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 如果需要整个题目的代码的话，也可以联系我哈(其实网上好多题解的)</span></span><br></pre></td></tr></table></figure></p>
+<p>　　这种写法的话，时间和空间上复杂度均为O(nlog<sup>2</sup>n)，开销是很大的。但貌似没有什么更好的办法了。(如果有还请告诉我)</p>
+<h2 id="last-but-not-least"><a href="#last-but-not-least" class="headerlink" title="last but not least"></a>last but not least</h2><p>　　重新回到我们的主题上面来，我们一开始提的问题是，求解一个区间上的第K大值的问题，当然，上面讨论的使用主席树的写法其实主要是用于多次询问，如果只有一次询问的话，很显然我们完全没必要这么麻烦。我们可以直接使用sort，然后输出第k个数即可。我们也可以使用选择排序，第k个选择的数就是第k大。我们甚至可以使用哈希进行计数排序。貌似也可以使用堆排序进行处理。当然，还有一种使用基于快速排序思想的求第k大的算法。<br>　　这里想说的其实是，对于一道同样的问题，它的解法有可能是多样化的，并且，对于不同的数据规模，可能也有不同的优秀算法，因此，最好不要拘泥于某一中特定的算法(当然，解法唯一的题目还是有的吧)。<br>　　(包括很多看起来很难的题目，由于数据比较水，暴力还是可以拿到很多分的，甚至AC</p>
+<h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　数据结构大杂烩系列的第二篇文章在这里就告一段落了(其实这篇文章严格意义上来说应该算是第一篇文章的补充)。同样的，我们一开始引入一个区间第k大的问题，然后，顺着这个话题，讲到了权值线段树的一些概念，一步一步推出主席树建立的思想过程，接着，再通过一道模板题，简单地提了一下主席树的写法。再接着，我们又将题目难度升级，尝试着求解树上的第k大问题，再后面，我们又提到了带单点修改的主席树的写法(其实严格意义上说这个应该算是树套树)。最后，我们再一次地回到了主题，关于求解区间的第k大的问题。当然，如果要理解清楚的话，还是只能自己去做几道题，这里目的仅仅是提一下主席树的思想而已。<br>　　下一篇文章的话可能要比较久后才出来，也有可能写算法相关的一些博客，敬请期待吧。(在做了.jpg</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-Structure/" rel="tag"><i class="fa fa-tag"></i> Data Structure</a>
+          
+            <a href="/tags/persistent-segment-tree/" rel="tag"><i class="fa fa-tag"></i> persistent segment tree</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/14/data-structure1/" rel="next" title="Data Structure Note(I) —— segment tree">
+                <i class="fa fa-chevron-left"></i> Data Structure Note(I) —— segment tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-simple-problem"><span class="nav-number">2.</span> <span class="nav-text">a simple problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#before-we-learn"><span class="nav-number">3.</span> <span class="nav-text">before we learn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#weighted-segment-tree"><span class="nav-number">3.1.</span> <span class="nav-text">weighted segment tree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weighted-segment-tree’s-operations"><span class="nav-number">3.2.</span> <span class="nav-text">weighted segment tree’s operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#make-full-use-of-last-tree"><span class="nav-number">3.3.</span> <span class="nav-text">make full use of last tree</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#persistent-segment-tree"><span class="nav-number">4.</span> <span class="nav-text">persistent segment tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#build"><span class="nav-number">4.1.</span> <span class="nav-text">build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#update"><span class="nav-number">4.2.</span> <span class="nav-text">update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#query"><span class="nav-number">4.3.</span> <span class="nav-text">query</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#something-else"><span class="nav-number">4.4.</span> <span class="nav-text">something else</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-up-count-on-a-tree"><span class="nav-number">5.</span> <span class="nav-text">level up - count on a tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-find-lca"><span class="nav-number">5.1.</span> <span class="nav-text">how to find lca</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-up-up"><span class="nav-number">6.</span> <span class="nav-text">level up up!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#last-but-not-least"><span class="nav-number">7.</span> <span class="nav-text">last but not least</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epilogue"><span class="nav-number">8.</span> <span class="nav-text">epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">55.7k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
