@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Data Structure,Balanced Tree,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue　　这是数据结构大杂烩系列的第三篇文章。在前两篇文章中，我们主要学习了线段树，树状数组，以及线段树的可持久化版本(主席树)，还稍微提了一下树套树的内容。今天，我们重新换了一个方向——介绍树结构中的另一种及其重要的类型——平衡树。这种数据结构比较难，却很常见(比如set容器)，因此我们需要较好地理解与掌握。 a simple problem　　我们还是先来看这样一个问题：  给定一个">
+<meta name="keywords" content="Data Structure,Balanced Tree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Structure Note(III) —— Balanced Tree">
+<meta property="og:url" content="http://yoursite.com/2019/05/28/data-structure3/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue　　这是数据结构大杂烩系列的第三篇文章。在前两篇文章中，我们主要学习了线段树，树状数组，以及线段树的可持久化版本(主席树)，还稍微提了一下树套树的内容。今天，我们重新换了一个方向——介绍树结构中的另一种及其重要的类型——平衡树。这种数据结构比较难，却很常见(比如set容器)，因此我们需要较好地理解与掌握。 a simple problem　　我们还是先来看这样一个问题：  给定一个">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/binary_search_tree.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/rotate1.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/rotate2.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/rotate3.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/rotate4.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/rotate5.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/split.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/splay_rot.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/28/data-structure3/splay.png">
+<meta property="og:updated_time" content="2019-06-02T09:26:56.001Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Data Structure Note(III) —— Balanced Tree">
+<meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第三篇文章。在前两篇文章中，我们主要学习了线段树，树状数组，以及线段树的可持久化版本(主席树)，还稍微提了一下树套树的内容。今天，我们重新换了一个方向——介绍树结构中的另一种及其重要的类型——平衡树。这种数据结构比较难，却很常见(比如set容器)，因此我们需要较好地理解与掌握。 a simple problem　　我们还是先来看这样一个问题：  给定一个">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/28/data-structure3/binary_search_tree.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/28/data-structure3/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Data Structure Note(III) —— Balanced Tree | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/28/data-structure3/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Data Structure Note(III) —— Balanced Tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-28T22:58:16+08:00">
+                2019-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index">
+                    <span itemprop="name">Data Structure</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/28/data-structure3/" class="leancloud_visitors" data-flag-title="Data Structure Note(III) —— Balanced Tree">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  7.2k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>　　这是数据结构大杂烩系列的第三篇文章。在前两篇文章中，我们主要学习了线段树，树状数组，以及线段树的可持久化版本(主席树)，还稍微提了一下树套树的内容。今天，我们重新换了一个方向——介绍树结构中的另一种及其重要的类型——平衡树。这种数据结构比较难，却很常见(比如set容器)，因此我们需要较好地理解与掌握。</p>
+<h2 id="a-simple-problem"><a href="#a-simple-problem" class="headerlink" title="a simple problem"></a>a simple problem</h2><p>　　我们还是先来看这样一个问题：</p>
+<blockquote>
+<p>给定一个无序数组，查找数字v是否位于数组当中</p>
+</blockquote>
+<p>　　很显然，遇到这样一个问题，我们最直接的想法就是遍历即可，复杂度为O(n)。但是，如果有多次查找操作的话，一个更好的办法应该是排序，预处理为O(nlogn)，然后使用二分查找，单次查询复杂度O(logn)，相当不错，但是，如果问题包含了添加和删除操作，那么在每次插入后都要对整体进行排序，效率就比较低了。这个时候我们考虑引入BST。</p>
+<h2 id="binary-search-tree"><a href="#binary-search-tree" class="headerlink" title="binary search tree"></a>binary search tree</h2><p>　　在正式进入平衡树之前，我们先来看一下什么是一种更基础的结构——二叉查找树(binary search tree)。和它的名字一样，这是一种用于高效查找和插入的基础数据结构，最好情况下，查找和插入的复杂度均为O(logn)。其插入和查找的代码大致如下(其实本质上它就是一个二分查找的过程)：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找时，如果v大于当前节点，说明v若存在，只能位于右子树当中。</span></span><br><span class="line"><span class="comment">// 同理，v小于当前节点，则只能位于左子树当中。</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">search</span><span class="params">(Node* rt, <span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (rt == null) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">if</span> (rt-&gt;v &lt; key) <span class="keyword">return</span> search(rt—&gt;rson, key);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (rt-&gt;v &gt; key) <span class="keyword">return</span> search(rt-&gt;lson, key);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Node* <span class="title">insert</span><span class="params">(Node* rt, <span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (rt == null) rt = <span class="keyword">new</span> Node(key)</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (rt-&gt;v &lt; key) rt-&gt;lson = insert(rt-&gt;lson, key);</span><br><span class="line">  <span class="keyword">else</span> rt-&gt;rson = insert(rt-&gt;rson, key)</span><br><span class="line">  <span class="keyword">return</span> rt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　有了这样的一种数据结构，我们就可以在相当优秀的复杂度的前提下实现动态数组的查询操作，这里不再详细讲述了。但是，普通的BST有个十分致命的缺点，就是它在某些极端数据下，会导致BST退化成了一条链表，比如一个单调递增的数组[1,2,3,4,5,6,7,8]，每次插入一个点时，它都会位于上一个点的右儿子，这就导致了整个BST退化。<br><img src="/2019/05/28/data-structure3/binary_search_tree.png" alt="data-structure3"></p>
+<p>　　为了解决BST的退化问题，我们需要对原始的BST进行改进，这就产生了平衡树。同样的，和它的名字一样，平衡树和原始的BST相比的特点就是“平衡”，即每个节点的左右儿子大小比较接近，一般就不会有像之前一样的退化成链表的情况了。</p>
+<h2 id="treap"><a href="#treap" class="headerlink" title="treap"></a>treap</h2><p>　　Treap是一种实现起来十分方便的平衡树，效率也还不错。Treap是由两个单词组成的，第一个是tree，第二个是heap。tree表明treap是一种二叉搜索树，而heap表明treap同时也满足堆的性质。在这样的背景下，treap实现的<strong>期望时间复杂度为O(logn)</strong> 。具体treap是怎么实现的呢？答案就是rand()。和普通的BST相比，每个点维护两个值，一个是val，和BST一样，满足二叉搜索树的性质；另外一个是key，或者说是priority，并且满足堆的性质。</p>
+<h3 id="rotate"><a href="#rotate" class="headerlink" title="rotate"></a>rotate</h3><p>　　实现treap的最重要的一个操作就是旋转。旋转是平衡树的一个十分重要的操作，通过旋转，平衡树能够在保证满足二叉搜索树的性质的同时，使得左右儿子趋于平衡。代码如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// T 表示每一个节点</span></span><br><span class="line"><span class="comment">// rotL表示左旋，rotR表示右旋</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">rotL</span><span class="params">(T &amp;t)</span> </span>&#123;</span><br><span class="line">    T t0 = t-&gt;left;</span><br><span class="line">    t-&gt;left = t0-&gt;right;</span><br><span class="line">    t0-&gt;right = t;</span><br><span class="line">    t-&gt;up();t0-&gt;up();</span><br><span class="line">    t = t0;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">rotR</span><span class="params">(T &amp;t)</span> </span>&#123;</span><br><span class="line">    T t0 = t-&gt;right;</span><br><span class="line">    t-&gt;right = t0-&gt;left;</span><br><span class="line">    t0-&gt;left = t;</span><br><span class="line">    t-&gt;up();t0-&gt;up();</span><br><span class="line">    t = t0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　该怎么理解好这段代码呢？以左旋为例，我们来看一下这张图，看下旋转操作究竟发生了什么。(建议自己尝试这画图理解一下)。这是初始状态，其中，我们将1号节点左旋：<br><img src="/2019/05/28/data-structure3/rotate1.png" alt="data-structure3"><br>　　第一步，我们拿到当前节点t的左儿子t0，然后将当前节点t的左儿子指向了t0的右儿子。<br><img src="/2019/05/28/data-structure3/rotate2.png" alt="data-structure3"><br>　　接着，由于t0的右儿子已经给了t，我们此时将t0的右儿子指向了t，这个时候，图像就变成了这样。<br><img src="/2019/05/28/data-structure3/rotate3.png" alt="data-structure3"><br>　　再把图片整理一下，我们发现，之前作为左儿子的t0变成了”根节点”，之前是”根节点”的t却变成了t0的右儿子。<br><img src="/2019/05/28/data-structure3/rotate4.png" alt="data-structure3"><br>　　好了，看完左旋操作，我们发现了什么呢？这个操作是不是很像<strong>以旋转的目标节点为中心的顺时针旋转操作</strong>呢？这就是为什么这个操作被称作左旋，注意到，左旋后，左儿子变成了根。同理，右旋操作会将右儿子变成根，同时，之前的根变成了之前的右儿子的左儿子。虽然有点饶，但还是要理解清楚的。<br>　　与此同时，我们发现了一个细节，旋转之前，根的左儿子的高度为2，右儿子的高度为1；旋转过后，根的左儿子的高度变成了1，右儿子的高度变成了2。结合上图，我们可以得知，<strong>左旋操作使得当前节点的左儿子高度-1，右儿子高度+1</strong>，右旋操作则反过来。因此，通过这样的旋转，我们能使整棵树趋向于平衡状态，这就是平衡树！<br>　　旋转操作仅有这些特点吗？显然不止。如果我们把节点的val和priority写上，我们还会发现一个特征。如下图(val简写为v，priority简写为p)：<br><img src="/2019/05/28/data-structure3/rotate5.png" alt="data-structure3"><br>　　我们先看val的值。仔细观察，我们发现，旋转前，这颗树满足二叉搜索树的性质，旋转后，这颗树依然满足二叉搜索树的性质。即，<strong>旋转不破坏BST性质</strong>。这是可以证明的，读者不妨自己试一试。<br>　　接着，我们再来看一下priority的值，我们发现，在一开始的时候，priority的值不满足堆的性质，但是在左旋过后，priority的值满足了大根堆性质。这告诉了我们，<strong>旋转可以用于维护大根堆的性质</strong>，当仅有左儿子的priority大于当前节点的时候，我们可以通过左旋操作，使整棵树重新满足了堆的性质。</p>
+<h3 id="insert-amp-remove"><a href="#insert-amp-remove" class="headerlink" title="insert &amp; remove"></a>insert &amp; remove</h3><p>　　能理解好treap的旋转操作的话，插入和删除其实就简单很多了，这里以<a href="https://www.lydsy.com/JudgeOnline/problem.php?id=3224" target="_blank" rel="noopener">bzoj3224</a>为例，简单介绍一下插入和删除的一般写法。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T Node*</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="comment">// left right分别为指向左右儿子的指针</span></span><br><span class="line">    Node *left, *right;</span><br><span class="line">    <span class="comment">// v为权值，w用来表示出现的次数，即相同的v的个数，减少新建节点的操作</span></span><br><span class="line">    <span class="comment">// p表示priority，size维护树的大小</span></span><br><span class="line">    <span class="keyword">int</span> v, w, size, p;</span><br><span class="line">    Node(<span class="keyword">int</span> v, T k):v(v) &#123;</span><br><span class="line">        left = right = k;</span><br><span class="line">        p = rand();</span><br><span class="line">        w = size = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        size = left-&gt;size + right-&gt;size + w;</span><br><span class="line">    &#125; *rt, *empty;</span><br><span class="line">    <span class="comment">// rt表示root，即根节点，empty表示空节点，用来代替NULL，可以避免对空指针造成某些奇怪的意外</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(T &amp;t, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 指针为空时，新建节点并且返回，注意到参数为&amp;t</span></span><br><span class="line">    <span class="keyword">if</span> (t == empty) t = <span class="keyword">new</span> Node(v, empty);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// v相同时累加即可，值小于当前节点，往左儿子插入，大于时往右边插入。</span></span><br><span class="line">        <span class="comment">// 注意到插入过后有可能无法满足priority的大根堆性质，需要使用旋转操作来维护。</span></span><br><span class="line">        <span class="keyword">if</span> (v == t-&gt;v) t-&gt;w++;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (v &lt; t-&gt;v) &#123;</span><br><span class="line">            insert(t-&gt;left, v);</span><br><span class="line">            <span class="keyword">if</span> (t-&gt;left-&gt;p &gt; t-&gt;p) rotL(t);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            insert(t-&gt;right, v);</span><br><span class="line">            <span class="keyword">if</span> (t-&gt;right-&gt;p &gt; t-&gt;p) rotR(t);</span><br><span class="line">        &#125;</span><br><span class="line">        t-&gt;up();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(T &amp;t, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 删除时同理，小于的话往左儿子删，大于的话往右儿子删</span></span><br><span class="line">    <span class="keyword">if</span> (v &lt; t-&gt;v) remove(t-&gt;left, v);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (v &gt; t-&gt;v) remove(t-&gt;right, v);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// w大于1时，-1即可。否则删除当前节点。</span></span><br><span class="line">        <span class="comment">// 注意到删除节点的时候，如果左右儿子其中一个为空的时候，直接用儿子代替自己即可。</span></span><br><span class="line">        <span class="comment">// 如果左右儿子均为空，直接删除即可。</span></span><br><span class="line">        <span class="comment">// 如果左右儿子都非空，那么就可以通过旋转操作将儿子移动到当前节点，并递归删除</span></span><br><span class="line">        <span class="comment">// 注意旋转时要保证大根堆的性质，另外，new的对象记得回收</span></span><br><span class="line">        <span class="keyword">if</span> (t-&gt;w &gt; <span class="number">1</span>) t-&gt;w--;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (t-&gt;left != empty &amp;&amp; t-&gt;right != empty) &#123;</span><br><span class="line">                <span class="keyword">if</span> (t-&gt;left-&gt;p &gt; t-&gt;right-&gt;p) &#123;</span><br><span class="line">                    rotL(t);</span><br><span class="line">                    remove(t-&gt;right, v);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    rotR(t);</span><br><span class="line">                    remove(t-&gt;left, v);</span><br><span class="line">                &#125;</span><br><span class="line">                t-&gt;up();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                T t0 = t;</span><br><span class="line">                <span class="keyword">if</span> (t-&gt;left == empty) t = t-&gt;right;</span><br><span class="line">                <span class="keyword">else</span> t = t-&gt;left;</span><br><span class="line">                <span class="keyword">delete</span> t0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (t != empty) t-&gt;up();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　其实，插入和删除操作和普通的BST是很像的，区别仅在于treap需要维护大根堆的特性，因此需要有rotate这样的操作来保证。换句话说，<strong>treap相比BST仅仅多了priority属性</strong>。当然，如果你足够细心的话，会发现treap的平衡性的维护事实上并不是稳定的，因此，treap属于弱平衡树，它并不能实现真正的平衡(即保证左右儿子的高度差不超过1)。当然，treap的最大优势在于写法比较简单，并且在实践中的整体表现也较为良好。<del>因此是平衡树的不二选择</del></p>
+<h2 id="no-rotation-treap"><a href="#no-rotation-treap" class="headerlink" title="no rotation treap"></a>no rotation treap</h2><p>　　前面我们讲的是普通的treap，它是采用旋转操作来维护priority的，但是，还有另一种类型的treap，它的实现完全不需要旋转，还能维护treap的性质，这就是无旋treap。并且重点是，<strong>无旋treap还能用于维护区间，并且支持可持久化</strong>。这是多么强大的能力！就让我们一起来学习一下吧。<br>　　既然无旋treap不是使用rotate来维护，那么它是怎么保证treap的平衡的呢？这就涉及它的两个核心函数了——split和merge。</p>
+<h3 id="split"><a href="#split" class="headerlink" title="split"></a>split</h3><p>　　和字面意思一样，split函数用于把一棵树分裂成两个部分。其中，l,r充当返回值的作用(也可以用pair类，返回两个值)，即返回<strong>分裂成功的两颗树的根</strong>。t是当前待分裂的树，v是用于分裂条件的判断的，此处v表示的是节点的值(我们知道节点的值满足二叉搜索树的性质)，v也可以用来表示需要分裂出的子树的大小，这里以按值来分裂为例子。如果v小于等于当前的值，那么说明和v相等的值只会位于左子树当中，则分裂左子树，得到分裂成功的两个子树a和b后，当前节点的左儿子应该指向子树b，并作为右节点返回给上一层，这里需要理解清楚，v大于当前节点时，处理方法同理。递归的边界条件为当前节点是空的，直接返回两个空的子树即可。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 结构体的定义和之前一样。</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T Node*</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(T t, <span class="keyword">int</span> v, T &amp;l, T &amp;r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t == empty) &#123;</span><br><span class="line">        l = r = empty;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (v &lt;= t-&gt;v) &#123;</span><br><span class="line">        split(t-&gt;l, v, l, r);</span><br><span class="line">        t-&gt;l = r;</span><br><span class="line">        r = t;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        split(t-&gt;r, v, l, r);</span><br><span class="line">        t-&gt;r = l;</span><br><span class="line">        l = t;</span><br><span class="line">    &#125;</span><br><span class="line">    t-&gt;up();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　如果还是不太理解的话，可以参考一下下面的图。节点中的值表示val。现在执行以下的函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T a;T b;</span><br><span class="line">split(rt, <span class="number">4</span>, a, b);</span><br></pre></td></tr></table></figure></p>
+<p>　　这个函数的结果是把当前的树rt中按照是否小于4分成了两个子树，其中，子树a的所有值小于3，b中的所有值大于等于4，不妨自己手动画一下。<br><img src="/2019/05/28/data-structure3/split.png" alt="data-structure3"></p>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>　　同样的，merge函数用于将两个子树合成为一个。注意到一个重要的事实，合并的两个子树<strong>a和b满足a中所有元素的值小于b中所有元素的值</strong>。我们考虑一下合并两个子树应有的操作。如果子树a的根节点的priority大于子树b的根节点，那么a应该作为合并后的树的根节点，这个时候，我们就将a的右儿子和b合并(因为b所有元素的值大于a，要满足BST的性质) 。否则，将a和b的左儿子合并。这里要注意参数传递的顺序，不能弄反了。递归的边界条件为子树a或b其中某一个为空，这个时候返回另一个非空的子树即可。（其实，你会发现，无旋treap只有在这个地方用到了priority，因此，即使把a-&gt;p &gt; b-&gt;p替换成rand()&amp;1也是可以的。这样，就相当于每次合并都是近似随机的了。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">T <span class="title">merge</span><span class="params">(T a, T b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a == empty) <span class="keyword">return</span> b;</span><br><span class="line">    <span class="keyword">if</span> (b == empty) <span class="keyword">return</span> a;</span><br><span class="line">    <span class="keyword">if</span> (a-&gt;p &gt; b-&gt;p) &#123;</span><br><span class="line">        a-&gt;r = merge(a-&gt;r, b);</span><br><span class="line">        a-&gt;up();</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        b-&gt;l = merge(a, b-&gt;l);</span><br><span class="line">        b-&gt;up();</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="insert-amp-remove-1"><a href="#insert-amp-remove-1" class="headerlink" title="insert &amp; remove"></a>insert &amp; remove</h3><p>　　现在考虑我们应该如何插入一个节点。如果我们理解了split和merge操作的话，插入一个节点是很简单的。考虑插入的节点的val为v，那么我们可以将当前的树用split划分成为小于v和大于v和等于v的三个部分a，b，并且把当前节点c看作一颗独立的树，依次将a,c,b合并成一颗树即可。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ins</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    T a;T b;</span><br><span class="line">    T c;T d;</span><br><span class="line">    split(rt, v, a, b);</span><br><span class="line">    split(b, v+<span class="number">1</span>, c, d);</span><br><span class="line">    <span class="keyword">if</span> (c == empty) c = <span class="keyword">new</span> Node(v, empty);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        c-&gt;w++;</span><br><span class="line">        c-&gt;size++;</span><br><span class="line">    &#125;</span><br><span class="line">    rt = merge(a, merge(c, d));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　删除操作其实也是很类似的。我们同样将原来的树划分为三个部分。并且，得到的等于1的那个部分如果w大于1，直接减1就好。否则就直接将小于v的子树和大于v的子树合并。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rem</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    T a;T b;</span><br><span class="line">    T c;T d;</span><br><span class="line">    split(rt, v, a, b);</span><br><span class="line">    split(b, v+<span class="number">1</span>, c, d);</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;w &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        c-&gt;w--;c-&gt;size--;</span><br><span class="line">        d = merge(c, d);</span><br><span class="line">    &#125;</span><br><span class="line">    rt = merge(a, d);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　当然，读者如果细心的话，会发现这里其实<del>忘记回收节点了，这个就导致了内存泄漏了鸭(雾</del></p>
+<h3 id="build-a-treap"><a href="#build-a-treap" class="headerlink" title="build a treap"></a>build a treap</h3><p>　　至于建立一颗treap的话，方法其实有挺多种，其中一种就是直接把每一个节点按顺序插入即可。另一种方法就是对插入的数组进行二分建树，复杂度也差不多。当然，如果是维护一个区间的话，我们可以采用笛卡尔树的建树方法，复杂度仅为O(n)。这里就不再赘述了。</p>
+<h3 id="maintain-an-interval"><a href="#maintain-an-interval" class="headerlink" title="maintain an interval"></a>maintain an interval</h3><p>　　和普通的treap相比而言，无旋treap的一个重要用法是维护一个区间。如果现在给定一个数组a = [1,7,3,5,6,4,2]，现在以<strong>数组下标</strong>为val建树，则我们得到的树当中，对于任意一个节点，当前节点的左儿子在数组中下标一定在当前节点左侧，右儿子在数组中的下标一定在当前节点右侧，并且，每一个节点的构成的树包含的是一个连续的区间！这是一个及其重要的性质，利用这个性质，我们可以做到很多意想不到的事情，以<a href="https://www.lydsy.com/JudgeOnline/problem.php?id=1500" target="_blank" rel="noopener">noi2005维修数列</a>为例。无旋treap可以动态地维护一个区间，某种程度上有点像线段树！<br>　　题目的大题意思如下：</p>
+<blockquote>
+<p>维护一个数列，要求支持添加，删除，翻转，修改，求和，求最大子序列和这几种操作</p>
+</blockquote>
+<p>　　其中，添加和删除是很简单的，前面已经讲过，这里不再赘述。至于求和操作，我们可以在每一个节点当中存一个值用来维护子树的大小。翻转操作的话，我们可以为每个节点打上一个标记，然后仅反转左右儿子即可。最大子序列的维护方式其实和线段树的处理方法是很类似的。每个节点维护当前节点包含的区间内左端点开始的最大值，右端点开始的最大值，以及整个区间的最大子序列，这样就可以用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sum = l-&gt;sum + r-&gt;sum + v;</span><br><span class="line">lsum = max(l-&gt;lsum, max(l-&gt;sum + v, l-&gt;sum + v + r-&gt;lsum));</span><br><span class="line">rsum = max(r-&gt;rsum, max(r-&gt;sum + v, r-&gt;sum + v + l-&gt;rsum));</span><br><span class="line">msum = max(max(l-&gt;msum, r-&gt;msum), max(l-&gt;rsum, <span class="number">0</span>) + v + max(r-&gt;lsum, <span class="number">0</span>));</span><br></pre></td></tr></table></figure></p>
+<p>　　来维护最大子序列了，其中，msum是区间的最大子序列，lsum是从左端点开始的最大子序列，rsum是从右端点开始的最大子序列。限于篇幅，这里就不再详细展开了。但是强烈建议读者亲自去尝试实现这道题，基本上能解决这道题的话，可以说就算是基本掌握无旋treap了。</p>
+<h3 id="summary-of-treap"><a href="#summary-of-treap" class="headerlink" title="summary of treap"></a>summary of treap</h3><p>　　这里来对treap进行一个简单的总结吧。两种treap其实算是各有优势吧。第一种treap利用旋转维护priority，由于rand的随机性，我们能够实现一个效率比较高的简易平衡树。第二种treap利用的是分裂和”随机”合并操作来实现平衡的。第一种做法的优点在于它的写起来确实比较简单，并且它的常数较小。而第二种方法的优点在于能够实现区间的维护操作，并且能可持久化，写起来也比较简单。对于treap来说，无论是插入或者删除，查询等操作，其复杂度都是O(logn)，基本上算是相当优秀了。但是，treap始终是”伪”平衡树，并不能实现真正的平衡。
+　　</p>
+<h2 id="splay"><a href="#splay" class="headerlink" title="splay"></a>splay</h2><p>　　前面我们介绍了treap，它确实很好用。然而，还有另外一种常用的平衡树，叫splay，中文名称为伸展树，很好地说明了这种平衡树的特性。和treap不同，splay在实现平衡的时候并不是为每个节点赋优先级，而是使用了”伸展”操作。<br>　　并且，splay在实现的时候，需要多记录一项每一个节点的父亲，用于后面的操作。</p>
+<h3 id="rotate-1"><a href="#rotate-1" class="headerlink" title="rotate"></a>rotate</h3><p>　　在splay中，同样有旋转操作，不过这里的旋转操作的定义和treap不太一样。我们先来看一下splay是怎么进行旋转操作的吧。以下为伪代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// up为每个节点的更新操作，类似treap，注意顺序。</span></span><br><span class="line"><span class="comment">// ch[x][0] 表示x的左儿子，ch[x][1]表示x的右儿子，fa[x]表示x的父亲</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotL</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> y = fa[x], z = fa[y];</span><br><span class="line">  ch[y][<span class="number">0</span>] = ch[x][<span class="number">1</span>];</span><br><span class="line">  fa[ch[x][<span class="number">1</span>]] = y;</span><br><span class="line">  ch[x][<span class="number">1</span>] = y;</span><br><span class="line">  fa[y] = x;</span><br><span class="line">  fa[x] = z;</span><br><span class="line">  <span class="keyword">if</span> (z) ch[z][y == ch[z][<span class="number">1</span>]] = x;</span><br><span class="line">  up(y);up(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　如果仔细地画一下的话，我们会发现，splay的旋转操作事实上是每个点向上旋转的，传进去的参数是需要”向上走”的点，而treap有点像是向下旋转的，传进去的参数是需要”向下走”的点，这是两种平衡树的一个重要区别。<br><img src="/2019/05/28/data-structure3/splay_rot.png" alt="data-structure3"><br>　　并且，我们还发现，使用0表示左儿子，1表示右儿子的写法，可以同时将左旋和右旋合并在一起，如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x == ch[fa[x]][<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotate</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> y = fa[x], z = fa[y], k = get(x);</span><br><span class="line">    ch[y][k] = ch[x][k^<span class="number">1</span>];</span><br><span class="line">    fa[ch[x][k^<span class="number">1</span>]] = y;</span><br><span class="line">    ch[x][k^<span class="number">1</span>] = y;</span><br><span class="line">    fa[y] = x;</span><br><span class="line">    fa[x] = z;</span><br><span class="line">    <span class="keyword">if</span> (z) ch[z][y == ch[z][<span class="number">1</span>]] = x;</span><br><span class="line">    up(y);up(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="splay-operation"><a href="#splay-operation" class="headerlink" title="splay operation"></a>splay operation</h3><p>　　splay操作是伸展树的核心部分，也是比较难的部分。splay本身的目的就是把某一个节点旋转到根节点。在伸展时，需要分情况考虑:<br>　　首先，第一种类型是当前节点的父亲就是根节点，那么只需要直接旋转到根节点即可。<br>　　第二种类型是当前节点是父亲的左(右)儿子，并且父亲是爷爷的左(右)儿子，那么这个时候需要先让父亲进行旋转，之后再旋转当前节点。<br>　　第三种类型是当前节点是父亲的左(右)儿子，并且父亲是爷爷的右(左)儿子，那么这个时候当前节点需要旋转两次。<br>　　无论是那一种情况，最后的递归边界为当前节点到达了根节点(父亲为空)。如果还是不太理解的话，建议画一下。<br><img src="/2019/05/28/data-structure3/splay.png" alt="data-structure3"><br>　　因此，我们可以得到以下的代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">splay</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> f = fa[x];</span><br><span class="line">    <span class="keyword">while</span> (f) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fa[f]) rotate(get(x) == get(f) ? f : x);</span><br><span class="line">        rotate(x);</span><br><span class="line">        f = fa[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 注意要把根节点换了</span></span><br><span class="line">    rt = x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　事实上，如果我们把0想象成根节点的父亲的话，我们发现，这个操作事实上就是把某个节点旋转到0的儿子。这样的话，我们可以对这个函数进行一点点简单的修改，使splay操作不仅可以把某一个点旋转到根节点，还可以旋转到某个特定节点的儿子。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个时候k就是我们想要旋转到的某个节点，想旋转到根节点时，调用splay(x,0)即可</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">splay</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> f = fa[x];</span><br><span class="line">    <span class="keyword">while</span> (f != k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fa[f] != k) rotate(get(x) == get(f) ? f : x);</span><br><span class="line">        rotate(x);</span><br><span class="line">        f = fa[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!k) rt = x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="insert-amp-remove-2"><a href="#insert-amp-remove-2" class="headerlink" title="insert &amp; remove"></a>insert &amp; remove</h3><p>　　splay的插入操作遵循BST的规则，即如果要插入的值小于当前节点，则向左儿子走，如果大于当前节点，则向右儿子走，如果相等，并且是可重复的话，当前节点的累计数量+1。伪代码如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> rt, tot; <span class="comment">// rt为根节点对应的编号, tot表示当前使用的最大的节点的编号</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!rt) &#123;</span><br><span class="line">    <span class="comment">// 开辟一个新节点</span></span><br><span class="line">    rt = ++tot;</span><br><span class="line">    size[rt] = <span class="number">1</span>;</span><br><span class="line">    val[rt] = v;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> cur = rt, f = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (val[cur] == v) &#123;</span><br><span class="line">      cnt[cur]++;</span><br><span class="line">      ...</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    f = cur;</span><br><span class="line">    cur = ch[cur][val[cur] &lt; v];</span><br><span class="line">    <span class="keyword">if</span> (!cur) &#123;</span><br><span class="line">      <span class="comment">// 开辟新的节点</span></span><br><span class="line">      cur = ++tot;</span><br><span class="line">      fa[cur] = f;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　删除操作事实上是很类似的，但是更加复杂一点。在删除之前，首先我们要把要删除的节点使用splay操作移动到根节点，如果是给一个值v，然后删除的话，我们需要先得到值v对应的节点的编号x，然后调用splay(x)移动到根节点。并且，移动到根节点后，还要分情况考虑：<br>　　如果x没有儿子，直接删除即可。<br>　　如果x有一个儿子，则将当前节点删除，并把唯一的儿子作为根节点。<br>　　如果x有两个儿子，则需要获取当前节点的前驱(比当前节点小的值当中最大的那个)。然后将该前驱用splay操作移动到根节点，并且直接删除节点x,并将x的右子树作为根节点的右子树即可。(这里可以这样做的原因是这个时候<strong>x的左子树必定为空，这是BST的性质</strong>)<br>　　并且，还要注意删除的时候记得更新节点，并且需要的话根节点也应该更改。<br>　　伪代码如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  remove_to_root(x);</span><br><span class="line">  <span class="comment">// 节点覆盖次数大于1时，直接减去</span></span><br><span class="line">  <span class="keyword">if</span> (cnt[rt] &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      cnt[rt]--;</span><br><span class="line">      sz[rt]--;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!ch[rt][<span class="number">0</span>] &amp;&amp; !ch[rt][<span class="number">1</span>])</span><br><span class="line">      <span class="keyword">delete</span>(rt);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (!ch[rt][<span class="number">0</span>])</span><br><span class="line">      delete_leftson(rt);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (!ch[rt][<span class="number">1</span>])</span><br><span class="line">      delete_rightson(rt);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">int</span> p = pre(), cur = rt;</span><br><span class="line">      splay(p);</span><br><span class="line">      fa[ch[cur][<span class="number">1</span>]] = p;</span><br><span class="line">      ch[p][<span class="number">1</span>] = ch[cur][<span class="number">1</span>];</span><br><span class="line">      clear(cur);</span><br><span class="line">      up(rt);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="maintain-an-interval-1"><a href="#maintain-an-interval-1" class="headerlink" title="maintain an interval"></a>maintain an interval</h3><p>　　同样的，由于splay的特性，它也很适合被用来维护某一个区间。注意到这个时候，splay中节点的组织形式应该是依据<strong>下标</strong>的！因此，这个时候splay不一定满足每个节点的val比左儿子大，比右儿子小，它满足的是每个节点的左儿子在数组中的下标一定比该节点小，而右儿子对应的下标一定比该节点的大。这里的想法其实和无旋treap某种程度上是一致的。这里以<a href="https://www.luogu.org/problemnew/show/P3391" target="_blank" rel="noopener">文艺平衡树</a>为例子简单提一下区间的处理方法。<br>　　题目的大意如下：</p>
+<blockquote>
+<p>给一个包含n个数的区间，以及m个操作，每一个操作包含两个整数l,r。要求将区间[l,r]翻转过来。输出最后区间上每个数的值</p>
+</blockquote>
+<p>　　题目就只有一个区间操作，即翻转。这里，我们同样可以借用之前线段树lazy_tag的思想。当前区间需要翻转时，我们为该节点打上一个标记，并且交换左右儿子即可。当遇到翻转标记时，我们就下传即可。这里的另一个问题是，我们要怎样获得需要的区间呢？和线段树一样吗？和之前的无旋treap一样吗？<br>　　考虑下前面我们是怎么获得一段区间的。无旋treap采用的是分裂与合并的思想。直接将需要的区间分裂出来，并打上标记即可。而splay并没有分裂操作，但是由于伸展树的特殊性，我们可以采用两次splay操作获得对应的区间。核心代码如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设操作的区间是[l,r]</span></span><br><span class="line"><span class="keyword">int</span> s1 = find(l<span class="number">-1</span>);  <span class="comment">// 获得数组中第l-1个元素对应在树上的编号</span></span><br><span class="line">splay(s1, <span class="number">0</span>);       <span class="comment">// 将s1旋转到根节点</span></span><br><span class="line"><span class="keyword">int</span> s2 = find(r+<span class="number">1</span>);  <span class="comment">// 获得r+1对应的编号</span></span><br><span class="line">splay(s2, s1);      <span class="comment">// 将s2旋转到s1的儿子(这个时候s2必定为s1的右儿子，且s2左儿子为空)</span></span><br><span class="line"><span class="keyword">int</span> x = ch[s2][<span class="number">0</span>]; <span class="comment">// 得到对应的区间的编号</span></span><br><span class="line">rev[x] = !rev[x]; <span class="comment">// 更新标记</span></span><br><span class="line">swap(ch[x][<span class="number">0</span>], ch[x][<span class="number">1</span>]); <span class="comment">// 交换左右儿子</span></span><br></pre></td></tr></table></figure></p>
+<p>　　注意一下边界情况的处理。(其实可以在原先的树中插入两个节点作为左右边界，这样l-1和r+1就不会溢出了。</p>
+<h3 id="summary-of-splay"><a href="#summary-of-splay" class="headerlink" title="summary of splay"></a>summary of splay</h3><p>　　这里就简单地对splay做一下总结吧。伸展树作为BST的另一个变种，它的特性比较”神奇”，采用splay操作会使得整颗树需要经常地做调整，就像在”伸展”一样。在时间复杂度上，插入，删除等操作均为O(logn)。当然，需要注意的是，这个复杂度是一个均摊复杂度。和treap类似，splay并不能算严格意义上的”平衡”。在某些情况下，它依然会退化成链表，当然，由于splay操作的存在，即使退化了，它也能比较快地调整回来，因此平均下来，最后的复杂度仍然能够做到O(logn)。当然，splay本身写起来并不算很好写(比起treap的话)，不过在实际中应用还是挺广泛的。</p>
+<h2 id="summary"><a href="#summary" class="headerlink" title="summary"></a>summary</h2><p>　　数据结构大杂烩系列的第三篇文章到这里就告一段落了。在这篇文章中，我们讲了两种平衡树，treap和splay，这两种平衡树各有特点，尽管都不算是”平衡”，但在时间和空间复杂度上还是十分优秀的。另外，本身平衡树这个知识点就比较难，还是强烈建议去做几道题，这样才能真正地掌握平衡树的核心思想。这里还是推荐<a href="https://www.lydsy.com/JudgeOnline/problem.php?id=1500" target="_blank" rel="noopener">NOI2005维修数列</a>这道题，难度稍微有点大，但质量很好。网上的题解有很多，不过质量参差不齐。<del>如果需要的话可以到我的github上找</del><br>　　接下来的话，第四篇文章可能打算写一下关于红黑树的内容，敬请期待吧</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-Structure/" rel="tag"><i class="fa fa-tag"></i> Data Structure</a>
+          
+            <a href="/tags/Balanced-Tree/" rel="tag"><i class="fa fa-tag"></i> Balanced Tree</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/25/data-structure2/" rel="next" title="Data Structure Note(II) —— persistent segment tree">
+                <i class="fa fa-chevron-left"></i> Data Structure Note(II) —— persistent segment tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-simple-problem"><span class="nav-number">2.</span> <span class="nav-text">a simple problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binary-search-tree"><span class="nav-number">3.</span> <span class="nav-text">binary search tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#treap"><span class="nav-number">4.</span> <span class="nav-text">treap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate"><span class="nav-number">4.1.</span> <span class="nav-text">rotate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-amp-remove"><span class="nav-number">4.2.</span> <span class="nav-text">insert &amp; remove</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#no-rotation-treap"><span class="nav-number">5.</span> <span class="nav-text">no rotation treap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#split"><span class="nav-number">5.1.</span> <span class="nav-text">split</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#merge"><span class="nav-number">5.2.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-amp-remove-1"><span class="nav-number">5.3.</span> <span class="nav-text">insert &amp; remove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-a-treap"><span class="nav-number">5.4.</span> <span class="nav-text">build a treap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maintain-an-interval"><span class="nav-number">5.5.</span> <span class="nav-text">maintain an interval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary-of-treap"><span class="nav-number">5.6.</span> <span class="nav-text">summary of treap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#splay"><span class="nav-number">6.</span> <span class="nav-text">splay</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate-1"><span class="nav-number">6.1.</span> <span class="nav-text">rotate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#splay-operation"><span class="nav-number">6.2.</span> <span class="nav-text">splay operation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-amp-remove-2"><span class="nav-number">6.3.</span> <span class="nav-text">insert &amp; remove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maintain-an-interval-1"><span class="nav-number">6.4.</span> <span class="nav-text">maintain an interval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary-of-splay"><span class="nav-number">6.5.</span> <span class="nav-text">summary of splay</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#summary"><span class="nav-number">7.</span> <span class="nav-text">summary</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">62.8k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
