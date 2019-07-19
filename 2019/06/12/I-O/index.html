@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="I/O,Operating System,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue　　这篇文章是关于《现代操作系统》的一些笔记，主要记录一些自己觉得比较有用的知识点。整体上可能是按照书中的顺序来写的，也有可能自己稍微再整合一下。主要目的还是加深自己的印象，把知识真正地读进脑子里。　　整个章节大致按照如下的顺序，首先介绍IO的一些概念，其次简单了解一下IO硬件和软件的一些原则，然后再深入了解IO软件的结构，并理解他们之间是如何进行协作的。再接下来，较详细的了解一些">
+<meta name="keywords" content="I&#x2F;O,Operating System">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Modern Operating System Note(I) —— I&#x2F;O">
+<meta property="og:url" content="http://yoursite.com/2019/06/12/I-O/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue　　这篇文章是关于《现代操作系统》的一些笔记，主要记录一些自己觉得比较有用的知识点。整体上可能是按照书中的顺序来写的，也有可能自己稍微再整合一下。主要目的还是加深自己的印象，把知识真正地读进脑子里。　　整个章节大致按照如下的顺序，首先介绍IO的一些概念，其次简单了解一下IO硬件和软件的一些原则，然后再深入了解IO软件的结构，并理解他们之间是如何进行协作的。再接下来，较详细的了解一些">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/06/12/I-O/DMA.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/06/12/I-O/device_driver.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/06/12/I-O/summary.jpg">
+<meta property="og:updated_time" content="2019-07-11T01:54:40.710Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Modern Operating System Note(I) —— I&#x2F;O">
+<meta name="twitter:description" content="prologue　　这篇文章是关于《现代操作系统》的一些笔记，主要记录一些自己觉得比较有用的知识点。整体上可能是按照书中的顺序来写的，也有可能自己稍微再整合一下。主要目的还是加深自己的印象，把知识真正地读进脑子里。　　整个章节大致按照如下的顺序，首先介绍IO的一些概念，其次简单了解一下IO硬件和软件的一些原则，然后再深入了解IO软件的结构，并理解他们之间是如何进行协作的。再接下来，较详细的了解一些">
+<meta name="twitter:image" content="http://yoursite.com/2019/06/12/I-O/DMA.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/12/I-O/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Modern Operating System Note(I) —— I/O | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/12/I-O/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Modern Operating System Note(I) —— I/O</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-12T10:40:11+08:00">
+                2019-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/others/" itemprop="url" rel="index">
+                    <span itemprop="name">others</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/06/12/I-O/" class="leancloud_visitors" data-flag-title="Modern Operating System Note(I) —— I/O">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.1k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>　　这篇文章是关于《现代操作系统》的一些笔记，主要记录一些自己觉得比较有用的知识点。整体上可能是按照书中的顺序来写的，也有可能自己稍微再整合一下。主要目的还是加深自己的印象，把知识真正地读进脑子里。<br>　　整个章节大致按照如下的顺序，首先介绍IO的一些概念，其次简单了解一下IO硬件和软件的一些原则，然后再深入了解IO软件的结构，并理解他们之间是如何进行协作的。再接下来，较详细的了解一些具体的IO设备的工作原理。</p>
+<h2 id="what-is-I-O"><a href="#what-is-I-O" class="headerlink" title="what is I/O"></a>what is I/O</h2><p>　　什么是I/O？这是一个十分广泛的概念。简单来说，I/O就是Input/Output，即输入输出。为什么说它重要呢？在冯诺伊曼架构中，把计算机分成了存储器，控制单元，运算单元和输入输出这几个部分。换句话来书，我们可以把计算机看成是一个黑匣子，而输入输出就相当于它和外界进行信息交互的通道！对于一个计算机来说，我们希望在我们给它一定的输入后，它在经过计算后给予正确的输出。这些都涉及到了I/O。<br>　　同时，I/O既可以指字面意义上的输入和输出，也可以指一些I/O设备，像鼠标，键盘，磁盘，显示器等。</p>
+<h2 id="I-O-hardware"><a href="#I-O-hardware" class="headerlink" title="I/O hardware"></a>I/O hardware</h2><p>　　由于I/O本身十分复杂，而且不同的I/O设备的架构区别也较大，在本章节中，我们主要关心的是可编程的I/O，即我们不会太去在意I/O内部究竟是怎样工作的。</p>
+<h3 id="I-O-device"><a href="#I-O-device" class="headerlink" title="I/O device"></a>I/O device</h3><p>　　I/O设备可以被分成两种类型。第一种是block devices，第二种是character devices。<br>　　如同字面上的意思，块设备内部信息的存储是按块分类的，往往内部块的大小是规定固定的，在写入和读取的时候都是以块为单位进行。像我们常见的磁盘，USB设备等都是属于block devices。<br>　　character devices则不同，它在输入和输出的时候是按照字节来的，即是以字节流的形式进行输入和输出操作。由于这个特性，这种设备的信息往往是不可编址的，像是打印机，网络接口都可以看成是character devices。<br>　　当然，事实上两者之间的界限并不严格，有一些设备是很难进行划定的，这样的分类方式只是便于我们去理解这些设备而已。</p>
+<h3 id="Device-Controllers"><a href="#Device-Controllers" class="headerlink" title="Device Controllers"></a>Device Controllers</h3><p>　　I/O设备往往可以分成机械组件和电子组件，其中，电子组件被称为I/O控制器或者适配器，通常需要插入在主板的(PCIe)拓展槽中。控制器和设备本身之间的接口是非常低层次的，比如磁盘在传输的时候，往往是传递一整个字节流，以一个前导码为开始，中间是4096字节的信息(一个扇区)，最后是一个检验和，或者是错误纠正码(ECC)。控制器在确认信息没有问题之后，或者有问题但是成功纠正过后，就可以把信息复制到主存当中了。</p>
+<h3 id="Memory-Mapped-I-O"><a href="#Memory-Mapped-I-O" class="headerlink" title="Memory-Mapped I/O"></a>Memory-Mapped I/O</h3><p>　　控制器往往都有一些寄存器用于和CPU的交互，通过将信息写入寄存器当中，我们可以执行一些指令，比如读取或者写入某些信息等，这些是控制寄存器。很多设备还有一些数据的缓冲区可以供操作系统进行读写操作。CPU和这些设备之间的交互有两种形式：<br>　　第一种是使用I/O端口号，有了这些端口后，我们就可以使用一些特别的指令进行操作了，比如</p>
+<blockquote>
+<p>IN REG,PORT<br>OUT PORT,REG</p>
+</blockquote>
+<p>　　分别是PORT上的信息写入到寄存器REG当中，和把寄存器REG中的数据存储编号为PORT的I/O设备的控制寄存器中。<br>　　第二种是使用内存映射。将所有的控制寄存器以及缓冲的数据都映射到内存空间当中，这样的话就可以通过对内存进行读写操作实现和IO设备的交互。这个时候操作系统就必须在内存空间中留出足够大的地方用于和I/O设备之间的映射。<br>　　这两种做法都有各自的优缺点。使用内存映射的方式进行I/O的话，我们就不需要显式地访问I/O设备的控制寄存器，只需要像访问内存中的其他位置一样读取和写入数据即可。并且，如果要访问I/O设备的话，由于C/C++没有直接的可以访问的函数，我们只能在C代码中嵌入汇编代码，这就增加了编码的复杂性。<br>　　其次，内存映射I/O简化了进行I/O操作处理时的一些保护机制。如果各个I/O设备位于内存空间中不同的页，我们可以直接给某个进程中包含I/O设备的页一定的权限，它就可以进行I/O操作了，而这对其他进程而言是未知的。同时，这样的处理方式也使得设备驱动器可以放在不同的内存空间当中，既降低了内核的大小，也避免了驱动器之间的相互干扰。<br>　　第三，内存映射I/O使得每一个对内存的引用也可以变成对I/O设备控制寄存器的引用。如果没有这样的操作的话，在检查是否有I/O信号时，我们需要从I/O设备的控制寄存器中读取信息，移动到CPU上，再检查寄存器上的信息是否满足要求，这就增加了指令的数量，有时也会影响到了性能。<br>　　当然，事物都是具有两面性的，内存映射I/O也带来了不少的问题。首先，就是缓存。我们在引用内存的时候，会在CPU中进行缓存，而对于I/O设备来说，它们的状态信息是不应该被缓存的。比如我们把I/O设备现在是空闲的信息缓存在CPU中，那么接下来所有的访问该I/O设备的结果都是空闲的，这会导致严重的后果。因此，为了避免这样的现象发生，在硬件层次上就必须要有一定的操作使得某些内存空间不能被缓存在CPU上，这同样也增加了设计的复杂度。</p>
+<h3 id="Direct-Memory-Access"><a href="#Direct-Memory-Access" class="headerlink" title="Direct Memory Access"></a>Direct Memory Access</h3><p>　　不管CPU有没有使用内存映射I/O，它总是需要对设备控制器进行编址以进行数据的交换。这个时候，CPU虽然可以从I/O控制器中一次获取一个字节的数据，但这明显太慢了。因此很多情况下采用了另外一种方案——DMA。在有DMA控制器的硬件上，操作系统往往必须使用它。DMA控制器往往有自己独立的系统总线，它还包括几个用于和CPU交互的寄存器，有自己独立的字节计数器，运输单元等。<br>　　书中给了这样一个图以直观地看出DMA的作用。<br><img src="/2019/06/12/I-O/DMA.jpg" alt="I-O"><br>　　首先我们考虑一下没有DMA的情况下磁盘是如何读取数据的。磁盘读到一块数据后，放进自己的缓冲区中，在检查没问题后，磁盘控制器触发中断。操作系统收到后，在一个循环里一次读取一个字节的信息，然后存储在主存中。在有DMA的情况下，CPU首先对DMA进行编程，告诉它需要运输哪些东西到哪里。然后，DMA向磁盘控制器发出请求。磁盘控制器在确认信息无误后，将信息存储在主存中，并向DMA返回一个Ack进行确认。当所有信息传递完毕后，DMA向CPU发出中断。这个时候对操作系统来说，信息已经自动地从磁盘运输到内存当中了。</p>
+<h3 id="Interrupts-Revisited"><a href="#Interrupts-Revisited" class="headerlink" title="Interrupts Revisited"></a>Interrupts Revisited</h3><p>　　另外，硬件的中断的产生是需要一个叫控制器的东西的管理的。当I/O设备完成工作后，它向总线中发出一个信号，这个信号会被中断控制器检测到，以此决定接下来说什么。<br>　　如果没有其他中断在等待的话，这个时候中断控制器马上处理对应的中断，否则，该中断需要进行等待。处理中断时，控制器将一个数字放进指定的位置，以告诉CPU中断的产生源。CPU进行一定的终端处理后，返回Ack给中断控制器，此后中断控制器可以再次组织中断。</p>
+<h3 id="precise-and-imprecise-Interrupts"><a href="#precise-and-imprecise-Interrupts" class="headerlink" title="precise and imprecise Interrupts"></a>precise and imprecise Interrupts</h3><p>　　中断产生时，需要对对应的中断进行处理。但我们知道，CPU内部是流水线结构的，即在同一个时刻，可能有多个指令在进行处理，不同的指令的处理进度不一定相同，这个时候如果触发了中断，则需要对已进入流水线但是还未处理完成的指令进行处理。其中，一种方法就是等待到当前执行的所有指令都执行完后再触发中断，这就是precise Interrupts。另外一种处理方法就是直接停下，但是需要在栈中记录每一个指令的处理进度。两种方法都各有优劣。等待的话有时会导致终端无法及时处理，而如果直接停下，又涉及到指令的执行状态的保存问题，这会极大程度上加大编码的复杂性。在x86系列中，采用的是两种混合的模式。
+　　</p>
+<h2 id="I-O-software"><a href="#I-O-software" class="headerlink" title="I/O software"></a>I/O software</h2><p>　　I/O软件层次较为复杂。其中一个关键概念就是设备的独立性。我们需要能写出一个通用 达成需能够同时访问任意的I/O设备，而不需要对命令进行更改。比如输入<strong>sort &lt; input &gt; output</strong>，程序就应该能读取一个文件作为输入，并输出到另一个文件中，而不管文件是位于磁盘，USB或者是其他I/O设备中。<br>　　另外一个重点的问题是错误的处理。有一些错误可能只是暂时的，比如磁盘上沾了一点灰尘，可能再次进行读取就好，而有些错误则需要对应的处理措施。<br>　　还有另外一个重要的问题是同步与异步。以及缓存等</p>
+<h3 id="three-fundamental-way"><a href="#three-fundamental-way" class="headerlink" title="three fundamental way"></a>three fundamental way</h3><p>　　I/O有三种基本的执行方式。包括programmed I/O, interrupt-driven I/O和I/O using DMA</p>
+<h4 id="Programmed-I-O"><a href="#Programmed-I-O" class="headerlink" title="Programmed I/O"></a>Programmed I/O</h4><p>　　第一种重要的I/O方式是程序化的I/O。比如我们要打印“ABCD”这个字符串时，操作系统首先将字符串拷贝到内核空间中，然后向I/O设备发出请求，当可以访问时(I/O设备往往有对应的状态寄存器)，系统将”A”拷贝到设备中，然后等待，继续再将”B”拷贝到设备中，直至所有的字节拷贝完成。这种方式每次只输出一个字符，CPU不断地询问设备，确认设备是否可以进行下一个字节的传输。这种方式又被成为轮询(polling)或忙等待(busy waiting)。这种方式很占用CPU时间。当如果CPU经常处于空闲状态的话，这种方式也是一个可行的选择。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">copy_from_user(buffer, p, count); <span class="comment">// p 是数据的首指针</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">  <span class="keyword">while</span> (*printer_status_reg != READY);</span><br><span class="line">  *printer_data_register = p[i];</span><br><span class="line">&#125;</span><br><span class="line">return_to_user()</span><br></pre></td></tr></table></figure></p>
+<h4 id="Interrupt-Driven-I-O"><a href="#Interrupt-Driven-I-O" class="headerlink" title="Interrupt-Driven I/O"></a>Interrupt-Driven I/O</h4><p>　　另外一种处理的方式是中断驱动。即每次拷贝信息后，判断信息是否处理完毕，未完毕则进入阻塞或进行其他代码的执行，直到收到中断。这是一种经典的异步编程方式<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">copy_from_user(buffer, p, count);</span><br><span class="line">enable_interrupts()</span><br><span class="line"><span class="keyword">while</span> (*printer_status_reg != READY);</span><br><span class="line">*printer_data_register = p[<span class="number">0</span>];</span><br><span class="line">scheduler();</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</span><br><span class="line">  unlock_user()</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  *printer_data_register = p[i];</span><br><span class="line">  count = count - <span class="number">1</span>;</span><br><span class="line">  i = i + <span class="number">1</span>;</span><br><span class="line">  acknowledge_interrupt();</span><br><span class="line">  return_from_interrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="使用DMA进行I-O操作"><a href="#使用DMA进行I-O操作" class="headerlink" title="使用DMA进行I/O操作"></a>使用DMA进行I/O操作</h4><p>　　使用中断驱动的I/O有个缺陷，就是当打印的速度较快时，常常会陷入中断状态，这也是很占用CPU时间的。因此，另一种做法是使用DMA。像在硬件层次一样，DMA负责将信息全部发送到printer，CPU就可以做自己的事情了。DMA中使用忙等待模式，当处理完成后，触发中断通知CPU即可。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CPU操作</span></span><br><span class="line">copy_from_user(buffer, p, count);</span><br><span class="line">set_up_DMA_controller();</span><br><span class="line">scheduler();</span><br><span class="line"><span class="comment">// 中断处理操作</span></span><br><span class="line">acknowledge_interrupt();</span><br><span class="line">unblock_user();</span><br><span class="line">return_from_interrupt();</span><br></pre></td></tr></table></figure></p>
+<h3 id="I-O-sofrware-layers"><a href="#I-O-sofrware-layers" class="headerlink" title="I/O sofrware layers"></a>I/O sofrware layers</h3><p>　　I/O软件可以组织成4个层次，如下图。每一个层次都能提供完善的接口给相邻的层次使用。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">I/O sofrware layers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">User-level I/O software</td>
+</tr>
+<tr>
+<td style="text-align:center">Device-independent operating system software</td>
+</tr>
+<tr>
+<td style="text-align:center">Device driver</td>
+</tr>
+<tr>
+<td style="text-align:center">Interrupt handlers</td>
+</tr>
+<tr>
+<td style="text-align:center">Hardware</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Interrupt-handlers"><a href="#Interrupt-handlers" class="headerlink" title="Interrupt handlers"></a>Interrupt handlers</h4><p>　　中断处理是I/O操作中不可或缺的部分。但是，处理一个中断的过程是十分复杂的。简单来说，进程会先进行阻塞(比如使用信号量)，直到收到中断后，取消阻塞状态。在中断处理时，可能包括但不限于以下操作：</p>
+<ol>
+<li>保存寄存器数据</li>
+<li>重新设置上下文，更新TLB，MMU和页表和栈，用于中断处理</li>
+<li>发送Ack给中断控制器</li>
+<li>复制寄存器的信息</li>
+<li>运行中断处理函数</li>
+<li>选择接下来运行的进程，并进行上下文的设置(TLB，MMU，页表等)</li>
+<li>读取新的进程的寄存器数据</li>
+<li>运行新的进程</li>
+</ol>
+<h4 id="Device-Driver"><a href="#Device-Driver" class="headerlink" title="Device Driver"></a>Device Driver</h4><p>　　设备驱动器，顾名思义是用于设备的驱动的。由于不同的设备之间的区别是很大的。比如鼠标的驱动器需要接受鼠标的信息，得到鼠标移动了多远，点击了哪个按钮等。而磁盘的驱动器需要知道磁道，扇区，柱面，磁臂等信息。因此，每一个I/O设备需要一个和设备高度相关的驱动器与之关联，这样才便于我们对设备的使用。<br><img src="/2019/06/12/I-O/device_driver.jpg" alt="device_driver"></p>
+<h4 id="Device-Independent-I-O"><a href="#Device-Independent-I-O" class="headerlink" title="Device-Independent I/O"></a>Device-Independent I/O</h4><p>　　尽管有些I/O软件是设备相关的，有部分的设备需要设备无关。不过这两种类型的边界并不确定，和具体的系统有关。<br>统一的设备驱动器接口：<br>　　对于相似的I/O设备，如果每一种设备对上层的接口都不相同的话，那么势必会造成严重的混乱，因此，对于比如SATA disk driver, USB disk driver, SCSI disk driver这几种类型，我们应该使用一个标准的接口，这样更便于进行设备的管理和使用。<br>缓存：<br>　　很明显，每次都读取一小点信息到用户空间中是效率很低的，因此需要一定的缓存。我们可以在内核空间中开辟一段内存，然后设备获取到的信息直接复制到该内存区域。当内存满时，在复制给用户即可。但是，这样又有问题。如果在字符到来的时候，对应的缓存已满，那么就会发生一些问题。这个时候可以采用双缓冲。即一个缓冲在进行消息从内核空间到用户空间的复制的同时，另一个缓冲在进行从I/O设备到用户空间的复制。也可以采用另一种方式，环形缓冲，只需要保存头尾指针即可。</p>
+<p><img src="/2019/06/12/I-O/summary.jpg" alt="summary"></p>
+<h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　这篇笔记主要都还是按照书中的内容写的，基本上写的都是自己觉得比较重要一点的知识点，但感觉还是很乱，可能是操作系统这块本身就比较复杂，很多知识点理解还是不太到位，感觉总是有一些矛盾的地方，希望在后面能逐渐解决。</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/I-O/" rel="tag"><i class="fa fa-tag"></i> I/O</a>
+          
+            <a href="/tags/Operating-System/" rel="tag"><i class="fa fa-tag"></i> Operating System</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/06/data-structure4/" rel="next" title="Data Structure Note(IV) —— Link/Cut Tree">
+                <i class="fa fa-chevron-left"></i> Data Structure Note(IV) —— Link/Cut Tree
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/19/Animation/" rel="prev" title="Kyouto Animation">
+                Kyouto Animation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-I-O"><span class="nav-number">2.</span> <span class="nav-text">what is I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-hardware"><span class="nav-number">3.</span> <span class="nav-text">I/O hardware</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#I-O-device"><span class="nav-number">3.1.</span> <span class="nav-text">I/O device</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Device-Controllers"><span class="nav-number">3.2.</span> <span class="nav-text">Device Controllers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory-Mapped-I-O"><span class="nav-number">3.3.</span> <span class="nav-text">Memory-Mapped I/O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Direct-Memory-Access"><span class="nav-number">3.4.</span> <span class="nav-text">Direct Memory Access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interrupts-Revisited"><span class="nav-number">3.5.</span> <span class="nav-text">Interrupts Revisited</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#precise-and-imprecise-Interrupts"><span class="nav-number">3.6.</span> <span class="nav-text">precise and imprecise Interrupts</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-software"><span class="nav-number">4.</span> <span class="nav-text">I/O software</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#three-fundamental-way"><span class="nav-number">4.1.</span> <span class="nav-text">three fundamental way</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Programmed-I-O"><span class="nav-number">4.1.1.</span> <span class="nav-text">Programmed I/O</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Interrupt-Driven-I-O"><span class="nav-number">4.1.2.</span> <span class="nav-text">Interrupt-Driven I/O</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用DMA进行I-O操作"><span class="nav-number">4.1.3.</span> <span class="nav-text">使用DMA进行I/O操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#I-O-sofrware-layers"><span class="nav-number">4.2.</span> <span class="nav-text">I/O sofrware layers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Interrupt-handlers"><span class="nav-number">4.2.1.</span> <span class="nav-text">Interrupt handlers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Device-Driver"><span class="nav-number">4.2.2.</span> <span class="nav-text">Device Driver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Device-Independent-I-O"><span class="nav-number">4.2.3.</span> <span class="nav-text">Device-Independent I/O</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epilogue"><span class="nav-number">5.</span> <span class="nav-text">epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">73.9k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
