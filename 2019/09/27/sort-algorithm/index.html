@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="algorithm,sort,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue　　这是算法导论系列的第一篇文章。该系列主要将记录自己在学习算法导论的过程中的一些笔记以及心得体会等。接下来的几个月内应该会陆陆续续地更新，可能打算做比较多期，希望能够继续坚持做下去吧。在这个系列中，代码方面将以类似于算法导论中的伪代码的形式记录(或者是C语言)，另外，该系列文章均假设读者对基础的数据结构有一定的了解(链表，栈，队列等)。　　今天的第一期主题就是排序算法，作为应用最">
+<meta name="keywords" content="algorithm,sort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sort-algorithm">
+<meta property="og:url" content="http://yoursite.com/2019/09/27/sort-algorithm/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue　　这是算法导论系列的第一篇文章。该系列主要将记录自己在学习算法导论的过程中的一些笔记以及心得体会等。接下来的几个月内应该会陆陆续续地更新，可能打算做比较多期，希望能够继续坚持做下去吧。在这个系列中，代码方面将以类似于算法导论中的伪代码的形式记录(或者是C语言)，另外，该系列文章均假设读者对基础的数据结构有一定的了解(链表，栈，队列等)。　　今天的第一期主题就是排序算法，作为应用最">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/09/27/sort-algorithm/pic.png">
+<meta property="og:updated_time" content="2019-10-01T09:12:44.144Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sort-algorithm">
+<meta name="twitter:description" content="prologue　　这是算法导论系列的第一篇文章。该系列主要将记录自己在学习算法导论的过程中的一些笔记以及心得体会等。接下来的几个月内应该会陆陆续续地更新，可能打算做比较多期，希望能够继续坚持做下去吧。在这个系列中，代码方面将以类似于算法导论中的伪代码的形式记录(或者是C语言)，另外，该系列文章均假设读者对基础的数据结构有一定的了解(链表，栈，队列等)。　　今天的第一期主题就是排序算法，作为应用最">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/27/sort-algorithm/pic.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/09/27/sort-algorithm/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>sort-algorithm | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/27/sort-algorithm/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sort-algorithm</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-27T19:34:19+08:00">
+                2019-09-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/09/27/sort-algorithm/" class="leancloud_visitors" data-flag-title="sort-algorithm">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.5k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>　　这是算法导论系列的第一篇文章。该系列主要将记录自己在学习算法导论的过程中的一些笔记以及心得体会等。接下来的几个月内应该会陆陆续续地更新，可能打算做比较多期，希望能够继续坚持做下去吧。在这个系列中，代码方面将以类似于算法导论中的伪代码的形式记录(或者是C语言)，另外，该系列文章均假设读者对基础的数据结构有一定的了解(链表，栈，队列等)。<br>　　今天的第一期主题就是排序算法，作为应用最广泛的算法之一，排序算法在整个算法体系中有着举足轻重的作用。因此，现在就让我们一起来学习吧。下文排序均默认按照从小到大的顺序。</p>
+<h2 id="normal-sort-algorithm"><a href="#normal-sort-algorithm" class="headerlink" title="normal sort algorithm"></a>normal sort algorithm</h2><p>　　以下几种算法是最基础的排序算法，思路较为简单，实现起来比较容易，但是复杂度均为$$O(n^2)$$<br>　　当然，常数比较小，在小数据的情形下和其他算法花费的时间还是比较接近的。</p>
+<h3 id="bubble-sort"><a href="#bubble-sort" class="headerlink" title="bubble sort"></a>bubble sort</h3><p>　　提到排序算法，我们最容易想到的也许就是冒泡排序了。如同它的名字一样，冒泡排序的做法就是用“冒泡”的形式不断将较小的数字提升到前面来。我们可以通过以下的排序方式实现:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = len<span class="number">-1</span>; j &gt; i; j--) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; a[j<span class="number">-1</span>]) &#123;</span><br><span class="line">                swap(a[j],a[j<span class="number">-1</span>]);</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!flag) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　思路很简单，我们也很容易能够看出，冒泡排序的复杂度是O(x^2)，然而，冒泡排序存在几个问题：</p>
+<ol>
+<li>有时候数组已经有序了，但是冒泡排序还是会继续进行循环，导致效率降低，上面我们采用了一个标记，当数组已经有序时，循环退出</li>
+<li>当数组是逆序存储时，冒泡排序需要进行很多次的交换，导致效率降低，事实上我们会发现，一个数字从底部冒泡一次一格移动到顶部是很浪费时间的，因此就有了一种优化的办法：双向冒泡排序，这种优化算法能一定程度上降低常数</li>
+</ol>
+<p>　　另外，冒泡排序还有一个很重要的作用就是，它可以用来计算逆序对(j&gt;i 但是 a[j]&lt;a[i])的个数，注意到当我们交换两个数字时，整个数组的逆序对的数量就减少了1，因此我们只要统计数组的交换次数，就可以计算总逆序对的数量了。</p>
+<h3 id="insert-sort"><a href="#insert-sort" class="headerlink" title="insert sort"></a>insert sort</h3><p>　　插入排序也是一种很经典的排序算法。具体就是一开始建立一个空数组，每次我们往其中插入一个数字，并维护数组的有序性，最后得到的就是一个有序的数组了。具体做法如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span>; j--) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; a[j<span class="number">-1</span>]) swap(a+j,a+j<span class="number">-1</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="select-sort"><a href="#select-sort" class="headerlink" title="select sort"></a>select sort</h3><p>　　选择排序同样是一种简单的排序算法，和插入排序类似，选择排序同样是逐步往数组中插入元素，但不同的是选择排序每次选择最大的那一个数字插入数组中，最后得到一个有序的数组，具体做法如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">selectSort</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> idx = i, _min = a[i];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; len; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; _min) &#123;</span><br><span class="line">                _min = a[j];</span><br><span class="line">                idx = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(a[i],a[idx]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="improved-sort-algorithm"><a href="#improved-sort-algorithm" class="headerlink" title="improved sort algorithm"></a>improved sort algorithm</h2><p>　　前面我们用到的集中算法都有着一个很大的问题：复杂度太高了，这样的复杂度对我们来说很难接受。人们发明了很多其他优秀的算法来进行排序，使得时间复杂度降低到O(nlogn)。以下就是几种最经典的优化算法。</p>
+<h3 id="heap-sort"><a href="#heap-sort" class="headerlink" title="heap sort"></a>heap sort</h3><p>　　按照算法导论的顺序，第一个讲到的应该是堆排序。这种排序用到了二叉堆，其中，二叉堆支持以下操作：</p>
+<ol>
+<li>INSERT 把元素插入堆中，保证维护堆的特性，复杂度为O(logn)</li>
+<li>REMOVE 移除堆顶元素，具体做法是将该元素交换到堆的尾部，然后重新调整堆即可。复杂度O(logn)</li>
+</ol>
+<p>　　有了这样的一个堆的结构，我们就可以逐步往数组中插入所有元素，然后再一个一个弹出，最后按照弹出的顺序，我们得到了一个有序的数组(这里数组的下标从1开始)。<br>　　具体的代码如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LSON(a) ((a)&lt;&lt;1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RSON(b) ((b)&lt;&lt;1|1)</span></span><br><span class="line"><span class="comment">// 这里只是为了方便而设置为全局变量，最恰当的做法应该是把这些函数封装为一个结构体</span></span><br><span class="line"><span class="keyword">int</span> heapSize = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">maxHeapify</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = LSON(i);</span><br><span class="line">    <span class="keyword">int</span> r = RSON(i);</span><br><span class="line">    <span class="keyword">int</span> largest = i;</span><br><span class="line">    <span class="keyword">if</span> (l &lt;= heapSize &amp;&amp; a[l] &gt; a[largest]) &#123;</span><br><span class="line">        largest = l;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (r &lt;= heapSize &amp;&amp; a[r] &gt; a[largest]) &#123;</span><br><span class="line">        largest = r;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (largest != i) &#123;</span><br><span class="line">        swap(a+largest, a+i);</span><br><span class="line">        maxHeapify(a, largest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">buildHeap</span><span class="params">(<span class="keyword">int</span>* a)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = heapSize/<span class="number">2</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">        maxHeapify(a, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heapSort</span><span class="params">(<span class="keyword">int</span>* a)</span> </span>&#123;</span><br><span class="line">    buildHeap(a);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = heapSize; i &gt; <span class="number">1</span>; i--) &#123;</span><br><span class="line">        swap(a+i,a+<span class="number">1</span>);</span><br><span class="line">        heapSize--;</span><br><span class="line">        maxHeapify(a, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　我们会发现，堆排序的时间复杂度还是十分不错的，建树和排序的复杂度均为O(nlogn)，最后总体的复杂度还是O(nlogn)。比起前面的几种算法，这是一个很大的优化。另外，堆排序还能应用于实现优先队列。堆中的每个节点存放的是关键字以及一些卫星数据。我们依照关键字实现一个最大堆或者最小堆，每次需要的时候就直接弹出即可。</p>
+<h3 id="merge-sort"><a href="#merge-sort" class="headerlink" title="merge sort"></a>merge sort</h3><p>　　和堆排序类似，归并排序也是一种十分优秀的排序算法，不过归并没有用到堆这样的一种数据结构，而是用到了分治的思想，同样是一种应用广泛的算法思想。<br>　　分治，即分而治之。对与一个长度为N的数组的排序问题，我们可以试着将这个问题规模变小。我们知道，一个问题规模越小，往往越有助于我们的求解。因此，我们不妨考虑下将一个这个数组分成两个大小为N/2的数组，如果我们拥有两个长度为N/2的有序数组，那么我们可以在O(n)的时间内将这两个数组合并为一个长为N的数组。依次递归下去，直到数组的长度变为O(1)，退出递归。这样，我们就得到了这个表达式：<br>$$T(n)=2*T(n/2)+O(n)$$<br>　　使用代入法或主方法，我们可以得到这个表达式的解为T(n)=O(nlogn)。<br>　　具体代码如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100</span></span><br><span class="line"><span class="keyword">int</span> c[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>*a, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> mid = (l+r)&gt;&gt;<span class="number">1</span>, p1 = l, p2 = mid+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l; i &lt;= r; i++) &#123;</span><br><span class="line">        <span class="comment">// 每次获取两个子数组的队头中更大的那一个加入数组c</span></span><br><span class="line">        <span class="keyword">if</span> (p1 &gt; mid) &#123;</span><br><span class="line">            c[i] = a[p2];</span><br><span class="line">            p2++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p2 &gt; r) &#123;</span><br><span class="line">            c[i] = a[p1];</span><br><span class="line">            p1++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[p1] &lt; a[p2]) &#123;</span><br><span class="line">                c[i] = a[p1];</span><br><span class="line">                p1++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                c[i] = a[p2];</span><br><span class="line">                p2++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l; i &lt;= r; i++) &#123;</span><br><span class="line">        a[i] = c[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>*a, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt;= r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> mid = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    mergeSort(a, l, mid);</span><br><span class="line">    mergeSort(a, mid+<span class="number">1</span>, r);</span><br><span class="line">    merge(a,l,r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="quick-sort"><a href="#quick-sort" class="headerlink" title="quick sort"></a>quick sort</h3><p>　　快速排序，对于刚刚了解排序的人来说是一个比较难的算法。其解决问题的思路并不是那么直接。因此，需要我们多花点时间在这上面。尽管快速排序在最坏情况下的复杂度达到了Θ(n^2)，但是期望复杂度却是Θ(nlogn)。更重要的是，它隐含的常数因子是很小的，在大多数情况下，其表现比堆排序，归并排序还要优秀一些。<br>　　和归并排序类似，快排也用到了分治的思想，但是其做法和归并差别很大。对于归并排序来说，我们选择的是将数组平均分成两个部分，通过将这两个部分分别排序后再进行合并，我们成功地把复杂度降低到了O(nlogn)。然而，快排的思路是从数组中选出一个数字，并且按照比该数字小或比该数字大，将数组分成了两个部分，并依次对这两个部分进行递归。最后我们就得到了一个有序的数组了。由于每一次递归我们都能保证左边任何数字都小于右边的任何数字，我们最终能保证得到的数组是有序的。<br>　　算法具体如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> key = a[r];</span><br><span class="line">    <span class="keyword">int</span> i = l<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = l; j &lt; r; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (a[j] &lt;= key) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            swap(a+j,a+i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    i++;</span><br><span class="line">    swap(a+i,a+r);</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = partition(a, l, r);</span><br><span class="line">        quickSort(a, l, mid<span class="number">-1</span>);</span><br><span class="line">        quickSort(a, mid+<span class="number">1</span>, r);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>　　在最理想的情况下，我们的数组被key平均地分成了两个部分，我们得到递归式$$T(n)=2*T(n/2)+Θ(n)$$<br>　　看起来我们的快排似乎没什么问题了，复杂度是Θ(nlogn)。但是，如果我们仔细观察快排选取key的策略的话，我们会发现，当遇到一个数组本来就有序时，每个步骤中数组被划分为了长度为0和N-1的两个部分，快排的复杂度竟然高达了Θ(n^2)，这对我们来说是不能接受的。那么平均情况呢？我们假设快排产生一次最佳划分和一次最差划分，则两次划分后，我们还是得到了两个长度近似为N/2的数组，这说明了我们的快速排序还是十分优秀的。另外，可以证明，即使快排产生的划分十分不均匀时(比如1:9)，我们得到的时间复杂度依然为O(nlogn)，可以使用递归树证明。<br>　　为了解决快排出现最坏情况的问题，我们可以采用一种随机的方式对快排进行简单的优化，每一次我们选取的不再是最右边的点，而是一个随机的位置，这样就能在很大程度上避免快排达到Θ(n^2)复杂度的情况了。我们只需更改quickSort函数即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = rand()%(r-l+<span class="number">1</span>)+l;</span><br><span class="line">        swap(a[x],a[r]);</span><br><span class="line">        <span class="keyword">int</span> mid = partition(a, l, r);</span><br><span class="line">        quickSort(a, l, mid<span class="number">-1</span>);</span><br><span class="line">        quickSort(a, mid+<span class="number">1</span>, r);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　接下来，我们考虑如何证明快速排序的期望复杂度为Θ(nlogn)。为了证明这个问题，我们考虑Partition函数中的for语句。显然，算法最多调用n次partition函数，那么我们如果能求出partition中，if语句的期望执行次数X，那么我们就可以得到快排的复杂度为Θ(n+X)<br>　　如何计算比较操作的执行次数呢？这里需要扩充一下定义，我们将数组A的元素重新命名为\(z_i\)，表示数组A中第i小的元素，并且还定义了Z表示一个区间:\(Z_{ij} = {z_i, z_{i+1}, …, z_j}\)<br>　　另外，我们还要用到算法导论第五章讲到的指示器随机变量:<br>$$X_{ij}=I\,\{z_i与z_j比较\}$$<br>　　由此，我们得到了算法的总比较次数，再由数学期望的线性特性，我们可以得到:<br>$$X = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n}X_{ij}$$<br>$$<br>E(X)=E[\,\sum_{i=1}^{n-1}\sum_{j=i+1}^{n}X_{ij}\,]<br>= \sum_{i=1}^{n-1}\sum_{j=i+1}^n E[\,X_{ij}\,]<br>= \sum_{i=1}^{n-1}\sum_{j=i+1}^{n}Pr\{z_i与z_j进行个比较\}<br>$$<br>　　那么，\(z_i和z_j比较\)的概率究竟怎么算？从正面比较难考虑的话我们可以试着从反面考虑:两个元素不会进行比较的情况。考虑快速排序的一个输入为1-10这10个数字(顺序任意)，并假设第一个主元为7，那么数字被分为两个集合{1,2,3,4,5,6}和{8,9,10}，并且第一个集合任意元素不会再和第二个集合的任意元素有比较了。这就告诉我们，在元素互异的情况下，一旦一个满足\(z_i &lt; x &lt; z_j\)的主元x被选择后，\(z_i,z_j\)就不会再有比较了。而在这个区间上，这每一个数字被选到的概率应该是相等的。由此，我们得到:<br>$$<br>\begin{align}<br>Pr\{z_i与z_j比较\} =&amp; Pr\{z_i或z_j被选为Z_{ij}的第一个主元\}\\<br>=&amp; Pr\{z_i是Z_{ij}的第一个主元\}+Pr\{z_j是Z_{ij}的第一个主元\}\\<br>=&amp; \frac{1}{j-i+1}+\frac{1}{j-i+1}\\<br>=&amp; \frac{2}{j-i+1}<br>\end{align}<br>$$<br>　　再将两个式子联立，我们可以得到:<br>$$<br>\begin{align}<br>E[X] =&amp; \sum_{i=1}^{n-1}\sum_{j=i+1}^{n}\frac{2}{j-i+1} \\<br>=&amp; \sum_{i=1}^{n-1}\sum_{k=1}^{n-i}\frac{2}{k+1}\\<br>=&amp; \sum_{i=1}^{n-1}\sum_{k=1}^{n}\frac{2}{k}\\<br>=&amp; \sum_{i=1}^{n=1}O(logn)\\<br>=&amp; \,O(nlogn)<br>\end{align}<br>$$<br>　　最终，在元素互异的前提下，我们得到了快速排序期望复杂度的一个上界O(nlogn)<br>　　另外，书中还给出了另外一种证明快排的复杂度的方法，这种方法关注的不是比较的次数，而是每一次单独递归调用的期望运行时间。利用递归式和不等式放缩，最后再使用代入法进行证明，这里省略了。<br>　　这样就结束了吗？当然不是。我们其实还会发现一个问题，如果元素不互异呢？假如现在有一个数组，其中所有元素都相同，这个时候复杂度是多少呢？结果有点遗憾，是O(n^2)。为了处理这样的一种情形，我们可以采取这样的一种措施，在partition函数中，将原数组分为3个部分，左边部分比key小，右边部分比key大，中间部分和key的大小相同，这样就解决了这个问题了。<br>　　此外，在具体进行快速排序的时候，还有一个小优化可以做:当数组长度很小时(比如n&lt;8)，我们可以转换排序策略，选择插入排序。测试表明，插入排序在数组很小的时候复杂度是比较优的。经过这样的调整，能在某种程度上提高快排的运行效率。</p>
+<h2 id="other-sort-algorithm"><a href="#other-sort-algorithm" class="headerlink" title="other sort algorithm"></a>other sort algorithm</h2><p>　　前面我们提到的两类排序算法复杂度分别为O(n^2)和O(nlogn)。这些排序算法都有一个相同的特点——各元素的次序依赖于对他们的比较，这类排序被称为比较排序。为了解决排序算法的下界问题，我们需要用到决策树模型。决策树是一颗完全二叉树，它可以表示在给定输入规模的情况下，某一特定排序算法对所有元素的比较操作。树中每个内部节点以i:j标记。每个叶子节点对应一个数列。排序算法的执行则相当于一条从树的根节点到叶节点的路径。到达一个叶节点时，表明排序已经完成。<br><img src="/2019/09/27/sort-algorithm/pic.png" alt="tree"><br>　　对于一个n个元素的数组，共有n!种排列，每一种排列都必须位于树的某一个节点。若设该决策树有l个节点，高度为h，则我们有:<br>$$n! &lt;= l &lt;= 2^h$$<br>　　对两边取对数，我们有:<br>$$<br>\begin{align}<br>h &amp;&gt;= lg(n!)\\<br>&amp;= Ω(nlgn)<br>\end{align}<br>$$<br>　　由此，我们得到了比较排序算法的一个下界为Ω(nlgn)。那么我们如果想要突破这个下界，就不能采用比较的关系去实现排序算法了。我们需要另辟溪径。<br>　　桶排就是这样的一个算法，它平均情况下的复杂度为O(n)，看起来要比前面的所有算法都要优秀许多。<br>　　桶排假设数服从均匀分布。假设数据分布在区间[0,1)上，现在给n个桶，那么我们将区间分为n个相同大小的子区间，并对应于给定的桶，将位于区间内的数放到对应的桶中，最后遍历每个桶，并对桶中的每个数字进行排序，再按顺序列出即可。当然，也可以使用Hash，将某些区间的值映射到某个桶中。<br>　　另外，还有计数排序和基数排序，他们都是运行时间十分优秀的算法，不过需要使用额外的空间，且依赖于数字的大小，但在某些情况下能够有较优异的表现。</p>
+<h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　到这里，我们的算法导论系列的第一期就结束了。这一期主要记录了一些排序算法的思想，重点关注快排，归并这两种算法。我们简单地提了这些排序算法的写法，并提了一下复杂度的分析。接下来，按照算法导论的顺序，下一期可能要写一下红黑树的笔记吧。</p>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/algorithm/" rel="tag"><i class="fa fa-tag"></i> algorithm</a>
+          
+            <a href="/tags/sort/" rel="tag"><i class="fa fa-tag"></i> sort</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/19/Animation/" rel="next" title="Kyouto Animation">
+                <i class="fa fa-chevron-left"></i> Kyouto Animation
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#normal-sort-algorithm"><span class="nav-number">2.</span> <span class="nav-text">normal sort algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bubble-sort"><span class="nav-number">2.1.</span> <span class="nav-text">bubble sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-sort"><span class="nav-number">2.2.</span> <span class="nav-text">insert sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select-sort"><span class="nav-number">2.3.</span> <span class="nav-text">select sort</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#improved-sort-algorithm"><span class="nav-number">3.</span> <span class="nav-text">improved sort algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#heap-sort"><span class="nav-number">3.1.</span> <span class="nav-text">heap sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#merge-sort"><span class="nav-number">3.2.</span> <span class="nav-text">merge sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quick-sort"><span class="nav-number">3.3.</span> <span class="nav-text">quick sort</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#other-sort-algorithm"><span class="nav-number">4.</span> <span class="nav-text">other sort algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epilogue"><span class="nav-number">5.</span> <span class="nav-text">epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">78.4k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
