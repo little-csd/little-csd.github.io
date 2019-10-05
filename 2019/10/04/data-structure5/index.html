@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Data Structure,Balanced Tree,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue　　这是数据结构大杂烩系列的第五篇文章(有生之年系列)。在前几篇文章中，我们学习了几种树结构，以及treap和splay两种平衡树。今天，我们将介绍一种应用十分广泛，且性能也十分优秀的平衡树——红黑树。不过由于网上资料较多，且笔者能力有限，这篇文章只是对算法导论中关于红黑树的知识的一些简单整理而已。 what is RB-Tree　　首先，需要回答这样一个问题:为什么使用红黑树呢？">
+<meta name="keywords" content="Data Structure,Balanced Tree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Structure Note(V) —— RB Tree">
+<meta property="og:url" content="http://yoursite.com/2019/10/04/data-structure5/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue　　这是数据结构大杂烩系列的第五篇文章(有生之年系列)。在前几篇文章中，我们学习了几种树结构，以及treap和splay两种平衡树。今天，我们将介绍一种应用十分广泛，且性能也十分优秀的平衡树——红黑树。不过由于网上资料较多，且笔者能力有限，这篇文章只是对算法导论中关于红黑树的知识的一些简单整理而已。 what is RB-Tree　　首先，需要回答这样一个问题:为什么使用红黑树呢？">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/10/04/data-structure5/rb-tree.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/04/data-structure5/rot.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/04/data-structure5/rb-insert.PNG">
+<meta property="og:image" content="http://yoursite.com/2019/10/04/data-structure5/rb-remove.PNG">
+<meta property="og:updated_time" content="2019-10-05T09:00:31.863Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Data Structure Note(V) —— RB Tree">
+<meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第五篇文章(有生之年系列)。在前几篇文章中，我们学习了几种树结构，以及treap和splay两种平衡树。今天，我们将介绍一种应用十分广泛，且性能也十分优秀的平衡树——红黑树。不过由于网上资料较多，且笔者能力有限，这篇文章只是对算法导论中关于红黑树的知识的一些简单整理而已。 what is RB-Tree　　首先，需要回答这样一个问题:为什么使用红黑树呢？">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/04/data-structure5/rb-tree.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/04/data-structure5/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Data Structure Note(V) —— RB Tree | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/04/data-structure5/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Data Structure Note(V) —— RB Tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-04T10:19:58+08:00">
+                2019-10-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index">
+                    <span itemprop="name">Data Structure</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/10/04/data-structure5/" class="leancloud_visitors" data-flag-title="Data Structure Note(V) —— RB Tree">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.5k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>　　这是数据结构大杂烩系列的第五篇文章(有生之年系列)。在前几篇文章中，我们学习了几种树结构，以及treap和splay两种平衡树。今天，我们将介绍一种应用十分广泛，且性能也十分优秀的平衡树——红黑树。不过由于网上资料较多，且笔者能力有限，这篇文章只是对算法导论中关于红黑树的知识的一些简单整理而已。</p>
+<h2 id="what-is-RB-Tree"><a href="#what-is-RB-Tree" class="headerlink" title="what is RB-Tree"></a>what is RB-Tree</h2><p>　　首先，需要回答这样一个问题:为什么使用红黑树呢？答案其实是很简单的。因为红黑树的表现十分优秀！红黑树能够保证树不会退化成链表，导致效率的急剧下降。简单来说，红黑树是一颗特殊的二叉搜索树，它在每个节点上增加了一个存储位来表示节点的颜色(红或黑)。并且，由于这一个特性，红黑树中到叶子节点的简单路径中，不会有一条路径长度是其他路径的两倍。<br>　　红黑树满足以下性质:</p>
+<ol>
+<li>每个结点是黑色或者红色</li>
+<li>根节点是黑色</li>
+<li>每个叶子结点是黑色的(NIL)</li>
+<li>如果一个结点是红色的，那么它的两个子结点都是黑色的</li>
+<li>对每个结点，该结点到所有后代叶结点的简单路径上均包含相同数目的黑色结点</li>
+</ol>
+<p>　　一颗合法的红黑树:<br><img src="/2019/10/04/data-structure5/rb-tree.png" alt="red-black tree"><br>　　同时，红黑树中有一种特殊的节点是NIL，起到相当与空结点的作用，但可以减少一些边界判断(其实就是哨兵)。另外，由于红黑树的性质5，我们可以定义红黑树的黑高bh，定义为该结点到所有叶结点的路径上黑色结点的数量。<br>　　此时，我们可以证明，一颗有n个内部结点(即不含NIL)的红黑树高度至多为\(\,2log(n+1)\)<br>　　证明: 先证任一结点为根的子树中至少包含\(\,2^{bh(x)}-1\)个内部结点。可以用数学归纳法证明。又由于根到任意叶子结点的任何一条路径上都至少有一半的结点为黑色(性质4)，因此有\(n &gt;= 2^{h/2}-1\)，整理得，\(h&lt;=2log(n+1)\)<br>　　我们接下来可以知道，红黑树上的插入，删除等操作的运行时间均为O(h)，因此我们可以得到这些操作的时间都是O(logn)<br>　　这篇文章接下来将以<a href="https://www.luogu.org/problem/P3369" target="_blank" rel="noopener">洛谷P3369</a>为例子，讲讲如何简单地实现红黑树。我们将实现以下操作:</p>
+<ol>
+<li>插入数字x</li>
+<li>删除数字x</li>
+<li>查询数字x的排名</li>
+<li>查询排名为x的数字</li>
+<li>求x的前驱(比x小的数字中最大的那个)</li>
+<li>求x的后继(比x大的数字中最小的那个)</li>
+</ol>
+<p>　　以下是红黑树的结点的定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RED 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BLACK 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T Node*</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    T fa;</span><br><span class="line">    T lson;</span><br><span class="line">    T rson;</span><br><span class="line">    <span class="comment">// 需要维护的数据: 键值v，子树大小siz，该结点的次数cnt，颜色color</span></span><br><span class="line">    <span class="keyword">int</span> v, siz, cnt;</span><br><span class="line">    <span class="keyword">bool</span> color;</span><br><span class="line">    <span class="comment">// 构造函数</span></span><br><span class="line">    Node(<span class="keyword">int</span> v, <span class="keyword">int</span> siz = <span class="number">1</span>, <span class="keyword">int</span> cnt = <span class="number">1</span>, <span class="keyword">int</span> color = RED):</span><br><span class="line">        v(v),siz(siz),cnt(cnt),color(color)&#123;&#125;</span><br><span class="line">    <span class="comment">// up操作</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">up</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 注意我们需要保证空结点NIL的size为0，否则会出问题</span></span><br><span class="line">        <span class="keyword">if</span> (cnt == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        siz = lson-&gt;siz + rson-&gt;siz + cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="how-to-implement-Red-black-Tree"><a href="#how-to-implement-Red-black-Tree" class="headerlink" title="how to implement Red-black Tree"></a>how to implement Red-black Tree</h2><h3 id="rotation"><a href="#rotation" class="headerlink" title="rotation"></a>rotation</h3><p>　　我们知道，插入，删除等操作有可能会违背红黑树的红黑特性，因此我们需要一种操作来维持红黑树的特性不被改变，这就是旋转操作。和treap类似却又不太一样:红黑树的旋转同样分为左旋和右旋，但左旋是将当前节点旋转到左儿子的位置，右旋同理。具体操作如下:</p>
+<p><img src="/2019/10/04/data-structure5/rot.png" alt="rotation"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里展示左旋的写法，右旋和左旋写法对称</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotL</span><span class="params">(T x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// partI 连接x和y的左儿子</span></span><br><span class="line">    T y = x-&gt;rson;</span><br><span class="line">    x-&gt;rson = y-&gt;lson;</span><br><span class="line">    <span class="keyword">if</span> (y-&gt;lson != nil) &#123;</span><br><span class="line">        y-&gt;lson-&gt;fa = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// partII y和x的父亲</span></span><br><span class="line">    y-&gt;fa = x-&gt;fa;</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;fa == nil) &#123;</span><br><span class="line">        rt = y;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (x-&gt;fa-&gt;lson == x) &#123;</span><br><span class="line">        x-&gt;fa-&gt;lson = y;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        x-&gt;fa-&gt;rson = y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// partIII 连接x和y</span></span><br><span class="line">    x-&gt;fa = y;</span><br><span class="line">    y-&gt;lson = x;</span><br><span class="line">    <span class="comment">// 最后别忘了up操作。注意x和y的先后顺序</span></span><br><span class="line">    x-&gt;up();y-&gt;up();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="insert"><a href="#insert" class="headerlink" title="insert"></a>insert</h3><p>　　我们先考虑普通的BST的情况。这种情形下，我们只需要找到一个可以插入数字v的节点即可。如果找到了，我们就直接将该结点的次数+1即可。如果找不到，我们就重新new一个结点。考虑到我们需要维护子树的大小，我们可以在查找的时候顺便更新一下查找路径上所有结点的siz。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    T cur = root;</span><br><span class="line">    <span class="keyword">while</span> (cur != NIL) &#123;</span><br><span class="line">        cur-&gt;siz++;</span><br><span class="line">        <span class="keyword">if</span> (v &lt; cur-&gt;v) &#123;</span><br><span class="line">            cur = cur-&gt;lson;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (v &gt; cur-&gt;v) &#123;</span><br><span class="line">            cur = cur-&gt;rson;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 找到了，直接次数+1后返回</span></span><br><span class="line">            cur-&gt;cnt++;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 找不到时，重新new一个结点</span></span><br><span class="line">    cur = <span class="keyword">new</span> Node(v);</span><br><span class="line">    <span class="comment">// 这里需要连接结点cur和父结点，并将左右儿子指向NIL</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　写到这里，又会有一个问题，新结点的颜色呢？为了满足红黑树的性质，新的节点只能是红色或者黑色。如果我们将新的结点设置为黑色的话，会发生什么情况？性质5会被破坏，如果我们想修复性质5，处理起来是很麻烦的。因此我们选择将新的结点设置为红色。这个时候，性质2，性质4有可能被破坏。修复性质2的话其实很简单，我们只需要将根节点设置为黑色就可以了(根节点的颜色不影响黑高bh)。修复性质4的话，我们需要分类讨论。我们在insert方法的最后，调用insert-fixed方法，维护红黑树的特性。<br>　　当插入节点的父结点为红色时，违背了性质4，这个时候我们需要通过旋转和重新染色来进行修复。首先，如果当前结点的父亲是黑色的话，那么不违背红黑树的性质，直接退出即可。否则，假设当前结点的父亲是祖先的左儿子，这时分三种情况讨论。(注意到父亲结点为红色时，祖先结点必然存在，因为根节点是黑色的)<br><img src="/2019/10/04/data-structure5/rb-insert.PNG" alt="insert"><br>　　情况1中，当前结点的叔叔结点为红色，这个时候我们可以将当前结点的父亲和叔叔染成黑色，将祖先染成红色，这个时候各个叶子结点的黑高并没有发生改变，故解决了问题。但是将祖先结点染成红色有可能会导致破坏了性质4，因此将x赋值为祖先结点，继续循环。<br>　　情况2中，叔叔结点为黑色，当前结点是父亲的右儿子。这个时候我们将x赋值为其父亲结点，同时对父亲结点进行左旋操作，就进入了情况3。<br>　　情况3中，叔叔节点为黑色，当前结点是父亲的左儿子，这个时候将父亲结点染成黑色，祖先结点染成红色，并对祖先结点进行一次右旋，然后我们就发现，红黑树的性质得到了维护，循环可以退出了。注意到右旋时，由于父亲结点是红色，因此兄弟结点一定是黑色，对祖先结点右旋后两个儿子都是黑色的，因此没有破坏性质4。<br>　　至于当前结点的父亲是祖先的右儿子时，情况也是一样的。只要把左儿子改为右儿子，左旋改为右旋就可以了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert_fixed</span><span class="params">(T x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (x-&gt;fa-&gt;color == RED) &#123;</span><br><span class="line">        <span class="keyword">if</span> (x-&gt;fa == x-&gt;fa-&gt;fa-&gt;lson) &#123;</span><br><span class="line">            T y = x-&gt;fa-&gt;fa-&gt;rson;</span><br><span class="line">            <span class="comment">// 情况1: 叔叔结点为红色</span></span><br><span class="line">            <span class="keyword">if</span> (y-&gt;color == RED) &#123;</span><br><span class="line">                y-&gt;color = x-&gt;fa-&gt;color = BLACK;</span><br><span class="line">                x-&gt;fa-&gt;fa-&gt;color = RED;</span><br><span class="line">                x = x-&gt;fa-&gt;fa;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 情况2: 叔叔结点为黑色，且当前结点是父亲的右儿子</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (x == x-&gt;fa-&gt;rson) &#123;</span><br><span class="line">                x = x-&gt;fa;</span><br><span class="line">                rotL(x);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 情况3: 叔叔结点为黑色，且当前节点是父亲的左儿子</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                x-&gt;fa-&gt;color = BLACK;</span><br><span class="line">                x-&gt;fa-&gt;fa-&gt;color = RED;</span><br><span class="line">                rotR(x-&gt;fa-&gt;fa);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 这里的写法和之前是对称的</span></span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 别忘了把根节点设置为黑色</span></span><br><span class="line">    rt-&gt;color = BLACK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h3><p>　　删除操作应该是最繁琐的一项了。同样的，我们先考虑普通的BST的情况。这种情形下，我们只需要找到需要删除的点的位置即可，并将该结点的次数-1，如果次数大于0，我们则可以直接返回，次数等于0时，则说明当前结点需要被移除。同样的，由于我们需要维护子树的大小，我们可以在查找的时候顺便更新一下查找路径上所有结点的siz。<br>　　那么该如何移除呢？在BST中，我们的做法是找出结点v的后继y，用y来替换结点v的位置(y的颜色也变成v的颜色)，同时，我们把y的右儿子提到y的位置(注意到y没有左儿子，因为它是v的后继，即v的右子树中最小的值)，这样我们就成功地将原先结点移除了。但是，由于y结点被x结点替换了，有可能会导致红黑树的特性被破坏，这里我们需要记录y原来的颜色，以便于我们的恢复操作。操作过后，对于整棵树来说，相当于少了一个y结点。如果y是红色，那么红黑树的性质并没有被破坏，直接返回即可。如果y是黑色，y节点(即当前x的位置)的所有子结点的黑高小了1，违背了性质5，同时也有可能违背了性质4。因此我们需要使用一个修复函数来维护红黑树的特性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 连接v结点和u结点的父亲</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transplant</span><span class="params">(T u, T v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u-&gt;fa == nil) rt = v;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (u == u-&gt;fa-&gt;lson) &#123;</span><br><span class="line">        u-&gt;fa-&gt;lson = v;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        u-&gt;fa-&gt;rson = v;</span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;fa = u-&gt;fa;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    T cur = rt;</span><br><span class="line">    <span class="comment">// 获取值v对应的结点的指针</span></span><br><span class="line">    <span class="keyword">while</span> (cur != nil) &#123;</span><br><span class="line">        cur-&gt;siz--;</span><br><span class="line">        <span class="keyword">if</span> (v &lt; cur-&gt;v) cur = cur-&gt;lson;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (v &gt; cur-&gt;v) cur = cur-&gt;rson;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            cur-&gt;cnt--;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 大于0直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (cur-&gt;cnt &gt; <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">    T y = cur;</span><br><span class="line">    T x;</span><br><span class="line">    <span class="keyword">bool</span> originColor = y-&gt;color;</span><br><span class="line">    <span class="comment">// 左儿子或右儿子是空的，直接替换即可</span></span><br><span class="line">    <span class="keyword">if</span> (cur-&gt;lson == nil) &#123;</span><br><span class="line">        x = cur-&gt;rson;</span><br><span class="line">        transplant(cur, x);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cur-&gt;rson == nil) &#123;</span><br><span class="line">        x = cur-&gt;lson;</span><br><span class="line">        transplant(cur, x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 左右儿子都非空，我们需要用y的后继来替换当前结点</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 获得当前结点cur的后继及其颜色</span></span><br><span class="line">        y = cur-&gt;rson;</span><br><span class="line">        <span class="keyword">while</span> (y-&gt;lson != nil) y = y-&gt;lson;</span><br><span class="line">        originColor = y-&gt;color;</span><br><span class="line">        <span class="comment">// y的右结点替换y</span></span><br><span class="line">        x = y-&gt;rson;</span><br><span class="line">        <span class="comment">// y如果是cur的子结点，那么x父亲应该指向y，注意到x也可以是NIL</span></span><br><span class="line">        <span class="comment">// 否则应该用x替换y，y替换cur</span></span><br><span class="line">        <span class="keyword">if</span> (y-&gt;fa == cur) &#123;</span><br><span class="line">            x-&gt;fa = y;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            transplant(y, x);</span><br><span class="line">            y-&gt;rson = cur-&gt;rson;</span><br><span class="line">            cur-&gt;rson-&gt;fa = y;</span><br><span class="line">        &#125;</span><br><span class="line">        transplant(cur, y);</span><br><span class="line">        y-&gt;lson = cur-&gt;lson;</span><br><span class="line">        y-&gt;lson-&gt;fa = y;</span><br><span class="line">        y-&gt;color = cur-&gt;color;</span><br><span class="line">        <span class="comment">// 从初始的y的位置到cur的位置上的所有结点的siz需要更新</span></span><br><span class="line">        T c = x;</span><br><span class="line">        <span class="keyword">while</span> (c != y) &#123;</span><br><span class="line">            c = c-&gt;fa;</span><br><span class="line">            c-&gt;up();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span> cur;</span><br><span class="line">    <span class="keyword">if</span> (originColor == BLACK) remove_fixed(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　假设结点y的初始颜色是黑色，那么我们应该如何修复呢？我们可以这样考虑:结点y删除后，y的黑色由x来继承，这样x就相当于是一个具有双重颜色的结点”红黑或者黑黑”，这样，性质5就没有被破坏，但有可能破坏了性质1，2，和4。我们需要做的其实就是把其中的一重颜色去掉。<br>　　首先，如果x是红黑结点时，那么我们可以把它直接变成黑色结点。这种情况下所有性质都得到了维护。另外，如果x是根结点时，无论x是红黑结点或者是黑黑结点，我们都只需要直接把它变成黑色即可。因此，我们需要考虑的就是x是双黑结点且不是根节点的情况。类似的，我们假设当前结点是父亲的左儿子。这时，分四种情况讨论。<br><img src="/2019/10/04/data-structure5/rb-remove.PNG" alt="remove"><br>　　对于情况1，其兄弟结点是红色，这个时候我们可以将兄弟结点变成黑色，并把父亲结点变成红色，再对父亲结点进行左旋，这个时候，我们发现得到的新的树中，x的兄弟结点就变成了黑色，转化为情况2～4<br>　　对于情况2，其兄弟结点和兄弟结点的左右儿子都是黑色，那么我们可以把兄弟结点变成红色，并把x的父亲赋值给x，这样，我们就相当与将x的其中一重黑色移动到了它的父亲结点上。<br>　　对于情况3，兄弟结点是黑色，兄弟节点的右儿子是黑色，左儿子是红色。这个时候我们将兄弟结点变成红色，兄弟结点的左儿子变成黑色，并对兄弟结点进行右旋操作，转化为情况4<br>　　对于情况4，兄弟节点是黑色，且兄弟结点右儿子是红色，交换父亲结点和兄弟结点的颜色，并把兄弟节点的右儿子染成黑色，再将父亲结点进行左旋，这个时候我们就相当于把黑色转移到了父亲结点上，可以直接退出循环。<br>　　在这4中情况下，由于情况1会转为2~4，情况3会转为情况4，并且情况4可以直接完成旋转和染色，情况2每次迭代高度都会减少1，因此最后的复杂度为O(logn)。这样，<del>我们就完成了修复函数的一半</del><br>　　类似的，当前结点是父亲的右儿子时，操作完全一样，只要左儿子变成右儿子，左旋变成右旋对称地处理即可。代码见下方:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove_fixed</span><span class="params">(T x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 到达根节点或者当前结点是红色时，退出循环</span></span><br><span class="line">    <span class="keyword">while</span> (x != rt &amp;&amp; x-&gt;color == BLACK) &#123;</span><br><span class="line">        <span class="keyword">if</span> (x == x-&gt;fa-&gt;lson) &#123;</span><br><span class="line">            T w = x-&gt;fa-&gt;rson;</span><br><span class="line">            <span class="comment">// 情况1</span></span><br><span class="line">            <span class="keyword">if</span> (w-&gt;color == RED) &#123;</span><br><span class="line">                w-&gt;color = BLACK;</span><br><span class="line">                x-&gt;fa-&gt;color = RED;</span><br><span class="line">                rotL(x-&gt;fa);</span><br><span class="line">                w = x-&gt;fa-&gt;rson;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 情况2</span></span><br><span class="line">            <span class="keyword">if</span> (w-&gt;lson-&gt;color == BLACK &amp;&amp; w-&gt;rson-&gt;color == BLACK) &#123;</span><br><span class="line">                w-&gt;color = RED;</span><br><span class="line">                x = x-&gt;fa;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 情况3</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (w-&gt;rson-&gt;color == BLACK) &#123;</span><br><span class="line">                w-&gt;lson-&gt;color = BLACK;</span><br><span class="line">                w-&gt;color = RED;</span><br><span class="line">                rotR(w);</span><br><span class="line">                w = x-&gt;fa-&gt;rson;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 情况4</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                w-&gt;color = x-&gt;fa-&gt;color;</span><br><span class="line">                x-&gt;fa-&gt;color = BLACK;</span><br><span class="line">                w-&gt;rson-&gt;color = BLACK;</span><br><span class="line">                rotL(x-&gt;fa);</span><br><span class="line">                <span class="comment">// 把x赋值为根节点，就可以直接退出循环</span></span><br><span class="line">                x = rt;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 这里对称地处理即可</span></span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 别忘了把根节点变成黑色</span></span><br><span class="line">    x-&gt;color = BLACK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="other-operation"><a href="#other-operation" class="headerlink" title="other operation"></a>other operation</h3><p>　　为了完成题目，我们还需要实现rank,search,pre,next等函数，这里写法其实和普通的平衡树没有任何区别，不过这里还是简单提一下吧。具体的代码就不贴了。</p>
+<ol>
+<li>rank函数，查找某一个数字的排名。我们沿着树遍历，若当前节点的值大于我们要找的数字，说明这个数字在左边，往左子树走。若当前结点的值等于我们要找的数字，说明左子树上所有节点都小于我们要找的数字，因此返回累计值加上左子树的大小再+1。若当前结点的值小于我们要找的数字，则累计值应该加上当前结点的次数和左子树的大小，并且往右子树方向找。</li>
+<li>search函数，查找排名为x的数字的值。如果左子树的大小大于当前要找的排名，往左找。如果左子树加上当前的结点的次数小于要找的排名，往右找，同时排名减去左子树和当前结点次数。否则说明排名为x的数字刚好就是当前结点对应的值</li>
+<li>pre函数，查找前驱。我们知道，前驱比当前结点小，故应该在结点的左子树当中，且是左子树中最大的那个。因此，我们只要找左子树中最大的值即可。找最大值的话就只需要不断地试着往右儿子移动，当右儿子为空时，当前结点就是最大值</li>
+<li>next函数，查找后继。同样的，我们只需要查找右子树中最小的值即可。只需要在右子树中不断往左儿子方向走，左儿子为空时即为后继。</li>
+</ol>
+<h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　红黑树这一期到这里应该就结束了，这一期主要还是作为笔记，以加深自己的印象。红黑树整体来说应该不能算是很难的一种数据结构，但它的分类很多，很繁琐而且并不好记，因此给人一种望而生畏的感觉。红黑树最大的难点应该还是在插入和删除时对红黑树特性的维护那个部分，这个可能只能强行背一下了，似乎也没有什么更好的记忆办法。作为一名喜欢算法与数据结构的程序员，红黑树是不得不掌握的。</p>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-Structure/" rel="tag"><i class="fa fa-tag"></i> Data Structure</a>
+          
+            <a href="/tags/Balanced-Tree/" rel="tag"><i class="fa fa-tag"></i> Balanced Tree</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/27/sort-algorithm/" rel="next" title="sort-algorithm">
+                <i class="fa fa-chevron-left"></i> sort-algorithm
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-RB-Tree"><span class="nav-number">2.</span> <span class="nav-text">what is RB-Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-implement-Red-black-Tree"><span class="nav-number">3.</span> <span class="nav-text">how to implement Red-black Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rotation"><span class="nav-number">3.1.</span> <span class="nav-text">rotation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert"><span class="nav-number">3.2.</span> <span class="nav-text">insert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove"><span class="nav-number">3.3.</span> <span class="nav-text">remove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#other-operation"><span class="nav-number">3.4.</span> <span class="nav-text">other operation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epilogue"><span class="nav-number">4.</span> <span class="nav-text">epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">83k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>

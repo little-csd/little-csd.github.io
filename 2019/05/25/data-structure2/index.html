@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/difference.jpg">
 <meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/weighted.jpg">
 <meta property="og:image" content="http://yoursite.com/2019/05/25/data-structure2/build.JPG">
-<meta property="og:updated_time" content="2019-05-26T05:07:18.726Z">
+<meta property="og:updated_time" content="2019-10-04T02:16:44.308Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Data Structure Note(II) —— persistent segment tree">
 <meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第二篇文章。在前一篇文章中，我们学习了线段树及一些相关的数据结构。我们简单地了解了线段树是如何构造，如何维护的，并简单地了解了它的应用。今天，就让我们一起再深入学习它吧。　　今天的主题是可持久化线段树，这是一种能存储区间“历史变化”的数据结构，本身代码量不大，但理解起来还是有一定难度的。　　注：本文假设读者对线段树已经有了一定的了解。如果不知道线段树是什">
@@ -463,7 +463,7 @@
 <h3 id="something-else"><a href="#something-else" class="headerlink" title="something else"></a>something else</h3><p>　　在处理实际问题的时候，我们还需要注意一个问题。建立权值线段树的时候，通常权值的范围可能在-2^31~2^31-1之间，对于这样大的一个范围，显然我们是不可能建立线段树的，因此比较合理的做法应该是使用在上一篇文章中提到的离散化，将权值映射到区间[1,n]上，并进行去重操作，这样复杂度就变得很合理了。在C++中，可以这样写：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sort(b+<span class="number">1</span>, b+n+<span class="number">1</span>);</span><br><span class="line"><span class="keyword">int</span> m = unique(b+<span class="number">1</span>, b+n+<span class="number">1</span>) - (b+<span class="number">1</span>);</span><br></pre></td></tr></table></figure></p>
 <p>　　其中，sort用于对数组进行排序，unique用于去重，返回的是尾指针。<br>　　另外，如果理解了主席树的思想的话，我们会发现，一开始我们使用build函数的时候，建立的树rt[0]事实上是空的，因此build函数是可以不用的，直接for循环并且动态地添加每一个点即可。</p>
 <p>　　总的来说，主席树在建立新的树的时候，用的是动态开点，每一次更新操作，时间和空间复杂度均为O(logn)。建树总时间和空间复杂度均为O(nlogn)，对于询问的总复杂度为O(mlogn)，这样就都降低到可以接受的范围内了。并且，主席树最核心的思想在于它<b>充分利用了前一颗树的信息</b>，大幅度降低了复杂度。现在，我们能够成功地解决在文章一开始的时候提出的问题了。(建议做一道模板题以加深理解。</p>
-<h2 id="level-up-count-on-a-tree"><a href="#level-up-count-on-a-tree" class="headerlink" title="level up - count on a tree"></a>level up - count on a tree</h2><p>　　之前，我们利用主席树解决了区间的第k大的问题，现在，我们题目的难度升级了，如果是要求在区间上的第k大值呢？恩，还是用主席树，那么这个时候又该怎么处理呢？之前我们能够求出区间上的第k大的值，是因为区间是连续，而且是线性的，我们能够使用sum[R]-sum[L-1]得到区间[L,R]上的值，然而，如果是在一颗树上的话，它并不满足线性这一条件。那该怎么办呢？<br>　　一个可行解是对我们的答案进行差分。对于在树上的两个点u和v，他们之间有且仅有一条唯一的路径，这个时候，假设他们的最近公共祖先(lca)为t的话，那么u和v上的点的权值的和变成sum[u]+sum[v]-sum[t]-sum[fa[t]]。这里，fa[t]表示t的父亲节点，注意，这里同样用到了权值线段树可以进行减法的特性。并且，这里的sum[x]表示的应该是当前节点x到根节点的所有值建成的权值线段树。如果能理解好这一点的话，那么这个问题也就变得很简单了。<br>　　具体实现时，我们只需要在更新的时候，调用update(rt[x],rt[fa[x]],1,n,a[x])，即<b>使用当前节点的父亲节点去更新当前节点</b>，并且，query需要进行一定的更改，具体如下：</p>
+<h2 id="level-up-count-on-a-tree"><a href="#level-up-count-on-a-tree" class="headerlink" title="level up - count on a tree"></a>level up - count on a tree</h2><p>　　之前，我们利用主席树解决了区间的第k大的问题，现在，我们题目的难度升级了，如果是要求在树上的第k大值呢？恩，还是用主席树，那么这个时候又该怎么处理呢？之前我们能够求出区间上的第k大的值，是因为区间是连续，而且是线性的，我们能够使用sum[R]-sum[L-1]得到区间[L,R]上的值，然而，如果是在一颗树上的话，它并不满足线性这一条件。那该怎么办呢？<br>　　一个可行解是对我们的答案进行差分。对于在树上的两个点u和v，他们之间有且仅有一条唯一的路径，这个时候，假设他们的最近公共祖先(lca)为t的话，那么u和v上的点的权值的和变成sum[u]+sum[v]-sum[t]-sum[fa[t]]。这里，fa[t]表示t的父亲节点，注意，这里同样用到了权值线段树可以进行减法的特性。并且，这里的sum[x]表示的应该是当前节点x到根节点的所有值建成的权值线段树。如果能理解好这一点的话，那么这个问题也就变得很简单了。<br>　　具体实现时，我们只需要在更新的时候，调用update(rt[x],rt[fa[x]],1,n,a[x])，即<b>使用当前节点的父亲节点去更新当前节点</b>，并且，query需要进行一定的更改，具体如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用的时候为query(1,n,u,v,lca(u,v),fa[lca(u,v)],k)即可</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> lca, <span class="keyword">int</span> f_lca, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="comment">// 这里进行了差分的操作</span></span><br><span class="line">    <span class="keyword">int</span> s = sum[lson[u]] + sum[lson[v]] - sum[lson[lca]] - sum[lson[f_lca]];</span><br><span class="line">    <span class="keyword">int</span> mid = mid(l,r);</span><br><span class="line">    <span class="keyword">if</span> (k &lt;= s) <span class="keyword">return</span> query(l, mid, lson[u], lson[v], lson[lca], lson[f_lca], k);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> query(mid+<span class="number">1</span>, r, rson[u], rson[v], rson[lca], rson[f_lca], k - s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="how-to-find-lca"><a href="#how-to-find-lca" class="headerlink" title="how to find lca"></a>how to find lca</h3><p>　　查询最近公共祖先的方法有很多(不知道这个算不算是数据结构的知识)。其中一种可行的解法就是采用倍增，在O(nlogn)的预处理后，能在O(logn)的复杂度下求得最近公共祖先。另外一种可行的解法是采用树链剖分，也是一种数据结构中的常用算法，这里就不进行赘述了。</p>
 <h2 id="level-up-up"><a href="#level-up-up" class="headerlink" title="level up up!"></a>level up up!</h2><p>　　前面我们处理的都是静态的第k大值的问题，但是实际应用中我们往往会遇到很多动态的情况。比如操作中包含对某些点的更新，在这种情况下区间的第k大值的话，难度就很大了。前面我们处理区间第k大值的时候，是按照从左到右的顺序逐步插入点的，并且建的是权值线段树，这个时候如果我们要更改第x位的数字的话，那么后面rt[x+1]~rt[n]都要进行更改，这样的代价很明显是不可取的。那么我们就必须换一种思路。这里以<a href="https://www.luogu.org/problemnew/show/P2617" target="_blank" rel="noopener">洛谷P2617</a>为例</p>
@@ -607,7 +607,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -718,7 +718,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">78.4k</span>
+    <span title="Site words total count">83k</span>
   
 </div>
 
