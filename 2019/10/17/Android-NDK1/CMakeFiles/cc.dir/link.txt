@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/cc.dir/compute.c.o CMakeFiles/cc.dir/main.c.o  -o cc 

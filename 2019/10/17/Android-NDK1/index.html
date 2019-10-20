@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NDK,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="Prologue　　这篇博客主要是用于团队内的第一次分享，关于主题的话思考了好久。一开始想分享数据结构与算法，感觉好像又不太合适，后面决定还是来学习+分享安卓NDK相关的一些知识了。因为自己也是第一次接触，如果有表述有问题还请见谅。下面正式开始进入NDK的世界吧。(可以把这篇文章当成是google官方文档的翻译)　　注: 本文假设读者有一定的Android基础，能使用Android Studio写">
+<meta name="keywords" content="NDK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android - NDK">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/Android-NDK1/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="Prologue　　这篇博客主要是用于团队内的第一次分享，关于主题的话思考了好久。一开始想分享数据结构与算法，感觉好像又不太合适，后面决定还是来学习+分享安卓NDK相关的一些知识了。因为自己也是第一次接触，如果有表述有问题还请见谅。下面正式开始进入NDK的世界吧。(可以把这篇文章当成是google官方文档的翻译)　　注: 本文假设读者有一定的Android基础，能使用Android Studio写">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-10-19T03:23:23.988Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android - NDK">
+<meta name="twitter:description" content="Prologue　　这篇博客主要是用于团队内的第一次分享，关于主题的话思考了好久。一开始想分享数据结构与算法，感觉好像又不太合适，后面决定还是来学习+分享安卓NDK相关的一些知识了。因为自己也是第一次接触，如果有表述有问题还请见谅。下面正式开始进入NDK的世界吧。(可以把这篇文章当成是google官方文档的翻译)　　注: 本文假设读者有一定的Android基础，能使用Android Studio写">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/17/Android-NDK1/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Android - NDK | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/17/Android-NDK1/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android - NDK</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-17T16:51:20+08:00">
+                2019-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/10/17/Android-NDK1/" class="leancloud_visitors" data-flag-title="Android - NDK">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.6k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Prologue"><a href="#Prologue" class="headerlink" title="Prologue"></a>Prologue</h2><p>　　这篇博客主要是用于团队内的第一次分享，关于主题的话思考了好久。一开始想分享数据结构与算法，感觉好像又不太合适，后面决定还是来学习+分享安卓NDK相关的一些知识了。因为自己也是第一次接触，如果有表述有问题还请见谅。下面正式开始进入NDK的世界吧。(可以把这篇文章当成是<a href="https://developer.android.com/ndk/guides" target="_blank" rel="noopener">google官方文档</a>的翻译)<br>　　注: 本文假设读者有一定的Android基础，能使用Android Studio写一些简单的app。</p>
+<h2 id="Before-Start"><a href="#Before-Start" class="headerlink" title="Before Start"></a>Before Start</h2><h3 id="Main-Components"><a href="#Main-Components" class="headerlink" title="Main Components"></a>Main Components</h3><p>　　正式开始前，我们需要理解构建app的基本概念。</p>
+<ol>
+<li>NDK(Native Development Kit)，包含Native层开发所需的基本工具</li>
+<li>Native shared libraries: NDK构建的库，或者.so文件，从c/c++源码编译得到</li>
+<li>JNI(Java Native Interface): Java和C++层的交流的”桥梁”</li>
+</ol>
+<p>　　Native Activity的开发流程:</p>
+<ol>
+<li>设计app的基本架构, 将native层的需要实现的功能与Java层区分开来。</li>
+<li>创建app项目。在AndroidManifest.xml中声明NativeActivity类</li>
+<li>创建Android.mk文件，描述Native层的库文件信息</li>
+<li>(可选项)创建Application.mk文件，配置目标ABIs，工具链等</li>
+<li>将Native代码放在项目的jni目录下</li>
+<li>使用ndk-build编译native库</li>
+<li>构建Java组件，产生可执行的.dex文件</li>
+<li>将所有东西打包到apk文件中，可以安装并运行</li>
+</ol>
+<h3 id="Native-Activities-and-Applications"><a href="#Native-Activities-and-Applications" class="headerlink" title="Native Activities and Applications"></a>Native Activities and Applications</h3><p>　　安卓SDK提供了一个帮助类NativeActivity去处理framework层和native层的交互，因此我们可以不需要去继承这个类或者去调用它的方法。只需要在Manifest文件中声明文件是Native的即可。需要注意的是，使用NativeActivity的安卓应用还是跑在虚拟机上，和其他应用相隔离，因此我们也可一使用JNI去访问framework层的api。<br>　　Androi NDK提供了两种实现native activity的方式:</p>
+<ol>
+<li>native_activity.h头文件定义了NativeActivity类的native版本，包含了回调接口和许多用于创建activity的数据结构。但是，在这种实现中，回调函数是跑在主线程当中的，因此不能阻塞，否则会触发ANR导致错误。</li>
+<li>android_native_app_glue.h头文件定义了一个在native_activity.h接口上的一个帮助类的库。它使用了另外一个线程去执行我们的代码。因此可以避免阻塞主线程。</li>
+</ol>
+<p>　　google官方给出了一个NativeActivity的<a href="https://github.com/android/ndk-samples/blob/master/native-activity/app/build.gradle" target="_blank" rel="noopener">实现样例</a>，这个样例使用了Cmake编译.so文件(这也是google官方推荐的方式)，用gles渲染app，且不需要写任何的java代码。</p>
+<h2 id="CMake"><a href="#CMake" class="headerlink" title="CMake"></a>CMake</h2><p>　　如今市场上可以用于构建项目的软件(应用程序)有很多，如unix系统上常见的make。但是，它们有一个很大的缺点，就是这些应用是和平台相关的，这就使得泛用性不高。而CMake就很好的解决了这个问题。Cmake是”Cross Platform Make”的缩写，wiki上是这样介绍CMake的:</p>
+<blockquote>
+<p>CMake is a cross-platform free and open-source software tool for managing the build process of software using a compiler-independent method. It supports directory hierarchies and applications that depend on multiple libraries.</p>
+</blockquote>
+<p>　　CMake的特点使得它能很多IDE兼容，其中一个就是Android Studio.下面让我们先脱离安卓平台，一起来简单地学习如何使用CMake。<br>　　首先，我们创建一个文件夹用来学习CMake。然后，这里需要一个用来测试的文件test.cpp。这里给的样例如下，简单地打印出了”Hello World!”:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　然后，我们新建一个文本文件，<strong>CMakeLists</strong>(注意名字不要写错)。在里面写上这些内容:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.4</span>.<span class="number">1</span>)</span><br><span class="line"><span class="keyword">project</span> (hello)</span><br><span class="line"><span class="keyword">add_executable</span>(hello <span class="keyword">test</span>.cpp)</span><br></pre></td></tr></table></figure>
+<p>　　第一行cmake_minimum_required()命令设置了这个项目要求的CMake的最小版本。这里我们设置为3.4.1，你也可以根据自己的实际情况更改这个参数。<br>　　第二行声明了项目的名称，这里我们简单地称之为hello。<br>　　最下面一行是添加可执行文件，第一个参数是可执行文件的名字，第二个参数是源文件，即把test.cpp作为源文件，编译成一个名为hello的可执行文件。当然，如果还有用到其他的源文件，我们还可以写成”add_executable(hello test1.cpp test2.cpp, …)”<br>　　文件写好后，保存。根目录下应该有两个文件:CMakeLists.txt和test.cpp。这个时候在根目录下调用以下命令:</p>
+<blockquote>
+<p>cmake .<br>make</p>
+</blockquote>
+<p>　　第一行代码用于CMake，在linux下，它生成了许多项目文件，以及一个Makefile文件。第二行调用make，即使用Makefile文件中的信息将项目”打包”为可执行文件。<br>　　不过，我们会发现，生成的Makefile文件和可执行文件等都放在了当前的目录下，显得十分不美观。我们可以让它显得更有结构一些。在CMakeLists.txt文件的add_executable命令前中添加语句:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(EXECUTABLE_OUTPUT_PATH <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/bin)</span><br><span class="line"><span class="keyword">set</span>(LIBRARY_OUTPUT_PATH <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/lib)</span><br><span class="line"><span class="keyword">add_library</span>(ano SHARED <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/<span class="keyword">test</span>.cpp)</span><br></pre></td></tr></table></figure>
+<p>　　其中，set命令用于设置变量的值，第一个参数表示需要被设置的变量，第二个参数表示变量的值。CMAKE_SOURCE_DIR是CMake内置的常量，表示当前源文件的目录，我们将常量EXECUTABLE_OUTPUT_PATH和LIBRARY_OUTPUT_PATH分别设置在bin和lib文件夹下，那么构建后所有的可执行文件都会放在bin文件夹中，所有的库文件都会放在lib文件夹中。<br>　　add_library用于打包成库文件，第一个参数表示生成的库的名字，第二个参数可选，”SHARED”表示生成共享库(.so)文件，没有加的话默认生成.a文件。最后一个参数是源文件。生成的文件的名字为lib+库名字+后缀名，如这里生成的文件名应该为libano.so。<br>　　添加完这几行后，保存。在命令行中键入:</p>
+<blockquote>
+<p>cmake -B build<br>// 这下面应该是两个-，但好像显示有点问题<br>cmake –build bulid</p>
+</blockquote>
+<p>　　第一行-B表示构建过程生成的文件的存放位置，放在/build文件夹下。第二行则是相当与在/build文件夹下调用make命令。如果顺利的话，最后我们就能得到这样的目录结构:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">|-- CMakeLists.txt</span><br><span class="line">|-- bin</span><br><span class="line">|   `-- hello</span><br><span class="line">|-- build</span><br><span class="line">|   |-- CMakeCache.txt</span><br><span class="line">|   |-- CMakeFiles</span><br><span class="line">|   |   |-- <span class="number">3.15</span>.<span class="number">2</span></span><br><span class="line">|   |   |-- CMakeDirectoryInformation.cmake</span><br><span class="line">|   |   |-- CMakeOutput.log</span><br><span class="line">|   |   |-- CMakeTmp</span><br><span class="line">|   |   |-- Makefile.cmake</span><br><span class="line">|   |   |-- Makefile2</span><br><span class="line">|   |   |-- TargetDirectories.txt</span><br><span class="line">|   |   |-- ano.dir</span><br><span class="line">|   |   |-- cmake.check_cache</span><br><span class="line">|   |   |-- hello.dir</span><br><span class="line">|   |   `-- progress.marks</span><br><span class="line">|   |-- Makefile</span><br><span class="line">|   `-- cmake_install.cmake</span><br><span class="line">|-- lib</span><br><span class="line">|   `-- libano.so</span><br><span class="line">`-- <span class="keyword">test</span>.cpp</span><br></pre></td></tr></table></figure>
+<p>　　怎么样?看起来是不是有一点”正式项目”的感觉呢?那么我们来试着用目前学到的知识来实现在Android Studio中调用C的代码吧。先创建一个空的项目(创建时选择Empty Activity即可)，并命名为Test(你也可以用其他的你想要起的名字)。进入之后，我们应该就得到了一个Android版的HelloWorld程序。<br>　　接下来，在模块的src/main文件夹下创建一个新的文件夹，命名为app，用于存放我们的CMakeLists文件以及C<br>/C++文件。然后，我们再创建一个CMakeLists.txt文件，在文件中写上:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.4</span>.<span class="number">1</span>)</span><br><span class="line"><span class="keyword">add_library</span>(my-sdk SHARED main.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(my-sdk android log)</span><br></pre></td></tr></table></figure>
+<p>　　和之前类似。第一行声明了最低的版本。第二行将main.cpp添加到库名字为my-sdk的.so文件，我们得到了libmy-sdk.so。第三行将android库和log库与我们的my-sdk链接在一起。这样，我们的CMakeLists文件就写好了。接下来，我们再来写一下main.cpp文件。这里我写的代码如下:<br>　　<strong>Warning</strong>: 这里的代码不能直接复制，如果你足够细心的话，你会发现，我们的函数名字是有规定的。它的格式是Java开头，接下来是包名，文件夹之间以’_’隔开，再接下来是类名，默认是MainActivity，最后才是方法的名字，这里我方法命名为getStringFromJNI。参数不能省略。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"jni.h"</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> JNIEXPORT jstring JNICALL</span><br><span class="line">Java_com_example_littlecsd_test_MainActivity_getStringFromJNI(</span><br><span class="line">    JNIEnv* env, jobject thiz) &#123;</span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF(<span class="string">"Receive String From JNI!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　具体为什么要这样写，我们可以先暂时不管，等会我们再回来看。<br>　　紧接着，我们可以在Java层写调用的代码了。在MainActivity中，我用了一个id为show的TextView来展示。这里我用的是Kotlin，Java的写法也是一样的。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">    setContentView(R.layout.activity_main)</span><br><span class="line">    show.text = getStringFromJNI()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 声明Native层的方法，Java的话是使用native关键字</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">external</span> <span class="function"><span class="keyword">fun</span> <span class="title">getStringFromJNI</span><span class="params">()</span></span>: String</span><br><span class="line"><span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        <span class="comment">// 初始化，调用系统函数，载入my-sdk库</span></span><br><span class="line">        System.loadLibrary(<span class="string">"my-sdk"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　那么，现在我们Java和C层的代码都写好了，CMake文件也写好了，我们可以试着点击Run运行试一下结果是什么样的了。不出意外的话，我们的Activity会闪退。通过排查，我们会发现，有一个重要的步骤被我们略去了。我们虽然这些文件都写好了，可是谁去调用CMake命令生成动态库文件呢?<br>　　这个时候就要用到我们神奇的build.gradle文件了，gradle本身对CMake是有支持的(官方亲儿子~~)。我们只需要在module下的build.gradle文件(注意有两个build.gradle，不要搞错)中添加命令，告诉gradle，需要去调用cmake即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">29</span></span><br><span class="line">    buildToolsVersion <span class="string">"29.0.2"</span></span><br><span class="line">    defaultConfig &#123; ... &#125;</span><br><span class="line">    buildTypes &#123; ... &#125;</span><br><span class="line">    <span class="comment">// 添加下面的命令</span></span><br><span class="line">    externalNativeBuild &#123;</span><br><span class="line">        cmake &#123;</span><br><span class="line">            version '3.10.2'</span><br><span class="line">            path 'src/main/app/CMakeLists.txt'</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　现在，你可以再次尝试一下，不出意外的话，我们应该可以看到界面中间显示这一个字符串:</p>
+<blockquote>
+<p>Receive String From JNI!</p>
+</blockquote>
+<p>　　Congratulations! 我们成功地调用了C层的代码了。是不是其实挺简单的呢?如果你还是出现错误的话，最好仔细检查一下之前的代码是否有出现什么问题，有可能有一些单词打错之类的。</p>
+<h2 id="JNI"><a href="#JNI" class="headerlink" title="JNI"></a>JNI</h2><p>　　前面我们能够简单地实现Java层调用C的函数了。那么，接下来我们需要考虑一下，C层应该如何调用Java的函数呢?C和Java究竟是怎样实现数据的交流的?答案都在JNI当中。JNI定义了java字节码与本地代码交互的方式，它像一个中间商，并且还可以读取动态库文件，尽管有时比较麻烦，却还是比较高效的。</p>
+<h3 id="General-Tips"><a href="#General-Tips" class="headerlink" title="General Tips"></a>General Tips</h3><p>　　在使用JNI的时候，我们需要尽量最小化JNI层所占用的空间。有以下几点需要考虑的:</p>
+<ol>
+<li>尽量减少跨JNI层的数据转换，这种跨JNI层的操作对时间的消耗是很明显的。</li>
+<li>尽量避免在代码中进行跨JNI的异步交流。在需要交互的时候，可以使用两个线程，UI线程负责Java层，另一个线程负责进行C++层的阻塞调用，当调用完成后通知UI线程对UI进行更新即可。</li>
+<li>最小化需要和JNI接触的线程数量。</li>
+<li>将接口代码保存在少量的易于识别的C++和Java源代码位置，有利于后续的维护/重构</li>
+</ol>
+<h3 id="JavaVM-and-JNIEnv"><a href="#JavaVM-and-JNIEnv" class="headerlink" title="JavaVM and JNIEnv"></a>JavaVM and JNIEnv</h3><p>　　JNI定义了两种关键的数据结构，”JavaVM”和”JNIEnv”。两者都是十分重要的指针，指向函数表。JavaVM提供了一个”调用接口”函数，使得我们可以创建或销毁一个JavaVM。理论上一个进程可以有多个JavaVM，但安卓只允许有一个。在jni.h中，定义如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">JavaVM</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span>* <span class="title">functions</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__cplusplus)</span></span><br><span class="line">    <span class="function">jint <span class="title">DestroyJavaVM</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;DestroyJavaVM(<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">AttachCurrentThread</span><span class="params">(JNIEnv** p_env, <span class="keyword">void</span>* thr_args)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;AttachCurrentThread(<span class="keyword">this</span>, p_env, thr_args); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">DetachCurrentThread</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;DetachCurrentThread(<span class="keyword">this</span>); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">GetEnv</span><span class="params">(<span class="keyword">void</span>** env, jint version)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;GetEnv(<span class="keyword">this</span>, env, version); &#125;</span><br><span class="line">    <span class="function">jint <span class="title">AttachCurrentThreadAsDaemon</span><span class="params">(JNIEnv** p_env, <span class="keyword">void</span>* thr_args)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;AttachCurrentThreadAsDaemon(<span class="keyword">this</span>, p_env, thr_args); &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/*__cplusplus*/</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>　　JNIEnv则提供了大多数的JNI函数，所有的native函数都接收一个JNIEnv变量作为第一个参数。JNIEnv用于线程的本地存储，因此，不同线程之间不允许共享JNIEnv。如果一块代码没有其它方式可以获得JNIEnv，那么可以使用JavaVM变量，使用GetEnv函数去找当前线程的JNIEnv(如果有的话)。我们可以查看<a href="https://little-csd.oss-cn-shanghai.aliyuncs.com/jni.h?Expires=1571410650&amp;OSSAccessKeyId=TMP.hdDJqS5ghj9UCMZL26X6wF6fyNzMyxxDdDNMSaB59LoFXQxkgS1iRGho3yuK7n9xJ62uoX9dPag5wNaJ8zmpta98n5D5VSQrtqh2j76jkcP4EwjN9eqr1Wqs5gHzuN.tmp&amp;Signature=rWEsBfnYtUTvYRni%2Fk%2FDvE9QyhE%3D" target="_blank" rel="noopener">jni.h文件</a>以获得更加详细的信息。</p>
+<h3 id="Threads"><a href="#Threads" class="headerlink" title="Threads"></a>Threads</h3><p>　　Android中的线程都是Linux线程，遵循POSIX规范，由内核进行调度。他们通常是从托管代码开始(使用Thread.start())，但是他们也可以在其他地方进行创建，并关联到JavaVM中。比如我们可以在Native层中调用pthread_create方法创建线程，并调用JNI的AttachCurrentThread或者AttachCurrentThreadAsDaemon函数绑定JavaVM。在线程attach之前，它不包含JNIEnv，因此不能进行JNI调用。<br>　　当一个native线程attach的时候，会有一个对应的java.lang.Thread对象被创建并加入到主线程组当中，使得它对调试器可见。<br>　　另一个值得注意的点是，安卓并不会暂停正在执行native代码的线程。当垃圾回收器在处理中或者调试器发起了暂停请求时，该线程会下次进行JNI调用的时候被暂停。<br>　　此外，native线程attach后，在退出之前需要调用JNI的DetachCurrentThread函数。但是直接进行这样的调用过于笨拙，在安卓2.0或者更高的版本后，可以使用pthread_key_create函数定义一个析构函数(当线程退出前被调用)。</p>
+<h3 id="jclass-jmethodID-and-jfieldID"><a href="#jclass-jmethodID-and-jfieldID" class="headerlink" title="jclass, jmethodID, and jfieldID"></a>jclass, jmethodID, and jfieldID</h3><p>　　在native层，如果想访问一个Java对象，那就需要做以下的操作</p>
+<ol>
+<li>使用FindClass获得类的一个实例的引用</li>
+<li>使用GetFieldID获得域的ID</li>
+<li>使用ID以及其他需要的参数获得Java对象，比如GetIntField</li>
+</ol>
+<p>　　类似的，如果想要调用一个方法，也需要先获得一个类的对象的引用然后就是一个方法ID。第一次调用的话是比较耗时的，但获得了域后进行调用就很快了。如果比较追求效率的话，最好在native层中进行缓存。可以在类中放置一个静态代码块，当类被加载的时候，调用native函数对一些值进行缓存。</p>
+<h3 id="Local-and-global-reference"><a href="#Local-and-global-reference" class="headerlink" title="Local and global reference"></a>Local and global reference</h3><p>　　每一个传递给native方法的参数以及每一个JNI方法返回的对象都是局部变量。这意味着在当钱县城的当前方法中使用是合法的。但是，一旦本地方法返回，引用就失效了，即使引用的对象本身还继续存活着。(猜测应该和GC有关)<br>　　获得非局部变量的唯一方法是使用NewGlobalRef或者NewWeakGlobalRef方法。如果想要长期使用某个引用，就要把它设置为全局的。全局变量直到使用DeleteGlobalRef将其删除前都是合法的。<br>　　所有的JNI方法接受局部和全局引用作为参数。并且，对于同一个对象，有可能会有多个值不同的引用。比如当连续调用NewGlobalRef方法得到的返回值可能是不同的。因此我们不能简单地使用’==’去判断两个对象是否相同，而是应该调用IsSameObject方法。这就造成了一个问题——我们不能假定对象的引用是一个固定不变的值。<br>　　另一个值得一提的点是，如果一个native线程已经调用了AttachCurrentThread方法，代码中的局部变量不会自动释放(直到线程detach之前)。所有创建的局部变量都需要自己进行删除。</p>
+<h3 id="Primitive-arrays"><a href="#Primitive-arrays" class="headerlink" title="Primitive arrays"></a>Primitive arrays</h3><p>　　JNI提供了访问数组对象的函数。并且，我们可以像声明一个C语言的数组一样使用它。Get\&lt;type>ArrayElement系列的函数可以帮助我们实现对数组的访问。如GetIntArrayElements(jintArray array, jboolean* isCopy)。第一个参数传入jintArray变量，可以使用FindClass方法获得。第二个参数传入一个bool值，表示返回的是实际的位于Java层的数组的指针还是重新分配一块区域，并把数组元素复制进去。另外，通过这个方法获得的数组指针在被释放前一直是合法的，这就意味着我们自行使用Release方法将其释放。注意到如果我们获得的是实际的数组的指针，用完后一定要将其释放，否则由于存在引用，这个数组无法被垃圾回收器移动/回收，这将导致内存泄漏。<br>　　Release函数声明如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ReleaseIntArrayElements</span><span class="params">(jintArray <span class="built_in">array</span>, jint* elems, jint mode)</span></span></span><br></pre></td></tr></table></figure>
+<p>　　其中，第三个变量表示释放的模式，共有三种输入:</p>
+<ol>
+<li>0: 如果是实际的数组指针，则消除对原数组的固定，使其能被回收。如果是复制的数组，将更改复制回去，并将数组释放。</li>
+<li>JNI_COMMIT: 如果是实际的数组指针，则不做任何处理。如果是复制的数组，则将修改复制回去，不释放数组。</li>
+<li>JNI_ABORT: 如果是实际的数组指针，取消对原数组的固定，但早期的更改不会丢弃。如果是复制的数组，则释放数组，但所有的更改都会丢弃。</li>
+</ol>
+<h3 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h3><p>　　在使用GetMethodID一类的方法时，我们需要传入函数的签名的字符串。我们知道，函数的签名是由传入的变量类型以及返回值组成的，签名有一定的转换规则，下面我们可以看下几个例子:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>;                   <span class="string">"()V"</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test2</span><span class="params">(String s)</span></span>;            <span class="string">"(Ljava/lang/String;)I"</span></span><br><span class="line">long test3(char[] c, String s)  "([CLjava/lang/String;)J"</span><br></pre></td></tr></table></figure>
+<p>　　对应的表格如下。注意参数直接连在一起，中间不用空格</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Java类型</th>
+<th style="text-align:center">对应的串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">boolean</td>
+<td style="text-align:center">Z</td>
+</tr>
+<tr>
+<td style="text-align:center">byte</td>
+<td style="text-align:center">B</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">C</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">S</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">I</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">J</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">F</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">D</td>
+</tr>
+<tr>
+<td style="text-align:center">void</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td style="text-align:center">类</td>
+<td style="text-align:center">L + 类名(包括包名) + ;</td>
+</tr>
+<tr>
+<td style="text-align:center">数组</td>
+<td style="text-align:center">[ + 元素类型</td>
+</tr>
+<tr>
+<td style="text-align:center">方法</td>
+<td style="text-align:center">(paras-type)res-type</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h2><p>　　在这篇博客中，我们简单地介绍了JNI的使用，通过阅读google的官方文档，我们基本学会了如何在C和Java层之间进行简单的交互。NDK作为Android开发中的一个重要部分，尝试着去了解一下之后还是会发现，里面有很多比较有意思的东西，尤其用到了C语言的话，就会涉及到一些Java虚拟机，或者是操作系统方向的知识了。如果时间充足的话，可以后续再进行深入的了解。</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NDK/" rel="tag"><i class="fa fa-tag"></i> NDK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/09/greedy-algorithm/" rel="next" title="Greedy algorithm & Dynamic programming">
+                <i class="fa fa-chevron-left"></i> Greedy algorithm & Dynamic programming
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prologue"><span class="nav-number">1.</span> <span class="nav-text">Prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Before-Start"><span class="nav-number">2.</span> <span class="nav-text">Before Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Main-Components"><span class="nav-number">2.1.</span> <span class="nav-text">Main Components</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Native-Activities-and-Applications"><span class="nav-number">2.2.</span> <span class="nav-text">Native Activities and Applications</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMake"><span class="nav-number">3.</span> <span class="nav-text">CMake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI"><span class="nav-number">4.</span> <span class="nav-text">JNI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#General-Tips"><span class="nav-number">4.1.</span> <span class="nav-text">General Tips</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaVM-and-JNIEnv"><span class="nav-number">4.2.</span> <span class="nav-text">JavaVM and JNIEnv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Threads"><span class="nav-number">4.3.</span> <span class="nav-text">Threads</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jclass-jmethodID-and-jfieldID"><span class="nav-number">4.4.</span> <span class="nav-text">jclass, jmethodID, and jfieldID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-and-global-reference"><span class="nav-number">4.5.</span> <span class="nav-text">Local and global reference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Primitive-arrays"><span class="nav-number">4.6.</span> <span class="nav-text">Primitive arrays</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Signature"><span class="nav-number">4.7.</span> <span class="nav-text">Signature</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Epilogue"><span class="nav-number">5.</span> <span class="nav-text">Epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">92.4k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>

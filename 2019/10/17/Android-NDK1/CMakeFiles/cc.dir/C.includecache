@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/little_csd/linuxDisk/blog/source/_posts/Android-NDK1/compute.c
+compute.h
+/home/little_csd/linuxDisk/blog/source/_posts/Android-NDK1/compute.h
+
+/home/little_csd/linuxDisk/blog/source/_posts/Android-NDK1/compute.h
+
