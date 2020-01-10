@@ -105,7 +105,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/10/09/greedy-algorithm/huffman-coding.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/09/greedy-algorithm/huffman-solve.png">
-<meta property="og:updated_time" content="2019-10-20T11:07:05.489Z">
+<meta property="og:updated_time" content="2019-11-26T03:24:11.155Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Greedy algorithm &amp; Dynamic programming">
 <meta name="twitter:description" content="Prologue　　这是算法导论系列的第二篇笔记，这篇文章的主题是贪心算法和动态规划，主要讲一下两者的思想以及一些简单应用。最后还会将两者做一个简单的对比。当然，贪心和动态规划毫无疑问是算法大家庭中十分重要的两个概念，因此都应该掌握。 Greedy algorithm　　贪心思想如果用一句话来概括的话，就是不断地寻找局部的最优解以尝试求得全局的最优解。如果把程序看成是一个状态机的话，贪心算法就是找">
@@ -455,14 +455,14 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Activity-Selector(s,f,k,n)</span><br><span class="line">    n = s.length</span><br><span class="line">    A = &#123;a[<span class="number">0</span>]&#125;</span><br><span class="line">    k = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> m = <span class="number">1</span> to n</span><br><span class="line">        <span class="keyword">if</span> s[m] &gt;= f[k]</span><br><span class="line">            A = A U &#123;a[m]&#125;</span><br><span class="line">            k = m</span><br><span class="line">    <span class="keyword">return</span> A</span><br></pre></td></tr></table></figure>
 <p>　　为了方便求解，我们需要添加一个虚拟的活动，\(a_0\)，其结束时间\(f_0=0\)。我们在把集合S中的所有活动按照开始时间从小到大的顺序排序后，调用Activity-Selector方法就可以得到完整的最大兼容子集\(A_{1,n}\)，最终复杂度为O(nlogn)<br>　　如何证明这样的选择是正确的呢？我们可以同样可以利用剪切-粘贴法去证明，比较简单，这里就不详细写了。另外，注意到，选择时间最短的活动不一定能得到最大兼容子集，比如活动集合\(S={a_1=[1,9),a_2=[8,11),a_3=[9,15)}\)，时间最短的活动并不在最大兼容子集当中。那么如果选择开始时间最晚的活动呢？其实也是可以的，不过我们就需要从右往左去遍历了，同时按照结束时间去排序。</p>
 <h3 id="Huffman-coding"><a href="#Huffman-coding" class="headerlink" title="Huffman coding"></a>Huffman coding</h3><p>　　贪心算法的另一个应用就是赫夫曼编码，这种编码可以有效地对数据进行压缩。具体的压缩率和数据相关。如果我们把待压缩数据看作字符序列(8位二进制数)，根据每个字符的出现频率，赫夫曼贪心算法构造出各个字符的最优二进制表示。<br>　　考虑大量字符序列，假设字符a的出现频率很高，那么如果我们能够减小a的二进制表示长度的话，我们就可以对数据进行很好压缩。赫夫曼编码就是这样做的。对于出现频率越高的字符，它的字符编码越短，反之越长。比如对于这样一个文件:<br>$$<br>\begin{array}{|c|c|c|c|c|c|c|}<br>\hline<br> &amp; a &amp; b &amp; c &amp; d &amp; e &amp; f\\<br>\hline<br>频率(千次) &amp; 45 &amp; 13 &amp; 12 &amp; 16 &amp; 9 &amp; 5\\<br>\hline<br>定长编码 &amp; 000 &amp; 001 &amp; 010 &amp; 011 &amp; 100 &amp; 101 \\<br>\hline<br>变长编码 &amp; 0 &amp; 101 &amp; 100 &amp; 111 &amp; 1101 &amp; 1100 \\<br>\hline<br>\end{array}<br>$$</p>
-<p>　　使用定长编码，我们需要30W个二进制位来编码文件。如果使用变长编码的话，我们只需要\((45 \times 1+13 \times 3+12 \times 3+16 \times 3+9 \times 4+5 \times 4) \times 1000=22.4W\)个二进制位，节约了大概25的空间。下图a为定长编码的编码树，b为变长编码。</p>
+<p>　　使用定长编码，我们需要30W个二进制位来编码文件。如果使用变长编码的话，我们只需要\((45 \times 1+13 \times 3+12 \times 3+16 \times 3+9 \times 4+5 \times 4) \times 1000=22.4W\)个二进制位，节约了大概 25K 的空间。下图a为定长编码的编码树，b为变长编码。</p>
 <p><img src="/2019/10/09/greedy-algorithm/huffman-coding.png" alt="huffman"></p>
 <p>　　文件的最优编码方案总是对应一棵满二叉树。即每个非叶结点都有两个孩子。给定一棵对应前缀码的树T，我们可以很容易算出编码一个文件 需要的二进制位的个数。对于每个字符c，令c.freq表示字符在文件中出现的频率，\(d_T(c)\)表示c的叶结点在树中的深度(同时也是字符c的码字的长度)。则编码文件需要的二进制位数量为:</p>
 <p>$$B(T)=\Sigma_{c \in C}c.freq*d_T(c)$$</p>
 <p>　　我们称B(T)为T的代价<br>　　赫夫曼编码就是使用贪心思想，构造出一棵最优的前缀树对文件进行编码。具体的做法如下:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C为字符集合</span></span><br><span class="line"><span class="comment">// Q是最小堆，初始包含n个字符对应的频率</span></span><br><span class="line">Huffman(C)</span><br><span class="line">    n = |C|</span><br><span class="line">    <span class="keyword">for</span> i = <span class="number">1</span> to n<span class="number">-1</span></span><br><span class="line">        z = <span class="keyword">new</span> node()</span><br><span class="line">        z.left = x = Extract-min(Q)</span><br><span class="line">        z.right = y = Extract-min(Q)</span><br><span class="line">        z.v = x.v+y.v</span><br><span class="line">        Insert(Q,z)</span><br><span class="line">    <span class="keyword">return</span> Extract-min(Q)</span><br></pre></td></tr></table></figure>
 <p>　　我们每次从堆中拿出频率最小的两个元素，将它们合并成一棵树，然后再把树根重新扔进堆中。最后，我们就得到了霍夫曼编码的前缀树了。算法导论的图如下:<br><img src="/2019/10/09/greedy-algorithm/huffman-solve.png" alt="huffman"><br>　　看起来霍夫曼编码的实现似乎挺显而易见，然而正确性又该怎么证明呢？书中给出的证明方法是这样的:</p>
-<p>　　引理1：令C为字符集，其中每个字符c都有一个频率c.freq。令x和y是C中频率最低的两个字符。那么存在C的一个最优前缀码，使得x和y的码字长度相同，且只有最后一个二进制位不同<br>　　证明方法是令T为任意一个最优前缀编码树，x和y频率最低的两个字符对应的结点，a和b是深度最大的兄弟叶结点。不妨假设a.freq&lt;=b.freq且x.freq&lt;=y.freq，由于x和y频率最小，我们有x.freq&lt;=a.freq且y.freq&lt;=b.freq。那么交换x和a，得到的新树T’和原树T的代价差为:<br>$$<br>\begin{align}<br>A =&amp; \, x.freq \ast d_T(x)+a.freq \ast d_T(a)-x.freq \ast d_{T’}(x)-a.freq \ast d_{T’}(a)\\<br>=&amp; \, x.freq \ast d_T(x)+a.freq \ast d_T(a)-x.freq \ast d_T(a)-a.freq \ast gGd_T(x)\\<br>=&amp; \, (a.freq-x.freq) \ast (d_T(a)-d_T(x))\\<br>\geq &amp; \, 0<br>\end{align}<br>$$<br>　　引理2：令C为字符集，其中每个字符c都有一个频率c.freq。令x和y是C中频率最低的两个字符。令C’为C去掉字符x和y，加入一个字符z后得到的字母表。类似C，也为C’定义freq，其中z.freq=x.freq+y.freq。另T’为字母表C’的任意一个最优前缀码对应的编码树。于是我们可以将T’中叶子结点z替换为一个以x和y为孩子的内部结点，得到树T，且T表示字母表的一个最优前缀码<br>　　由引理1和引理2，我们可以成功地证明霍夫曼编码可以获得一个最优前缀码。<br>　　另外，由霍夫曼编码的构造方式，我们可以证明。对于一个由8位字符组成的数据文件，若256个字符的频率大致相同(最高的频率低于最低的两倍)，霍夫曼编码并不比8位固定长度编码方式更加高效。由此继续可以证明，对于一个随机生成的8位字符组成的文件，没有任何压缩方法可以将其压缩！</p>
+<p>　　引理1：令C为字符集，其中每个字符c都有一个频率c.freq。令x和y是C中频率最低的两个字符。那么存在C的一个最优前缀码，使得x和y的码字长度相同，且只有最后一个二进制位不同<br>　　证明方法是令T为任意一个最优前缀编码树，x和y频率最低的两个字符对应的结点，a和b是深度最大的兄弟叶结点。不妨假设a.freq&lt;=b.freq且x.freq&lt;=y.freq，由于x和y频率最小，我们有x.freq&lt;=a.freq且y.freq&lt;=b.freq。那么交换x和a，得到的新树T’和原树T的代价差为:<br>$$<br>\begin{align}<br>A =&amp; \, x.freq \ast d_T(x)+a.freq \ast d_T(a)-x.freq \ast d_{T’}(x)-a.freq \ast d_{T’}(a)\\<br>=&amp; \, x.freq \ast d_T(x)+a.freq \ast d_T(a)-x.freq \ast d_T(a)-a.freq \ast d_T(x)\\<br>=&amp; \, (a.freq-x.freq) \ast (d_T(a)-d_T(x))\\<br>\geq &amp; \, 0<br>\end{align}<br>$$<br>　　引理2：令C为字符集，其中每个字符c都有一个频率c.freq。令x和y是C中频率最低的两个字符。令C’为C去掉字符x和y，加入一个字符z后得到的字母表。类似C，也为C’定义freq，其中z.freq=x.freq+y.freq。另T’为字母表C’的任意一个最优前缀码对应的编码树。于是我们可以将T’中叶子结点z替换为一个以x和y为孩子的内部结点，得到树T，且T表示字母表的一个最优前缀码<br>　　由引理1和引理2，我们可以成功地证明霍夫曼编码可以获得一个最优前缀码。<br>　　另外，由霍夫曼编码的构造方式，我们可以证明。对于一个由8位字符组成的数据文件，若256个字符的频率大致相同(最高的频率低于最低的两倍)，霍夫曼编码并不比8位固定长度编码方式更加高效。由此继续可以证明，对于一个随机生成的8位字符组成的文件，没有任何压缩方法可以将其压缩！</p>
 <h3 id="Matroid"><a href="#Matroid" class="headerlink" title="Matroid"></a>Matroid</h3><p>　　在贪心算法后，书中还提到了一种特殊的理论——拟阵。这种理论描述了很多贪心算法生成最优解的情形，并且覆盖了很多其他应用。<br>　　拟阵是一个满足这种条件的序偶\(M=(S,{\mathcal{I}})\):</p>
 <ol>
 <li>S是一个有限集</li>
@@ -637,7 +637,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -734,7 +734,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -748,7 +748,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">99.6k</span>
+    <span title="Site words total count">102k</span>
   
 </div>
 
