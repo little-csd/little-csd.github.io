@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Operating System,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="Prologue　　这篇文章主要介绍 mit6.828 实验 的完成过程(不包含所有实验)以及在 6.828 中学到的一些知识点。以实验的完成为主线，中间穿插一些知识点，目的是为了更好地理解这个课程中的一些知识和理念。下面开始吧。　　(前面第一个实验做的是 2018 的，后面才改为 2019 的)　　这里先附上我的仓库, 所有实验均完成. 每个任务对应在不同的分支当中. 查看每个分支增加的内容的话">
+<meta name="keywords" content="Operating System">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mit6.828 实验小结">
+<meta property="og:url" content="http://yoursite.com/2020/02/22/mit6-828/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="Prologue　　这篇文章主要介绍 mit6.828 实验 的完成过程(不包含所有实验)以及在 6.828 中学到的一些知识点。以实验的完成为主线，中间穿插一些知识点，目的是为了更好地理解这个课程中的一些知识和理念。下面开始吧。　　(前面第一个实验做的是 2018 的，后面才改为 2019 的)　　这里先附上我的仓库, 所有实验均完成. 每个任务对应在不同的分支当中. 查看每个分支增加的内容的话">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/02/22/mit6-828/pipe.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/22/mit6-828/fs_layers.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/22/mit6-828/fs_filerep.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/22/mit6-828/netstack.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/22/mit6-828/udp.png">
+<meta property="og:updated_time" content="2020-05-27T09:19:05.802Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mit6.828 实验小结">
+<meta name="twitter:description" content="Prologue　　这篇文章主要介绍 mit6.828 实验 的完成过程(不包含所有实验)以及在 6.828 中学到的一些知识点。以实验的完成为主线，中间穿插一些知识点，目的是为了更好地理解这个课程中的一些知识和理念。下面开始吧。　　(前面第一个实验做的是 2018 的，后面才改为 2019 的)　　这里先附上我的仓库, 所有实验均完成. 每个任务对应在不同的分支当中. 查看每个分支增加的内容的话">
+<meta name="twitter:image" content="http://yoursite.com/2020/02/22/mit6-828/pipe.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/02/22/mit6-828/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>mit6.828 实验小结 | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/22/mit6-828/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mit6.828 实验小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-22T21:57:19+08:00">
+                2020-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/02/22/mit6-828/" class="leancloud_visitors" data-flag-title="mit6.828 实验小结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  7.9k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Prologue"><a href="#Prologue" class="headerlink" title="Prologue"></a>Prologue</h2><p>　　这篇文章主要介绍 <a href="https://pdos.csail.mit.edu/6.828/2019/schedule.html" target="_blank" rel="noopener">mit6.828 实验</a> 的完成过程(不包含所有实验)以及在 6.828 中学到的一些知识点。以实验的完成为主线，中间穿插一些知识点，目的是为了更好地理解这个课程中的一些知识和理念。下面开始吧。<br>　　(前面第一个实验做的是 2018 的，后面才改为 2019 的)<br>　　这里先附上我的<a href="https://github.com/little-csd/mit6.828-2019-" target="_blank" rel="noopener">仓库</a>, 所有实验均完成. 每个任务对应在不同的分支当中. 查看每个分支增加的内容的话可以看每个分支和 xv6-riscv-fall19 分支的区别.</p>
+<h2 id="Lab-Booting-a-PC"><a href="#Lab-Booting-a-PC" class="headerlink" title="Lab Booting a PC"></a>Lab Booting a PC</h2><p>　　既然要讲到操作系统，那么不可避免的要涉及电脑的启动的知识。显然完整的启动过程是及其复杂的，涉及到了大量的硬件和软件的知识，这里只能简单地了解到启动过程中的一些关键步骤。以 x86 CPU 在 BIOS 引导下的启动为例。</p>
+<p>　　取 CPU 正式通电作为启动的开始，这个时候，CPU 将会 RESET 到一个初始状态，CP:IP 指向内存地址为 0xFFFF0 的位置，此时 CPU 运行于实模式下，能访问到的内存空间的大小仅 1M. 通常情况下，在该内存地址处存在一条跳转指令，指向 BIOS 的代码。</p>
+<p>　　BIOS 在进行一些初始化操作后，寻找硬盘中的主引导记录，并将引导启动的代码复制到内存区域 0x7c00 到 0x7dff 当中(共 512 Byte，刚好一个扇区)。然后使用跳转指令跳转到启动的启动代码处，此时 BIOS 就相当与将系统的控制权转交给了操作系统的引导代码。</p>
+<h3 id="Boot-Loader"><a href="#Boot-Loader" class="headerlink" title="Boot Loader"></a>Boot Loader</h3><p>　　在引导代码中，首先将 CPU 的中断关掉，然后设置各个数据段的值，读取段描述符，然后将 CR0 寄存器置为 1，即启动保护模式。此后 CPU 的寻址方式也发生了改变。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cli                         # Disable interrupts</span><br><span class="line"></span><br><span class="line"># Set up the important data segment registers (DS, ES, SS).</span><br><span class="line">xorw    %ax,%ax             # Segment number zero</span><br><span class="line">movw    %ax,%ds             # -&gt; Data Segment</span><br><span class="line">movw    %ax,%es             # -&gt; Extra Segment</span><br><span class="line">movw    %ax,%ss             # -&gt; Stack Segment</span><br><span class="line">...</span><br><span class="line">lgdt    gdtdesc             # Load Global Descriptor Table</span><br><span class="line">movl    %cr0, %eax</span><br><span class="line">orl     $CR0_PE_ON, %eax</span><br><span class="line">movl    %eax, %cr0          # Set cr0 register</span><br></pre></td></tr></table></figure>
+<p>　　切换到保护模式下后，CPU 要做的首先是各种段寄存器的设置，保证各个段对应的位置是正确的。此后跳转到 bootmain 函数，在这个函数中，操作系统的代码将从硬盘移动到内存当中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">bootmain(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">Proghdr</span> *<span class="title">ph</span>, *<span class="title">eph</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// read 1st page off disk</span></span><br><span class="line">  <span class="comment">// param 1: destination</span></span><br><span class="line">  <span class="comment">// param 2: size</span></span><br><span class="line">  <span class="comment">// param 3: offset from kernel</span></span><br><span class="line">  readseg((<span class="keyword">uint32_t</span>) ELFHDR, SECTSIZE*<span class="number">8</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// is this a valid ELF?</span></span><br><span class="line">  <span class="keyword">if</span> (ELFHDR-&gt;e_magic != ELF_MAGIC)</span><br><span class="line">    <span class="keyword">goto</span> bad;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// load each program segment (ignores ph flags)</span></span><br><span class="line">  ph = (struct Proghdr *) ((<span class="keyword">uint8_t</span> *) ELFHDR + ELFHDR-&gt;e_phoff);</span><br><span class="line">  eph = ph + ELFHDR-&gt;e_phnum;</span><br><span class="line">  <span class="keyword">for</span> (; ph &lt; eph; ph++)</span><br><span class="line">  <span class="comment">// p_pa is the load address of this segment (as well</span></span><br><span class="line">  <span class="comment">// as the physical address)</span></span><br><span class="line">  readseg(ph-&gt;p_pa, ph-&gt;p_memsz, ph-&gt;p_offset);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// call the entry point from the ELF header</span></span><br><span class="line">  <span class="comment">// note: does not return!</span></span><br><span class="line">  ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>)) (ELFHDR-&gt;e_entry))();</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+<p>　　值得注意的一点是，由于此时还不存在操作系统，从硬盘读取文件仅能通过汇编代码实现(in 和 out 指令)，此处代码对硬盘中文件的读取做了一点简单的封装(readseg函数)。<br>　　JOS 操作系统本质上就是个 ELF 文件，存放在硬盘中的固定位置处，因此，我们将读取 ELF 文件头，就可以获得数据段和代码段等的位置和大小，并将其移动到内存中的固定位置，这样就实现了从磁盘到内存的搬运。此后，只需要从 ELF 文件中获取操作系统入口的地址，并调用入口的函数，就实现了将控制权转移到操作系统的步骤，操作系统开始准备启动。</p>
+<h3 id="The-kernel"><a href="#The-kernel" class="headerlink" title="The kernel"></a>The kernel</h3><p>　　上面最后进入的 e-&gt;e_entry 对应的地址就是 entry.S 代码的开始。此处的代码是这样子的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># Load the physical address of entry_pgdir into cr3.  entry_pgdir</span><br><span class="line"># is defined in entrypgdir.c.</span><br><span class="line">movl  $(RELOC(entry_pgdir)), %eax</span><br><span class="line">movl  %eax, %cr3</span><br><span class="line"># Turn on paging.</span><br><span class="line">movl  %cr0, %eax</span><br><span class="line">orl $(CR0_PE|CR0_PG|CR0_WP), %eax</span><br><span class="line">movl  %eax, %cr0</span><br><span class="line"># Now paging is enabled, but we&apos;re still running at a low EIP</span><br><span class="line"># (why is this okay?).  Jump up above KERNBASE before entering</span><br><span class="line"># C code.</span><br><span class="line">mov $relocated, %eax</span><br><span class="line">jmp *%eax</span><br><span class="line">relocated:</span><br><span class="line"># Clear the frame pointer register (EBP)</span><br><span class="line"># so that once we get into debugging C code,</span><br><span class="line"># stack backtraces will be terminated properly.</span><br><span class="line">movl  $0x0,%ebp   # nuke frame pointer</span><br><span class="line"># Set the stack pointer</span><br><span class="line">movl  $(bootstacktop),%esp</span><br><span class="line"># now to C code</span><br><span class="line">call  i386_init</span><br></pre></td></tr></table></figure>
+<p>　　可以看到，首先开启了分页模式，也是从这里开始，内存的 [KERNBASE, KERNBASE+4MB) 映射到了 [0, 4MB)。然后，由于 IP 还停留在低地址处，在此处设置一个跳转使其跳到高地址。然后就是栈指针的设置。此处，通过查看汇编代码(使用 readelf 或 objdump 都可以)，可以知道，栈所在的位置是 0xf0108000 ~ 0xf0110000(不一定相同)。至于为什么此处 bootstacktop 的值是 0xf011000，可以通过 objdump -h 查看 kernel文件，恰好 data 段的开始就是 0xf0108000，加上段的大小是 32KB，因此栈顶就变成了 0xf0110000 了。然后，就跳转到了 i386_init 方法。</p>
+<p>　　初始化代码是这样子的:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">i386_init(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">extern</span> <span class="keyword">char</span> edata[], end[];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Before doing anything else, complete the ELF loading process.</span></span><br><span class="line">  <span class="comment">// Clear the uninitialized global data (BSS) section of our program.</span></span><br><span class="line">  <span class="comment">// This ensures that all static/global variables start out zero.</span></span><br><span class="line">  <span class="built_in">memset</span>(edata, <span class="number">0</span>, end - edata);</span><br><span class="line">  <span class="comment">// Initialize the console.</span></span><br><span class="line">  <span class="comment">// Can't call cprintf until after we do this!</span></span><br><span class="line">  cons_init();</span><br><span class="line">  <span class="comment">// Drop into the kernel monitor.</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    monitor(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　首先是进行一个 bss 段的清空操作。(bss 段在实际的 ELF 文件中仅仅存在段表，并没有实际占用任何磁盘空间)。然后，调用 cons_init 方法，在其中进行的是 cga 和 I/O 的一些初始化，具体细节可以不用管。到这里所有的初始化工作都完成了，程序可以正常运行。最后是一个死循环，不断调用 monitor 方法。在该方法中，循环读取用户的输入，并尝试执行用户输入的命令，即相当于一个简单的控制台。到这里整个程序的启动就基本结束。</p>
+<h3 id="mon-backtrace-实现"><a href="#mon-backtrace-实现" class="headerlink" title="mon_backtrace 实现"></a>mon_backtrace 实现</h3><p>　　在实验中，要求我们实现一个简单的打印栈轨迹的方法。基本思路是利用汇编代码中，函数调用入口和出口出的典型形式(注意栈是往地址更小的方向伸展的，在下图表示法中则是向下):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">push  ebp     # 旧栈基址入栈</span><br><span class="line">mov   ebp,esp # 设置新栈基址</span><br><span class="line">sub   esp,x   # 开辟栈空间</span><br><span class="line">push  regs... # 旧寄存器保存</span><br><span class="line"></span><br><span class="line">pop   regs... # 旧寄存器恢复</span><br><span class="line">mov   esp,ebp # 回收栈空间</span><br><span class="line">pop   ebp     # 旧栈基址恢复</span><br><span class="line">ret</span><br><span class="line"></span><br><span class="line"># 从上到下地址变小</span><br><span class="line"># ...</span><br><span class="line"># | eip1 |</span><br><span class="line"># | ebp1 |  &lt;- ebp0</span><br><span class="line"># | ...  |</span><br><span class="line"># | argv02 |</span><br><span class="line"># | argv01 |</span><br><span class="line"># | eip0 |</span><br><span class="line"># | ebp0 | &lt;- current ebp</span><br></pre></td></tr></table></figure>
+<p>　　通过这样的特征，我们可以得到类似上面那样的栈结构，借助每个 ebp 存放的恰好是旧的 ebp 在栈中的位置这样的关系，形成了一个链表，我们可以打印出每个函数调用时的栈信息。边界是前面在刚刚进入保护模式的时候，ebp 的值为 0。以下是我的答案:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">mon_backtrace(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv, struct Trapframe *tf)</span><br><span class="line">&#123;</span><br><span class="line">    cprintf(<span class="string">"Stack backtrace:\n"</span>);</span><br><span class="line">    <span class="keyword">int</span>* ebp = (<span class="keyword">int</span>*)read_ebp();</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Eipdebuginfo</span> <span class="title">info</span>;</span></span><br><span class="line">    <span class="keyword">while</span> (ebp) &#123;</span><br><span class="line">        <span class="keyword">int</span>* itr = ebp+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> eip = *(itr++);</span><br><span class="line">        <span class="keyword">int</span> argv1 = *(itr++);</span><br><span class="line">        <span class="keyword">int</span> argv2 = *(itr++);</span><br><span class="line">        <span class="keyword">int</span> argv3 = *(itr++);</span><br><span class="line">        <span class="keyword">int</span> argv4 = *(itr++);</span><br><span class="line">        <span class="keyword">int</span> argv5 = *(itr++);</span><br><span class="line">        cprintf(<span class="string">"  ebp %08x  eip %08x  args %08x %08x %08x %08x %08x\n"</span>, ebp, eip, argv1, argv2, argv3, argv4, argv5);</span><br><span class="line">        ebp = (<span class="keyword">int</span>*)(*ebp);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> res = debuginfo_eip(eip, &amp;info);</span><br><span class="line">        <span class="keyword">if</span> (!res) &#123;</span><br><span class="line">            cprintf(<span class="string">"    %s:%d: %.*s+%d\n"</span>, info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name, (eip - info.eip_fn_addr));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Lab-Shell"><a href="#Lab-Shell" class="headerlink" title="Lab Shell"></a>Lab Shell</h2><p>　　shell 可以说是 linux 中和系统交互的窗口, 它读取我们输入的指令, 并进行解析和执行. shell 有很多个版本, 从比较古老的 sh, 到 csh, bash, zsh 等, 每个类型的 shell 都有其特色. 在这个实验中, 需要实现的就是一个简易的 shell. shell 的一般逻辑如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> buf[MAXBUF];</span><br><span class="line"><span class="keyword">while</span> (readcmd(buf)) &#123; <span class="comment">// 读取命令</span></span><br><span class="line">  Command cmd = parse(buf); <span class="comment">// 解析命令</span></span><br><span class="line">  <span class="keyword">if</span> (fork() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    wait(<span class="number">0</span>);  <span class="comment">// 等待子进程</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    execute(cmd); <span class="comment">// 子进程执行命令</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"@"</span>); <span class="comment">// 打印 prompt</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　在这个实验中考察的主要是重定向和管道. 首先, linux 中, 一般初始进程有三个文件描述符: 0, 1, 2. 0 代表标准输入, 1 代表标准输出, 2 代表标准错误. 在编程中, 通常 scanf 就是从描述符 0 中读入的. 而重定向就是用来修改输入和输出的目的地的. 比如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat file.c &gt; a.out</span><br></pre></td></tr></table></figure>
+<p>　　‘&gt;’ 是输出重定向, 可以把执行 ‘cat file.c’ 的 1 号描述符从指向控制台变为指向 a.out 的文件. 结果就是 file.c 中的内容将会被输入到 a.out 文件中. 管道则是 linux 中的一种通信机制, 想象现实中的一条水管, 如果把数据看成是流动的水, 通过管道读写数据就像水流经水管一样. 并且, 水管是单向的, 一条水管中的只能从一边流向另一边, 管道也是如此. linux 中的 pipe 函数可以创建一个管道, 得到输入和输出的描述符. 利用这两个描述符, 就可以从管道中接受数据或发送数据. 不过一旦输入数据, 输出描述符将自动关闭, 反过来也是, 防止双向流动.</p>
+<p>　　在实验中, 关于重定向有个很巧妙的写法:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">redirect(<span class="keyword">int</span> d, <span class="keyword">int</span>* fd) &#123;</span><br><span class="line">    close(d); <span class="comment">// 关闭原先的输入/输出描述符(0/1)</span></span><br><span class="line">    dup(fd[d]); <span class="comment">// 复制描述符, 由于前面关闭了描述符, 根据描述符的分配原则, 这里 0/1 描述符将指向管道</span></span><br><span class="line">    close(fd[<span class="number">0</span>]); <span class="comment">// 关闭管道的两个描述符</span></span><br><span class="line">    close(fd[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　pipe 创建管道后, 当想更换输入描述符时, 调用 redirect(0, fd), 同理, 更换输出描述符时, 调用 redirect(1, fd). 下图就比较形象地展示了这个函数的功能</p>
+<p><img src="/2020/02/22/mit6-828/pipe.png" alt="pipe"></p>
+<p>　　利用这个函数, 我们可以很简单地实现 ‘&gt;’ 和 ‘&lt;’. 而遇到 ‘|’ 符号, 则可以将前后的指令分为两部分 s1 和 s2, fork 后子进程调用 redirect(1,fd) 操作, 然后执行 s1 部分的指令; 父进程则 redirect(0, fd) 后执行 s2 部分的指令(有可能递归) 即可. 伪代码如下(仅思路, 具体代码不建议这样写):</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>* cmd = ...;</span><br><span class="line"><span class="keyword">if</span> (cmd[i] == <span class="string">'|'</span>) &#123;</span><br><span class="line">  <span class="keyword">char</span>* s1 = cmd;</span><br><span class="line">  <span class="keyword">char</span>* s2 = cmd+i+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> pd[<span class="number">2</span>];</span><br><span class="line">  pipe(pd);</span><br><span class="line">  <span class="keyword">if</span> (fork() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    redirect(<span class="number">0</span>,pd);</span><br><span class="line">    execute(s2);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    redirect(<span class="number">1</span>,pd);</span><br><span class="line">    execute(s1)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　写完后, make qemu 后, 调用 testsh nsh, 看到 passed all tests 则说明成功了.</p>
+<h2 id="Lab-Mmap"><a href="#Lab-Mmap" class="headerlink" title="Lab Mmap"></a>Lab Mmap</h2><p>　　mmap 实验应该是所有实验里面代码量相对较大的一个, debug 起来也比较麻烦. 建议在这个实验中写好打印 mmap 用到的相关数据的函数, 便于后面的调试. 在该实验中, 需要实现 linux 中的 mmap 函数的简易版本, 用于将某个文件映射到内存空间上. 在该实验中, addr 和 offset 恒为 0. flags 只分为 SHARED 和 PRIVATE 两种, 对于 SHARED 类型的映射, 在 unmap 后需要写回原文件, 而 PRIVATE 则不需要写回.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mmap</span><span class="params">(<span class="keyword">void</span> *addr, <span class="keyword">size_t</span> length, <span class="keyword">int</span> prot, <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>　　和其他系统调用一样, 首先要做的是在 syscall.c 和 syscall.h 中添加 mmap 和 munmap 的系统调用号, 以及 usys.pl 中添加 entry. 这里我选择的是新建一个 mmap.c 文件, 在其中实现 mmap 相关的函数. 由于 mmap 是属于进程的, 为了便于对 mmap 映射区域的管理, 我添加了一个 vma 的结构体如下(写在了 proc.h 中). 结构体中包含每个映射区域的起始地址, 长度, flags, 映射的文件指针, 以链表的形式串联在一起. </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vma</span> &#123;</span></span><br><span class="line">  uint64 addr;</span><br><span class="line">  <span class="keyword">int</span> len;</span><br><span class="line">  <span class="keyword">int</span> prot;</span><br><span class="line">  <span class="keyword">int</span> flags;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span>* <span class="title">f</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vma</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc</span> &#123;</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vma</span>* <span class="title">head</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　在 mmap.c 文件中, 首先需要对 vma 结构体进行管理. 这里选择用一个固定长度的空的 vma 数组用于分配, 添加 allocvma 和 freevma 进行分配和回收, 使用链表的形式将所有未用的 vma 串联在一起. 在 mmap 中按照以下的思路进行:</p>
+<ol>
+<li>检查参数的范围(比如 len &gt; 0)</li>
+<li>检查权限问题. 比如一个不可读的文件不可能使用内存映射给用户访问, 应该返回异常. 或者一个不可写的文件, prot 标志区域可写并且 flags 标记为 MAP_SHARED(即会写回源文件) 也是有问题的.</li>
+<li>调用 allocvma 获得一个空的 vma 结构体</li>
+<li>搜索当前进程的页表, 找到一个空闲区域, 并将区域的首地址, 长度等信息填写进 vma 中, 并加入进程的 vma 链表</li>
+<li>filedup 增加文件的引用数, 防止文件被提前回收</li>
+</ol>
+<p>　　munmap 的思路同样类似</p>
+<ol>
+<li>检查参数范围</li>
+<li>从当前进程中查找到需要 unmap 的地址所在的 vma</li>
+<li>如果有 MAP_SHARED 标识, 则写回. PTE_D(1&lt;&lt;7) 标志位表示页面被修改过</li>
+<li>uvmunmap 将页面回收</li>
+<li>如果 vma 对应的空间全部回收, 则关闭文件, 并将该 vma 从进程中除去</li>
+</ol>
+<p>　　这里有几个需要注意的点. 第一个是上面提到的权限问题的检查. 第二个是虚拟内存中空闲区域的查找, 需要注意空闲区域必须在当前页表中为空, 并且<strong>不能和其他空闲区域重叠</strong>, 否则会出现严重的问题. 此外, 由于使用了 lazy allocation, 要如何保证查找到的空闲区域不会被其他操作用到(虽然我没有进行额外的处理, 但可以通过测试). 第三个是 uvmunmap 需要进行对应的修改. 因为 lazy allocation, uvmunmap 的区域有可能实际上并没有分配到任何的物理内存, 这时候不应该 panic, 而是直接跳过.</p>
+<p>　　在碰到缺页异常的时候, 需要先检查访问的地址是否位于 vma 当中, 如果是的话则需要分配一个新的物理页给进程, 并调用 mappages 进行地址的映射. 如果不在 vma 当中才触发 panic</p>
+<p>　　最后 exit 和 fork 函数需要做适当的修改. 由于子进程继承了父进程的所有虚拟内存空间, mmap 的区域同样需要继承. 在 fork 结束前添加 vma 的复制函数, 将 vma 复制到新的进程当中即可.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vma</span>* <span class="title">r</span> = <span class="title">p</span>-&gt;<span class="title">vmhead</span>;</span></span><br><span class="line">np-&gt;vmhead = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (r) &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vma</span>* <span class="title">nr</span> = <span class="title">copyvma</span>(<span class="title">r</span>);</span> <span class="comment">// 注意 copyvma 中需要调用 filedup 增加引用数</span></span><br><span class="line">  nr-&gt;next = np-&gt;vmhead;</span><br><span class="line">  np-&gt;vmhead = nr;</span><br><span class="line">  r = r-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　同样的, exit 函数将所有 vma 依次释放. 但需要小心一个链表操作的问题, 比如下面的代码可能出现严重错误.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vma</span>* <span class="title">r</span> = <span class="title">p</span>-&gt;<span class="title">vmhead</span>;</span> <span class="comment">// 进程的 vma 链表表头</span></span><br><span class="line"><span class="keyword">while</span> (r) &#123;</span><br><span class="line">  munmap((<span class="keyword">void</span>*)(r-&gt;addr), r-&gt;len);</span><br><span class="line">  r = r-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　表面看起来似乎没问题, 但是在 munmap 函数中, 由于将整个 vma 回收, 会修改到 vma 链表, 并且 r 将会被回收, r = r -&gt; next 是有问题的, 应该修改为 r = p -&gt; vmhead</p>
+<h2 id="Lab-FileSystem"><a href="#Lab-FileSystem" class="headerlink" title="Lab FileSystem"></a>Lab FileSystem</h2><p>　　这里根据 6.828 官网中的 <a href="https://pdos.csail.mit.edu/6.828/2019/xv6/book-riscv-rev0.pdf" target="_blank" rel="noopener">book-riscv-rev0.pdf</a> 相关介绍, 讲下简单文件系统的实现.</p>
+<p>　　6.828 中的文件系统和早期 Unix 系统比较类似, 整个文件系统大致分为七个层次, 下面按照层次模型进行分析, 给出每一层的作用以及和上下层的交互关系.(这里的分层并不是很严格, 跨层之间的调用是存在的)</p>
+<p><img src="/2020/02/22/mit6-828/fs_layers.png" alt="fs_layers"></p>
+<p>　　最底层是硬件层/汇编层, 直接和硬件进行接触. 对于上层而言, 它的作用是, 给定一个设备, 缓冲区以及需要读写的块号, 对硬件中对应的数据块进行读写. 对应于源文件中的 virtio_disk.c 文件. 通常这样一个层次包含了磁盘驱动程序以及对应的硬件. </p>
+<p>　　上面一层是 Buffer 层, 顾名思义, 最直接的作用就是做缓存, 对于上层到来的所有读写请求进行缓存操作, 如果缓存中没有找到, 才向下一层也就是硬件层发出对应请求. 对应与源文件中的 bio.c 文件. 简单起见, xv6 采用的是 LRU(Least Recently Used) 的缓存策略. 这里是 buf 的定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">spinlock</span> <span class="title">lock</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">buf</span> <span class="title">buf</span>[<span class="title">NBUF</span>];</span> <span class="comment">// NBUF = 30</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">buf</span> <span class="title">head</span>;</span></span><br><span class="line">&#125; bcache;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">buf</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> valid;   <span class="comment">// has data been read from disk?</span></span><br><span class="line">  <span class="keyword">int</span> disk;    <span class="comment">// does disk "own" buf?</span></span><br><span class="line">  uint dev;</span><br><span class="line">  uint blockno;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">sleeplock</span> <span class="title">lock</span>;</span></span><br><span class="line">  uint refcnt;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">buf</span> *<span class="title">prev</span>;</span> <span class="comment">// LRU cache list</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">buf</span> *<span class="title">next</span>;</span></span><br><span class="line">  uchar data[BSIZE]; <span class="comment">// BSIZE = 1024</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>　　可以看到, 整个缓存层其实比较简单, 包含了几十个预先分配好的缓存块, 一个缓存头, 以及一个自旋锁. 每个缓存块则包含较多的缓存相关信息, 包括 valid(当前块是否合法), dev(块对应的设备号), blockno(块对应于磁盘中的块号), refcnt(引用数), data(对应的数据) 等. 值得注意的一点是, 这里的 “块” 和磁盘的 “块” 指的不是同一个概念. 磁盘的读写单位为扇区(一般为 512 字节)或簇, 而这里的块指的是一个 buf, 为 1024 字节, 下文中的块均是指 buf. 接收到读缓存块的命令时, 先在 bcache.buf 中查找是否存在对应的块, 如果存在则直接返回, 没有存在则从向磁盘驱动程序拿, 再返回. 接收到写缓存块的命令时, 则直接调用驱动程序进行写入.</p>
+<p>　　注意到缓存区存在锁, 并且每个缓存块也有对应的锁, 因此 Cache 层还有一个重要的作用就是同步所有对硬盘的操作, 这使得文件系统能够较好地支持多线程/进程.</p>
+<p>　　再上来一层则是 logging 层. 首先考虑一个问题, 对于文件系统来说, 由于磁盘的读写速度是较慢的, 一个对磁盘的读写指令完全有可能会因为某些异常而被打断, 比如 crash. 这样一种现象有可能会造成严重的后果. 比如回收一个文件时, 如果出现 crash, 有可能导致<strong>文件系统持有对一个已回收区域的引用, 或者文件系统中存在一个没有引用但却占用空间的区域</strong>. 前者浪费了磁盘的存储空间, 后者可能会导致安全性问题(其他用户如果恰好分配到了这块区域则可以读取到数据). 因此, crash recovery 是很有必要的, 这就是 logging 层的作用. 对应于源文件中的 log.c</p>
+<p>　　logging 的实现原理和 log 其实很相似, 对于每一个写入(transaction)操作(读取操作不需要考虑 crash 造成的问题), log 将需要写入的块的块号记录下来, 然后就返回, 并增加对应 buf 的引用(防止在 cache 层被回收). 真正的写入在 commit 过程中. 在每个文件系统调用结束的时候, log 层判断当前是否已经没有文件系统调用在执行, 如果有的话则执行 commit 操作. write_log 将当前在 log 中留有记录的块写入磁盘中的 log 区, 然后将 logheader(包含 log 的数量等数据) 写入 log 区. 然后再真正开始写入, 将 log 中的块写入真正的目的地, 最后再调用 write_head, 更新 logheader 并写入. 可以代入确定, 无论 crash 在哪一步前后发生, 都不会破坏文件系统结构.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">commit(<span class="keyword">int</span> dev) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">log</span>[dev].lh.n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    write_log(dev);     <span class="comment">// Write modified blocks from cache to log</span></span><br><span class="line">    write_head(dev);    <span class="comment">// Write header to disk -- the real commit</span></span><br><span class="line">    install_trans(dev); <span class="comment">// Now install writes to home locations</span></span><br><span class="line">    <span class="built_in">log</span>[dev].lh.n = <span class="number">0</span>;</span><br><span class="line">    write_head(dev);    <span class="comment">// Erase the transaction from the log</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　Crash Recovery 的操作是发生在文件系统启动的时候, 检查 log 区域中的 logheader 是否包含有已经 commit 但是还没写入对应区域的块, 有的块则将其写入到目的地. 另外, 除了保证文件系统的安全外, log 层还控制了每次文件系统能写入的最大数据(不能超过 log 区的大小).</p>
+<p>　　再上来一层是 inode 层次, 这一层主要用来维护每个文件的信息. inode 总共分为两类, 一个是在磁盘的 dinode, 另一个是在内存中的 inode. 磁盘中的 inode 和每一个文件相对应, 包含文件的大小, 文件数据所在的位置, 文件类型, 对应的设备号等. 结构大概如下:</p>
+<p><img src="/2020/02/22/mit6-828/fs_filerep.png" alt="fs_filrep"></p>
+<p>　　每个 dinode 中存放了 13 个地址(准确来说应该是块号), 其中前十二个指向了 12 个存储于磁盘的块, 第 13 个指向了磁盘中的一个 “目录块”, 这个块中每一个位置都指向了另外一个位于磁盘中的块. 每个块号占 4 字节, 一个块为一个 1024B, 因此一个文件能包含的最大的数据量为 (12+(1024/4)) x 256 = 68608 字节. </p>
+<p>　　位于内存中的 inode 除了包含 dinode 对应的信息外, 还包含了一个锁(防止对文件的并发访问), 一个 inode number 等数据, 从这里开始到上面的层次中都是使用 inode 这样一个抽象来执行文件操作的. 相关的操作位于 file.c 和 fs.c 中. 到这里其实文件系统核心部分已经结束, 下面以对一个文件的 read 和 write 为例, 从上到下过一遍文件系统: </p>
+<p>　　首先, 系统调用触发后, 根据调用号操作系统找到对应的实现函数的地址并跳转, 读入参数后, 系统调用 fileread 函数, 判断文件类型属于 inode(也有可能是管道或者设备等), 并为 inode 上锁后, 调用 readi 函数. 在 readi 函数中, 使用 bread 函数从 buffer 中读取 buf 块, 并将其内容复制到用户制定的缓冲区中. </p>
+<p>　　而对于写数据则稍微麻烦一点. 和前面类似, 进入到 filewrite 函数, 这里需要处理一次写入的数据大小, 每次操作的数据块不能大于 MAXOPBLOCKS, 过大时需要分批调用, 等前面的数据执行完 commit 操作后再次写入. 注意到这里需要用到 logging 层, 因此, 锁定 inode 前还要调用 begin_op 和 end_op 操作, 确保 logging 层的正确运行. 然后调用 writei 函数, 和 readi 类似, 读取 buf 块后, 将数据从用户制定的缓冲区中复制到 buf 里面, 然后调用 log_write 函数将该写入操作记录下来. 退回到 filewrite 函数后, 执行 end_op 操作时, 如果此时不存在其他的文件系统调用的话则进行 commit 将所有 log 真正地写入磁盘当中.</p>
+<h3 id="Large-file"><a href="#Large-file" class="headerlink" title="Large file"></a>Large file</h3><p>　　实验的第一项任务是扩展文件的最大容量. 前面写到, 由于 inode 本身的设计, 一个文件最多只能包含 68608 个字节, 超过的话则无法处理. 在当前来看, 这样的容量显得过小了. 因此, 在这个任务中需要拓展文件的容量. 解决的思路整体上也比较简单直接, 更改 inode 的结构, 之前我们用的是一个一层的间接引用, 现在我们将再增加一个二层的引用. 13 个块中, 前面 11 个是直接指向数据块, 第十二个和之前一样指向一个 “一级目录”, 第十三个指向的具有 “二级目录”, 最后文件的最大的大小就可以变为 (11+256+256x256)x256 = 16845568 Bytes.</p>
+<p>　　首先需要更改 inode 和 dinode 的定义, param.h 中 FISIZE 大小等. 需要修改的核心函数有两个, 一个是 bmap, 用于获取 inode 中第 i 个块对应的块号. 思路和前面其实类似, 目录为空则分配一个, 然后从 cache 中读取, 注意如果修改了 buf, 则需要调用 log_write 将改动保存.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 panic 前插入这几行</span></span><br><span class="line">bn -= NINDIRECT;</span><br><span class="line"><span class="keyword">if</span> (bn &lt; NINDIRECT*NINDIRECT) &#123;</span><br><span class="line">  <span class="keyword">if</span> ((addr = ip-&gt;addrs[NDIRECT+<span class="number">1</span>]) == <span class="number">0</span>)</span><br><span class="line">    ip-&gt;addrs[NDIRECT+<span class="number">1</span>] = addr = balloc(ip-&gt;dev);</span><br><span class="line">  bp = bread(ip-&gt;dev, addr);</span><br><span class="line">  a = (uint*)bp-&gt;data;</span><br><span class="line">  uint idx = bn / NINDIRECT;</span><br><span class="line">  <span class="keyword">if</span> ((addr = a[idx]) == <span class="number">0</span>) &#123;</span><br><span class="line">    a[idx] = addr = balloc(ip-&gt;dev);</span><br><span class="line">    log_write(bp);</span><br><span class="line">  &#125;</span><br><span class="line">  addr = bmap_dfs(ip, bn-idx*NINDIRECT, addr);</span><br><span class="line">  brelse(bp);</span><br><span class="line">  <span class="keyword">return</span> addr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> uint</span><br><span class="line">bmap_dfs(struct inode *ip, uint bn, uint addr) &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">buf</span>* <span class="title">bp</span> = <span class="title">bread</span>(<span class="title">ip</span>-&gt;<span class="title">dev</span>, <span class="title">addr</span>);</span></span><br><span class="line">  uint* a = (uint*)bp-&gt;data;</span><br><span class="line">  <span class="keyword">if</span> ((addr = a[bn]) == <span class="number">0</span>) &#123;</span><br><span class="line">    a[bn] = addr = balloc(ip-&gt;dev);</span><br><span class="line">    log_write(bp);</span><br><span class="line">  &#125;</span><br><span class="line">  brelse(bp);</span><br><span class="line">  <span class="keyword">return</span> addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　另外一个需要修改的则是 itrunc, 做法类似, 这里就不在赘述了. 使用 balloc 分配新的块, 使用 bread 和 brelse 进行块的读取和释放, 使用 log_write 保存更改.</p>
+<h3 id="Symbolic-link"><a href="#Symbolic-link" class="headerlink" title="Symbolic link"></a>Symbolic link</h3><p>　　另一个任务是添加链接功能, 类似与 windows 中的快捷方式. 思路同样也比较简单. 在 stat.h 中添加新的文件类型的宏 T_SYMLINK, 然后添加新的系统调用 sym_link 以及 symlinktest 加入编译. 这种链接的思想是, 将想要指向的文件路径存放在当前文件当中. 打开这个文件的时候, 特殊判断如果文件属于 T_SYMLINK 类型, 则打开文件中存放的文件路径对应的文件. 因此, 需要更改的为 open 函数. 我的处理方法是, 文件属于 T_SYMLINK 函数时, 则调用 recur_open 函数, 实现如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> open_count = <span class="number">0</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inode</span>*</span></span><br><span class="line"><span class="class"><span class="title">recur_open</span>(<span class="title">struct</span> <span class="title">inode</span>* <span class="title">ip</span>) &#123;</span></span><br><span class="line">  <span class="keyword">if</span> (open_count &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Cycle encountered\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">char</span> path[MAXPATH];</span><br><span class="line">  readi(ip, <span class="number">0</span>, (uint64)path, <span class="number">0</span>, MAXPATH);</span><br><span class="line">  iunlockput(ip);</span><br><span class="line">  ip = namei(path);</span><br><span class="line">  <span class="keyword">if</span> (ip == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  ilock(ip);</span><br><span class="line">  <span class="keyword">if</span> (ip-&gt;type == T_SYMLINK) &#123;</span><br><span class="line">    open_count += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> recur_open(ip);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> ip;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　在文件中进行递归调用, 同时为了防止循环打开, 这里使用一个静态变量进行计数, 每次调用 recur_open 前需要清零. 另外, 在 fcntl.h 中添加新的宏 O_NOFOLLOW, 表明直接打开文件而不根据文件中存放的路径递归地打开.</p>
+<h2 id="Lab-net"><a href="#Lab-net" class="headerlink" title="Lab net"></a>Lab net</h2><p>　　网络应该是 xv6 实验中比较难调试并且难度较大的板块. 在该任务中, 我们要实现一个简易的网卡驱动, 支持使用 socket 进行简单的 udp 通信. 这里需要先过一遍计网的相关知识, 做起来会比较简单.</p>
+<p><img src="/2020/02/22/mit6-828/netstack.png" alt="netstack"></p>
+<p>　　计算机网络现在广泛被人接受的应该是五层架构模型, 自顶向下分别为应用层(HTTP 协议等), 传输层(TCP, UDP 协议等), 网络层(IP 协议等), 数据链路层, 物理层. 每一层只和上下层之间具有直接的依赖关系. 对于大多数应用而言, 只需要用到应用层方面的信息. 在本实验中, 需要实现简单的 UDP 协议, 还需要接触到传输层.</p>
+<h3 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h3><p>　　第一个任务是写网卡驱动, 对应于 e1000.c 文件. 在这个任务中, 需要完成两个函数 e1000_transmit 和 e1000_recv. 动手之前需要先简单了解网卡驱动的实现原理. 这里是我的理解: 网卡是通过在网卡的寄存器上写入相应的值来进行控制的, 而每个网卡对于交互的要求(比如寄存器每个 bit 的含义)不一定相同, 因此需要有不同的驱动程序来实现. 据说, linux 的源代码中约有一半的源代码都是各种各样的驱动程序, 这应该也是原因之一. 操作系统使用内存映射技术将网卡寄存器的地址映射到虚拟内存空间当中, 我们只需要往寄存器中填入相应的值即可.</p>
+<p>　　整个任务按照实验文档中给的提示就可以通过了, 事实上提示已经把所有需要做的事情写在了上面. 唯一需要注意一点的可能是 cmd 的设置. 完成后, 可以使用 make ping 进行测试.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">e1000_transmit(struct mbuf *m) &#123;</span><br><span class="line">  acquire(&amp;e1000_lock);</span><br><span class="line">  <span class="keyword">int</span> pos = regs[E1000_TDT];</span><br><span class="line">  <span class="keyword">if</span> (pos &gt; TX_RING_SIZE) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Transmit: overflow!\n"</span>);</span><br><span class="line">    <span class="keyword">goto</span> err_transmit;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">tx_desc</span>* <span class="title">desc</span> = <span class="title">tx_ring</span> + <span class="title">pos</span>;</span></span><br><span class="line">  <span class="keyword">if</span> (!(desc-&gt;status &amp; E1000_TXD_STAT_DD)) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Transmit: status error!\n"</span>);</span><br><span class="line">    <span class="keyword">goto</span> err_transmit;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mbuf</span> *<span class="title">last</span> = <span class="title">tx_mbufs</span>[<span class="title">pos</span>];</span></span><br><span class="line">  <span class="keyword">if</span> (last) &#123;</span><br><span class="line">    mbuffree(last);</span><br><span class="line">  &#125;</span><br><span class="line">  print(m);</span><br><span class="line">  tx_mbufs[pos] = m;</span><br><span class="line">  desc-&gt;addr = (uint64) m-&gt;head;</span><br><span class="line">  desc-&gt;length = m-&gt;len;</span><br><span class="line">  desc-&gt;cmd = E1000_TXD_CMD_EOP | E1000_TXD_CMD_RS;</span><br><span class="line">  regs[E1000_TDT] = (pos+<span class="number">1</span>)%TX_RING_SIZE;</span><br><span class="line">  release(&amp;e1000_lock);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">err_transmit:</span><br><span class="line">  release(&amp;e1000_lock);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">e1000_recv(<span class="keyword">void</span>) &#123;</span><br><span class="line">  acquire(&amp;e1000_lock);</span><br><span class="line">  <span class="keyword">int</span> pos = (regs[E1000_RDT] + <span class="number">1</span>) % RX_RING_SIZE;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">rx_desc</span>* <span class="title">desc</span> = <span class="title">rx_ring</span> + <span class="title">pos</span>;</span></span><br><span class="line">  <span class="keyword">while</span> (desc-&gt;status &amp; E1000_RXD_STAT_DD) &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mbuf</span>* <span class="title">m</span> = <span class="title">rx_mbufs</span>[<span class="title">pos</span>];</span></span><br><span class="line">    mbufput(m, desc-&gt;length);</span><br><span class="line">    rx_mbufs[pos] = mbufalloc(<span class="number">0</span>);</span><br><span class="line">    desc-&gt;addr = (uint64) rx_mbufs[pos]-&gt;head;</span><br><span class="line">    desc-&gt;length = rx_mbufs[pos]-&gt;len;</span><br><span class="line">    desc-&gt;status = <span class="number">0</span>;</span><br><span class="line">    regs[E1000_RDT] = pos;</span><br><span class="line">    pos = (pos + <span class="number">1</span>) % RX_RING_SIZE;</span><br><span class="line">    desc = rx_ring + pos;</span><br><span class="line">    release(&amp;e1000_lock);</span><br><span class="line">    print(m);</span><br><span class="line">    net_rx(m);</span><br><span class="line">    acquire(&amp;e1000_lock);</span><br><span class="line">  &#125;</span><br><span class="line">  release(&amp;e1000_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h3><p>　　第二个任务是实现 UDP 通信. socket 本身可以看做是一种文件, 这里使用 FD_SOCK 这样一种类型来标记 Socket. 在 file.c 中的 fileclose, fileread, filewrite 函数中需要添加对应的判断, 调用 socket 的关闭, 读写方法(在 def.h 中添加定义, 在 sysnet.c 文件中实现). 这里复习一下 UDP 协议.</p>
+<p>　　UDP 协议是一种无连接的传输协议(与此相对的就是 TCP 协议). 本身 UDP 协议较为简单, 它只是在应用层报文上添加了一个 UDP 头, 其他几乎没有做任何处理. 不提供任何的拥塞控制, 顺序保证, 重传等功能. 这里是 UDP 头的结构:</p>
+<p><img src="/2020/02/22/mit6-828/udp.png" alt="UDP"></p>
+<p>下面是简单的收发数据流程:</p>
+<p>　　数据报到达网卡后, 触发中断, 进入 e1000_recv 方法, 网卡驱动程序将 buf 取出并上传到 net_rx, 再依次经过 net_rx_ip, net_rx_udp 方法去除每一层的报头, 最后到达了 sockrecvudp 方法. 在 sockrecvudp 方法中, 遍历 sockets 列表找到能处理当前 UDP 报文的 socket(注意使用锁), 然后添加到 socket 的 buf 队列当中, 并唤醒等待数据到来的线程(在 sockread 方法中阻塞).<br>　　sockread 方法中, 由于 socket 可能为空, 需要先阻塞, 等待数据到来后再用 copyout 将数据复制到用户指定的缓冲区中, 注意 buf 读完的话要回收.<br>　　write 方法中, 则直接将数据复制到新建的 buf 中(注意要在头部预留足够的空间给后面的协议), 然后调用 net_tx_udp, 依次经过 net_tx_ip, net_tx_eth, e1000_transmit 函数, 数据报发送到了网卡, 经由网卡将数据发送出去, 完成写入功能.</p>
+<p>　　sockclose 方法思路则很简单, 从 sockets 列表中取出 socket, 并将该 socket 中全部的 buf 取出并回收, 然后再将 socket 回收即可. 代码的话在 github 中有, 这里就不贴了.</p>
+<h2 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h2><p>　　到这里整个 mit6.828 系列的实验就结束了. 可以看到, 整个实验难度基本还是落在后面的几个实验当中, 通过做这样的几个实验也加深了自己对操作系统这样一个复杂的概念的认识. 前前后后写实验以及完成小结花费了不少时间, 但现在看来还是比较值得的. 实际中的操作系统比本实验的明显要远远复杂的多, xv6 系统中存在的很多问题, 实际操作系统基本都能解决, 在很多地方应该也有着各式各样的优化. 也正是这些一个个问题的解决, 才有了我们今天能够流畅运行的计算机.</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Operating-System/" rel="tag"><i class="fa fa-tag"></i> Operating System</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/12/gson/" rel="next" title="Serialization in Java & Gson">
+                <i class="fa fa-chevron-left"></i> Serialization in Java & Gson
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prologue"><span class="nav-number">1.</span> <span class="nav-text">Prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab-Booting-a-PC"><span class="nav-number">2.</span> <span class="nav-text">Lab Booting a PC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Boot-Loader"><span class="nav-number">2.1.</span> <span class="nav-text">Boot Loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-kernel"><span class="nav-number">2.2.</span> <span class="nav-text">The kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mon-backtrace-实现"><span class="nav-number">2.3.</span> <span class="nav-text">mon_backtrace 实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab-Shell"><span class="nav-number">3.</span> <span class="nav-text">Lab Shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab-Mmap"><span class="nav-number">4.</span> <span class="nav-text">Lab Mmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab-FileSystem"><span class="nav-number">5.</span> <span class="nav-text">Lab FileSystem</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Large-file"><span class="nav-number">5.1.</span> <span class="nav-text">Large file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Symbolic-link"><span class="nav-number">5.2.</span> <span class="nav-text">Symbolic link</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lab-net"><span class="nav-number">6.</span> <span class="nav-text">Lab net</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Driver"><span class="nav-number">6.1.</span> <span class="nav-text">Driver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Socket"><span class="nav-number">6.2.</span> <span class="nav-text">Socket</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Epilogue"><span class="nav-number">7.</span> <span class="nav-text">Epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">110.9k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
