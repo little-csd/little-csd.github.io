@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Algorithm,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="prologue这篇博客主要是想探索关于图像压缩方面的算法. 现在流行的图像算法有很多, 像是 jpeg, png, webp 等等. 下面按照类别依次去看下各个算法的实现. what is Image了解图片前, 需要知道颜色空间这样的概念. sRGB 是我们常用的一种颜色空间, 在该空间下, 所有的颜色/像素点是由三原色(Red-Green-Blue) 经过混合组成的, 可以用一个三元组表示.">
+<meta name="keywords" content="Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Image compression algorithm">
+<meta property="og:url" content="http://yoursite.com/2020/07/15/image-compression/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="prologue这篇博客主要是想探索关于图像压缩方面的算法. 现在流行的图像算法有很多, 像是 jpeg, png, webp 等等. 下面按照类别依次去看下各个算法的实现. what is Image了解图片前, 需要知道颜色空间这样的概念. sRGB 是我们常用的一种颜色空间, 在该空间下, 所有的颜色/像素点是由三原色(Red-Green-Blue) 经过混合组成的, 可以用一个三元组表示.">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif1.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif2.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif3.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif4.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif5.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gif6.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gifencode.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/gifdecode.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/15/image-compression/zigzag.svg">
+<meta property="og:updated_time" content="2020-08-04T14:10:17.977Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Image compression algorithm">
+<meta name="twitter:description" content="prologue这篇博客主要是想探索关于图像压缩方面的算法. 现在流行的图像算法有很多, 像是 jpeg, png, webp 等等. 下面按照类别依次去看下各个算法的实现. what is Image了解图片前, 需要知道颜色空间这样的概念. sRGB 是我们常用的一种颜色空间, 在该空间下, 所有的颜色/像素点是由三原色(Red-Green-Blue) 经过混合组成的, 可以用一个三元组表示.">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/15/image-compression/gif.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/15/image-compression/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Image compression algorithm | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/15/image-compression/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Image compression algorithm</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-07-15T23:15:01+08:00">
+                2020-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/07/15/image-compression/" class="leancloud_visitors" data-flag-title="Image compression algorithm">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  7.9k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="prologue"><a href="#prologue" class="headerlink" title="prologue"></a>prologue</h2><p>这篇博客主要是想探索关于图像压缩方面的算法. 现在流行的图像算法有很多, 像是 jpeg, png, webp 等等. 下面按照类别依次去看下各个算法的实现.</p>
+<h2 id="what-is-Image"><a href="#what-is-Image" class="headerlink" title="what is Image"></a>what is Image</h2><p>了解图片前, 需要知道颜色空间这样的概念. sRGB 是我们常用的一种颜色空间, 在该空间下, 所有的颜色/像素点是由三原色(Red-Green-Blue) 经过混合组成的, 可以用一个三元组表示.</p>
+<p>$$(r,g,b) \quad r,g,b \in [0,255]$$ </p>
+<p>比如 (255,0,0) 表示深红色, (0,255,0) 表示深绿色, (0,0,0) 表示黑色等. 在这样的空间下, 我们一共可以表示 \(2^{24}\) 种颜色, 如果算上透明位, 则可以表示出 \(2^{32}\) 种颜色, 即用 4 个字节表示一个像素. 如果我们有 500 x 500 个像素, 那么我们就可以将其组成一张 500 x 500 的图片. 这是图片最基本的组成.</p>
+<p>除此之外, 常用的颜色空间还有 yuv, cmyk 等.</p>
+<p>另一个比较有趣的点是, 颜色应该说是一种 “主观” 的判断, 本质上它是一定波长的光. 进入人眼后, 在视网膜上会转化为大脑可理解的信息, 并展示在我们的 “眼前”. 从这个角度上讲, 同一种颜色在不同人看起来长的是不完全一样的(视网膜上感光细胞数量有差异).</p>
+<h2 id="gif"><a href="#gif" class="headerlink" title="gif"></a>gif</h2><p>gif 是目前一种常用的图片格式, 尤其是在动态图片的领域上应用十分广泛. gif 目前共有两个版本, 分别是 87a 和 89a, 其中 89a 是在原有基础上的一些拓展, 包括定义了应用拓展块等.</p>
+<p>gif 在存储图片时, 引入了调色板(palette) 这样一个概念, 每一个索引对应了一个颜色, 存储的数据事实上是一个索引列表. 存储动态图片时, gif 的做法是将每一帧的所有信息都存储下来, 同样是以索引的形式, 然后再定义每一张图片持续播放的时间, 图片连续的切换就形成了动画.</p>
+<p>下面是一个基本的 gif 图的组成部分.<br><img src="/2020/07/15/image-compression/gif.png" alt="gif 组成"></p>
+<h3 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h3><p>图像头一共六个字节. 包含两个信息, 一个是署名, 即 gif, 另一个是版本号, 包括 87a 或 89a.</p>
+<p><img src="/2020/07/15/image-compression/gif1.png" alt="gif header"></p>
+<h3 id="Logical-Screen-Descriptor"><a href="#Logical-Screen-Descriptor" class="headerlink" title="Logical Screen Descriptor"></a>Logical Screen Descriptor</h3><p>逻辑屏幕控制符包括 gif 图的基本信息, 如下图:</p>
+<p><img src="/2020/07/15/image-compression/gif2.png" alt="gif lcd"></p>
+<p>g 表示是否包含全局颜色表, c 用于表示每种颜色的位数(基本用不到), s 表示颜色是否经过排序, \(2^{t+1}\) 表示全局颜色表的大小, 从这里也可以看出, gif 全局颜色表最多只能表示 256 种颜色, 远远小于 RGB 能表示的颜色数量. 最后两个字节则分别表示背景颜色的 index 以及像素长宽比.</p>
+<h3 id="Global-Color-Table"><a href="#Global-Color-Table" class="headerlink" title="Global Color Table"></a>Global Color Table</h3><p>全局颜色表逐个字节按照 r,g,b 的顺序进行排列. 三个字节就表示了一种颜色.</p>
+<p><img src="/2020/07/15/image-compression/gif3.png" alt="gif gct"></p>
+<h3 id="Graphic-Control-Extension"><a href="#Graphic-Control-Extension" class="headerlink" title="Graphic Control Extension"></a>Graphic Control Extension</h3><p>图像控制拓展是 gif 能够表示动态图片的关键. 前两个字节分别为拓展号(固定为 0x21)以及标示(固定为 0xf9). 接下来分别是块大小(固定为 0x4), 标志位, 延迟时间, 透明色的 index 以及块的终止符(固定为 0). Delay 是重点, 用于描述下一张图片前的间隔, 这样就可以按照一个确定的时间间隔进行图片的展示, 形成 “动画”.</p>
+<p><img src="/2020/07/15/image-compression/gif4.png" alt="gif gce"></p>
+<h3 id="图像块"><a href="#图像块" class="headerlink" title="图像块"></a>图像块</h3><p>图像块首先是偏移量(通常为 0)以及宽高(通常为图像大小). 然后就是一些标志位, 记录了是否使用局部颜色表, 透明位等. 接下来则是局部颜色表(如果有的话), 再接着一个初始的 code 位数(用于解压缩), 最后就是一连串的基于表的图像数据了(下称为块). 每个块包含一个 8 位的 size 表示块的大小, 后面则是 size 个字节的用 LZW 算法压缩过的数据. (下图不完全)</p>
+<p><img src="/2020/07/15/image-compression/gif5.png" alt="gif image block"></p>
+<h3 id="Trailer"><a href="#Trailer" class="headerlink" title="Trailer"></a>Trailer</h3><p>最后是终止块, 固定值为 0x3b, 表示 gif 文件结束.</p>
+<h3 id="LZW-Algorithm"><a href="#LZW-Algorithm" class="headerlink" title="LZW Algorithm"></a>LZW Algorithm</h3><p>lzw 算法是 gif 图像压缩的核心. 在编解码的过程中, 需要动态地维护 code 到一组序列的一一对应关系, 以下以一张用 index 表示的图的编解码为例 (使用 index 在全局颜色表或局部颜色表查找即可获得原始图像).<br>以下数据来自 gif 的 wiki</p>
+<p><img src="/2020/07/15/image-compression/gif6.png" alt="gif header"></p>
+<p>拿到 index 矩阵, 查找全局颜色表, 0x28 对应的颜色为 (0,0,0), 0xff 对应的颜色为 (255,255,255), 则可以得到原图像</p>
+<h3 id="Encode"><a href="#Encode" class="headerlink" title="Encode"></a>Encode</h3><p>简单起见, 假设仅使用全局颜色表, 并且全局颜色表的 255 中颜色均以填满, 0x28 对应黑色, 0xff 对应白色, 此时, string 到 code 的映射表(下称 table) 中存放了 255 个自映射. 另外, 为了方便控制, 还需要添加两个特殊的映射 clr(0x100) 表示清空后面添加的映射信息, end(0x101) 表示结束. 在这个例子中, <strong>整个编码的过程就是将序列(index)转化为多个 9 位的 code 的过程</strong>.</p>
+<p><img src="/2020/07/15/image-compression/gifencode.png" alt="encode"></p>
+<p>同时, 我们需要维护一个当前最近读入的字节序列(下称 local string, 简记为 ls), 用于生成映射. 按照从左上到右下的顺序, 逐个字节进行读入.</p>
+<ol start="0">
+<li>输出 clear 对应的映射 0x100</li>
+<li>读取 0x28, ls = 0x28, 存在于映射表中</li>
+<li>读取 0xff, ls = 0x28 0xff, 发现当前 ls 不在映射表中, 因此添加映射 0x28 0xff -&gt; 0x102, 同时 ls 只保存最后一位, ls = 0xff, 输出 0x28 对应的映射 0x28</li>
+<li>读取 0xff, ls = 0xff 0xff, 当前 ls 不在映射表中, 添加映射 0xff 0xff -&gt; 0x103 同时 ls 保存最后一位, ls = 0xff, 输出 0xff 对应的映射 0xff</li>
+<li>读取 0xff, ls = 0xff 0xff, 存在于映射表中</li>
+<li>读取 0x28, ls = 0xff 0xff 0x28, 不在映射表中, 添加映射 0xff 0xff 0x28 -&gt; 0x104, ls = 0x28, 输出 0xff 0xff 对应的映射 0x103</li>
+<li>读取 0xff, ls = 0x28 0xff, 继续</li>
+<li>读取 0xff, ls = 0x28 0xff 0xff, 添加映射 0x28 0xff 0xff -&gt; 0x105, ls = 0xff, 输出 0x102</li>
+<li>读取 0xff, ls = 0xff 0xff, 继续</li>
+<li>读取 0xff, ls = 0xff 0xff 0xff, 添加映射 0xff 0xff 0xff -&gt; 0x106, ls = 0xff, 输出 0x103</li>
+<li>读取 0xff, ls = 0xff 0xff, 继续</li>
+<li>读取 0xff, ls = 0xff 0xff 0xff, 继续</li>
+<li>读取 0xff, ls = 0xff 0xff 0xff 0xff, 添加映射 0xff 0xff 0xff 0xff -&gt; 0x107, ls = 0xff, 输出 0x106</li>
+<li>读取 0xff, ls = 0xff 0xff, 继续</li>
+<li>读取 0xff, ls = 0xff 0xff 0xff, 继续</li>
+<li>读取 0xff, ls = 0xff 0xff 0xff 0xff, 继续</li>
+<li>没有数据了, 查询 ls 对应的映射 0x107, 输出, 最后输出终止对应的 code 0x101</li>
+</ol>
+<p>最后得到序列 0x100, 0x28, 0xff, 0x103, 0x102, 0x103, 0x106, 0x107, 0x101, 将序列展开成 9 位二进制数并紧密排列在一起则得到了图像压缩过后的数据.</p>
+<h3 id="Decode"><a href="#Decode" class="headerlink" title="Decode"></a>Decode</h3><p>decode 是 encode 的逆过程, 此时, 我们拿到了图像压缩过后的数据, 并且知道每个 code 大小为 9 位, 按 9 位一组展开, 得到 code 序列:</p>
+<p>0x100, 0x28, 0xff, 0x103, 0x102, 0x103, 0x106, 0x107, 0x101</p>
+<p>由于 decode 是逆过程, 我们需要维护此时应该是 code 到 string 的一一对应关系. 同样我们初始化 255 个自映射以及两个特殊映射.</p>
+<p><img src="/2020/07/15/image-compression/gifdecode.png" alt="decode"><br>我们用 ls 表示上一个输出对应的序列, 逐个读入 code<br>如果下一个 code 不在映射表中, 将 ls 和 code 的第一个字节组成的序列放入映射表<br>如果下一个 code 在映射表中, 将 ls 和 ls 的第一个字节组成的序列放入映射表</p>
+<ol start="0">
+<li>code = 0x100, 初始化</li>
+<li>code = 0x28, ls = 0x28, 输出 0x28</li>
+<li>code = 0xff, 找到映射, 添加映射 0x102 -&gt; 0x28 0xff, 输出 0xff 对应的序列 0xff</li>
+<li>code = 0x103, 找不到映射, 添加映射 0x103 -&gt; 0xff 0xff, 输出 0x103 对应的序列 0xff 0xff</li>
+<li>code = 0x102, 找到映射, 添加映射 0x104 -&gt; 0xff 0xff 0x28(0x103 + 0x102 的第一个 byte), 输出 0x102 对应的序列 0x28 0xff</li>
+<li>code = 0x103, 找到映射, 添加映射 0x105 -&gt; 0x28 0xff 0xff(0x102 + 0x103 的第一个 byte), 输出 0x103 对应的序列 0xff 0xff</li>
+<li>code = 0x106, 找不到映射, 添加映射 0x106 -&gt; 0xff 0xff 0xff, 输出 0x106 对应的映射 0xff 0xff 0xff</li>
+<li>code = 0x107, 找不到映射, 添加映射 0x107 -&gt; 0xff 0xff 0xff 0xff, 输出 0xff 0xff 0xff 0xff</li>
+<li>code = 0x101, 结束解码</li>
+</ol>
+<p>最后, 将所有的输出按顺序排序, 得到了原始的 index 序列:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x28 0xff 0xff</span><br><span class="line">0xff 0x28 0xff</span><br><span class="line">0xff 0xff 0xff</span><br><span class="line">0xff 0xff 0xff</span><br><span class="line">0xff 0xff 0xff</span><br></pre></td></tr></table></figure>
+<p>再查询全局/局部颜色表即可得到图像的 rgb 信息.</p>
+<p>值得一提的是, table 的最大大小为 4096, 但编码器并不一定能保证表填满时会紧接着发送 clear 标志. 在开发过程中, 遇到过网上有些 gif decoder 对于这块的处理默认了编码器在编码的时候会在表满后马上发送 clear, 因此会造成某些 gif 文件无法加载.</p>
+<h2 id="png"><a href="#png" class="headerlink" title="png"></a>png</h2><p>png(Portable Network Graphics) 是另一种常用的压缩算法. 比较有趣的一点是, png 在刚提出时想要替代 gif 以避免专利问题的. </p>
+<h3 id="file-format"><a href="#file-format" class="headerlink" title="file format"></a>file format</h3><p>png 文件更像是一种流式的数据, 本身的组成比较简单. 首先是一个文件头, 包含八个固定字节, 分别为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x89 0x50 0x4E 0x47</span><br><span class="line">0x0D 0x0A 0x1A 0x0A</span><br></pre></td></tr></table></figure>
+<p>其中, 第二到第四个字节即为 “PNG” 的 ASCII 形式. 后面几个字节则是各种操作系统的一些用于表示结尾的字符, 包括 CRLF(换行回车) 等.</p>
+<p>接下来的则是一连串的固定的 “块”, 每个块的格式是固定的:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Length</th>
+<th style="text-align:center">Chunk type</th>
+<th style="text-align:center">Chunk data</th>
+<th style="text-align:center">CRC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">4 bytes</td>
+<td style="text-align:center">4 bytes</td>
+<td style="text-align:center">Length bytes</td>
+<td style="text-align:center">4 bytes</td>
+</tr>
+</tbody>
+</table>
+<p>其中, type 的四个字节均为区分大小写的 ASCII 字符. 常见的 type 有:</p>
+<p>IHDR: 头部块, 包括图片的长宽, 位深, 压缩方式, 图片预处理的方式等, 共 13 个字节.<br>PLTE: 即 palette, 调色板<br>IDAT: data 块, 包括使用 IHDR 规定的预处理方式和压缩方式处理过后的图像数据<br>IEND: 标示块的结束</p>
+<h3 id="filter-method"><a href="#filter-method" class="headerlink" title="filter method"></a>filter method</h3><p>filter 是图片预处理的方法. 对于一个图片来说, 通常图片的像素分布越有规律, 图片应该更容易压缩. 比如一张纯色的图片, 可以用类似 (color,offset,length) 这样的三元组对图片进行压缩. 然而, 对于一张渐变的图片, 这样的处理结果却不是很理想. 从直觉上说, 渐变的图片应该是很有规律, 适合压缩的. 这时, filter method 的引入就显得很有必要. 比如我们可以记录 <strong>每个点和右(左)边的颜色的差值</strong>, 这样处理过后, 我们就可以得到一个所有元素几乎一样的数组矩阵, 这样再去压缩就要容易很多了.</p>
+<p>png 的 filter 方法目前总共有 5 中类型:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>: None 不对图片进行任何处理</span><br><span class="line"><span class="number">1</span>: Sub 和左边的字节的差距</span><br><span class="line"><span class="number">2</span>: Up 和上边的字节的差</span><br><span class="line"><span class="number">3</span>: Average 减去两个字节的平均, 向下取整</span><br><span class="line"><span class="number">4</span>: Paeth 减去三个字节最接近的那个</span><br></pre></td></tr></table></figure>
+<h3 id="inflate-deflate-algorithm"><a href="#inflate-deflate-algorithm" class="headerlink" title="inflate/deflate algorithm"></a>inflate/deflate algorithm</h3><p>PNG 内部的图片的数据流采用的是 inflate/deflate 算法进行压缩的, 数据块以 “zlib” 文件格式存储, 至少包含:</p>
+<p>压缩方法/标志位: 1 byte<br>额外的标志/检查位: 1 byte<br>压缩后的数据: n bytes<br>检验和: 4 bytes</p>
+<p>另外, 根据 RTF1950, zlib 格式还可以包含一个预设的字典, 用于压缩/解压.</p>
+<p>png 使用的是无损压缩, 和 zip 的压缩方式基本一致, 基本上原理为: 减小出现频率高的字符的编码长度, 增大出现频率低的字符的编码长度, 即用尽量小的空间去表达原有的信息.</p>
+<h4 id="Huffman-code"><a href="#Huffman-code" class="headerlink" title="Huffman code"></a>Huffman code</h4><p>Huffman 编码广泛应用于各种各样的压缩算法中, 其特性可以很好地被用于压缩. 每个叶子节点代表一个需要被编码的字符; 每个节点往左儿子走表示 0, 往右儿子走表示 1, 从根节点到每个叶子节点的路径就变成了一个由 0/1 组成的比特流, 也就是每个字符对应的编码. 比如下面这样一颗 Huffman tree:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">      /\              Symbol    Code</span><br><span class="line">     <span class="number">0</span>  <span class="number">1</span>             ------    ----</span><br><span class="line">    /    \                A      <span class="number">00</span></span><br><span class="line">   /\     B               B       <span class="number">1</span></span><br><span class="line">  <span class="number">0</span>  <span class="number">1</span>                    C     <span class="number">011</span></span><br><span class="line"> /    \                   D     <span class="number">010</span></span><br><span class="line">A     /\</span><br><span class="line">     <span class="number">0</span>  <span class="number">1</span></span><br><span class="line">    /    \</span><br><span class="line">   D      C</span><br></pre></td></tr></table></figure>
+<p>沿着根节点往叶子节点方向走, 可以得到各个字符对应的编码. 由于只有叶子节点才表示一个待编码字符, 因此所有的编码都不可能是其他编码的前缀. 如果我们有这样一棵树, 给定一个比特序列, 可以唯一地确定一种解码方式, 将比特信息转化为字符, 这样就完成了信息的编解码.</p>
+<p>那么, 这样一颗树, 或者说映射关系, 应该如何传输/存储? </p>
+<p>在考虑这一点之前需要先思考, 这样的一棵树, 是唯一的吗? 如果我们把上面树中的 C 和 D 对应的 Code 交换一下, 相当于交换了两个左右儿子, 对于编码的长度是没有影响的. 也就是说, 我们更在意的事实上是编码每一个字符所用的比特数, 而不是其具体数值. 因此, <strong>我们可以人为地规定一种树的形状, 只要编/解码器都遵循同一个规范, 最后就可以正常地还原出这样的一棵树出来</strong>(比如强制要求每个节点右子树的深度不小于左子树).</p>
+<p>在这种情况下, 给定每个字符编码用的比特数, 就可以还原出所有映射关系. 比如上面那棵树, 我们只需要传输 (2,1,3,3) 这样的信息. 算法如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>) 对所有编码长度范围内的所有 i, 统计编码长度为 i 的字符的个数, 存放在 bl_count[i] 中.</span><br><span class="line"><span class="number">2</span>) 对于每个长度 i, 计算出编码该长度时可以用的最小的 code: next_code[i]</span><br><span class="line">   code = <span class="number">0</span>;</span><br><span class="line">   bl_count[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (bits = <span class="number">1</span>; bits &lt;= MAX_BITS; bits++) &#123;</span><br><span class="line">      code = (code + bl_count[bits<span class="number">-1</span>]) &lt;&lt; <span class="number">1</span>;</span><br><span class="line">      next_code[bits] = code;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="number">3</span>) 遍历传输过来的信息, 对每个读取到的长度 i, 使用 next_code[i] 为其赋值(同时需要 +<span class="number">1</span>)</span><br><span class="line">   <span class="keyword">for</span> (n = <span class="number">0</span>;  n &lt;= max_code; n++) &#123;</span><br><span class="line">      len = tree[n].Len; <span class="comment">// 输入的第 n 个长度信息</span></span><br><span class="line">      <span class="keyword">if</span> (len != <span class="number">0</span>) &#123;</span><br><span class="line">         tree[n].Code = next_code[len]; <span class="comment">// 得到该位置对应的编码</span></span><br><span class="line">         next_code[len]++; <span class="comment">// 当前编码被使用过了, 需要 +1</span></span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>RFC1951 中还给了这样的一个例子, 对于待编码的 8 个字符 ABCDEFGH, 解码器拿到的长度序列为: (3,3,3,3,3,2,4,4), 则按照上面算法的三个步骤的, 可以得到:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">step <span class="number">1</span>:</span><br><span class="line">   N      bl_count[N]</span><br><span class="line">   -      -----------</span><br><span class="line">   <span class="number">2</span>      <span class="number">1</span></span><br><span class="line">   <span class="number">3</span>      <span class="number">5</span></span><br><span class="line">   <span class="number">4</span>      <span class="number">2</span></span><br><span class="line">step <span class="number">2</span>:</span><br><span class="line">   N      next_code[N]</span><br><span class="line">   -      ------------</span><br><span class="line">   <span class="number">1</span>      <span class="number">0</span></span><br><span class="line">   <span class="number">2</span>      <span class="number">0</span></span><br><span class="line">   <span class="number">3</span>      <span class="number">2</span></span><br><span class="line">   <span class="number">4</span>      <span class="number">14</span></span><br><span class="line">step <span class="number">3</span>:</span><br><span class="line">   Symbol Length   Code</span><br><span class="line">   ------ ------   ----</span><br><span class="line">   A       <span class="number">3</span>        <span class="number">010</span></span><br><span class="line">   B       <span class="number">3</span>        <span class="number">011</span></span><br><span class="line">   C       <span class="number">3</span>        <span class="number">100</span></span><br><span class="line">   D       <span class="number">3</span>        <span class="number">101</span></span><br><span class="line">   E       <span class="number">3</span>        <span class="number">110</span></span><br><span class="line">   F       <span class="number">2</span>         <span class="number">00</span></span><br><span class="line">   G       <span class="number">4</span>       <span class="number">1110</span></span><br><span class="line">   H       <span class="number">4</span>       <span class="number">1111</span></span><br></pre></td></tr></table></figure>
+<h4 id="LZ77-algorithm"><a href="#LZ77-algorithm" class="headerlink" title="LZ77 algorithm"></a>LZ77 algorithm</h4><p>上面解决了编解码的一些问题, 然而还有更重要的问题没有解决, 就是压缩是如何实现的? 还是考虑下面的一张 3x5 的纯白色的图片(每个像素点用三个字节分别表示 RGB 通道):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x000000 0x000000 0x000000</span><br><span class="line">0x000000 0x000000 0x000000</span><br><span class="line">0x000000 0x000000 0x000000</span><br><span class="line">0x000000 0x000000 0x000000</span><br><span class="line">0x000000 0x000000 0x000000</span><br></pre></td></tr></table></figure>
+<p>如果直接传输原始数据, 总共占用了 3x5x3 = 45 个字节, 但这样做总觉得不是很恰当. 其实我们可以考虑, 对于这样一张图片, 我们的大脑是如何去记忆的, 会去记忆每个像素点的值吗? 我想, 大脑记的应该是: “这是一张纯白色的图片, 有 RGB 三个通道, 每个通道有 8 位, 图片大小为 3x5” 这样子. 从这个角度考虑的话, 事实上我们可以用 (15, 0x000000) 这样的二元组去表示, 明显需要传输的信息少了很多. 这样就是一种 “重复利用” 的思想.</p>
+<p>对于重复出现的数据, 我们可以用一个 (length, distance) 这样的一个二元组表示这个信息, 说明当前位置和 distance 个比特前的信息是一样的, 且重复了 length 这样的长度, 这样就能较好地利用已有信息. 不过这样又带来了另外的几个问题.</p>
+<p>第一个问题是, distance 的长度应该是多少呢? 如果可以为无限大, 这样代价显然有点高, 尤其是对于大文件来说, 编码器可能会不堪重负. 另外, 再考虑到局部性原理, 通常重复的信息出现在当前位置附近的概率较大. 在 zip 以及 png 的默认压缩算法中, 采用的 distance 最大值是 32768. 毫无疑问这样会损失一些压缩率, 但带来的性能上的损耗有些过大了. 同样的, length 的长度也应该有限制, 文档中给出的长度最大为 258, 应该也是综合了性能和压缩率的一个考量.</p>
+<p>到目前为止, 我们的一个编码器的简单思路其实已经基本出来了. 我们维护一个大小为 32768 的滑动窗口, 每次读取信息时在滑动窗口内找是否有出现的重复序列, 有则输出 (length, distance) 这样的信息, 没有则直接将字符输出, 直到所有数据处理完毕.</p>
+<p>到这里还有一个问题没有解决, 就是解码器应该如何区分下一个读取到的 code 是一个普通的字符还是 (length, distance) 这样的元组呢? 比较显然的做法是, 多加一个 flag 位用于区分. 在 deflate 算法中, 将单独的普通字符信息和 length 合并在一个 code 当中. 每次读取到一个 code 时:</p>
+<ol>
+<li>0 &lt;= code &lt; 256 纯字符信息, 直接输出</li>
+<li>code = 256 标志数据结束</li>
+<li>256 &lt; code &lt; 285 表示这是一个长度-距离的二元组</li>
+</ol>
+<p>这里其实也有一个对 length 的压缩, 考虑到 length 比较短的概率要比 length 比较长的概率大很多, 并且 length 范围为 3~258, 因此, 这里还有压缩的空间. 如下, 比如读取到一个 code = 257, 则说明读取到 length = 3; 读取到 code = 265, 则再读取一个比特 b, b = 1 表示 length = 12, b = 0 则表示 length = 11.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">      Extra               Extra               Extra</span><br><span class="line"><span class="function">Code Bits <span class="title">Length</span><span class="params">(s)</span> Code Bits Lengths   Code Bits <span class="title">Length</span><span class="params">(s)</span></span></span><br><span class="line">---- ---- ------     ---- ---- -------   ---- ---- -------</span><br><span class="line"><span class="number">257</span>   <span class="number">0</span>     <span class="number">3</span>       <span class="number">267</span>   <span class="number">1</span>   <span class="number">15</span>,<span class="number">16</span>     <span class="number">277</span>   <span class="number">4</span>   <span class="number">67</span><span class="number">-82</span></span><br><span class="line"><span class="number">258</span>   <span class="number">0</span>     <span class="number">4</span>       <span class="number">268</span>   <span class="number">1</span>   <span class="number">17</span>,<span class="number">18</span>     <span class="number">278</span>   <span class="number">4</span>   <span class="number">83</span><span class="number">-98</span></span><br><span class="line"><span class="number">259</span>   <span class="number">0</span>     <span class="number">5</span>       <span class="number">269</span>   <span class="number">2</span>   <span class="number">19</span><span class="number">-22</span>     <span class="number">279</span>   <span class="number">4</span>   <span class="number">99</span><span class="number">-114</span></span><br><span class="line"><span class="number">260</span>   <span class="number">0</span>     <span class="number">6</span>       <span class="number">270</span>   <span class="number">2</span>   <span class="number">23</span><span class="number">-26</span>     <span class="number">280</span>   <span class="number">4</span>  <span class="number">115</span><span class="number">-130</span></span><br><span class="line"><span class="number">261</span>   <span class="number">0</span>     <span class="number">7</span>       <span class="number">271</span>   <span class="number">2</span>   <span class="number">27</span><span class="number">-30</span>     <span class="number">281</span>   <span class="number">5</span>  <span class="number">131</span><span class="number">-162</span></span><br><span class="line"><span class="number">262</span>   <span class="number">0</span>     <span class="number">8</span>       <span class="number">272</span>   <span class="number">2</span>   <span class="number">31</span><span class="number">-34</span>     <span class="number">282</span>   <span class="number">5</span>  <span class="number">163</span><span class="number">-194</span></span><br><span class="line"><span class="number">263</span>   <span class="number">0</span>     <span class="number">9</span>       <span class="number">273</span>   <span class="number">3</span>   <span class="number">35</span><span class="number">-42</span>     <span class="number">283</span>   <span class="number">5</span>  <span class="number">195</span><span class="number">-226</span></span><br><span class="line"><span class="number">264</span>   <span class="number">0</span>    <span class="number">10</span>       <span class="number">274</span>   <span class="number">3</span>   <span class="number">43</span><span class="number">-50</span>     <span class="number">284</span>   <span class="number">5</span>  <span class="number">227</span><span class="number">-257</span></span><br><span class="line"><span class="number">265</span>   <span class="number">1</span>  <span class="number">11</span>,<span class="number">12</span>      <span class="number">275</span>   <span class="number">3</span>   <span class="number">51</span><span class="number">-58</span>     <span class="number">285</span>   <span class="number">0</span>    <span class="number">258</span></span><br><span class="line"><span class="number">266</span>   <span class="number">1</span>  <span class="number">13</span>,<span class="number">14</span>      <span class="number">276</span>   <span class="number">3</span>   <span class="number">59</span><span class="number">-66</span></span><br></pre></td></tr></table></figure>
+<p>读取到 length 后, 说明下一个字符即为 distance. 同样 distance 也可以采用类似的方法进行压缩, 压缩方式如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   Extra           Extra               Extra</span><br><span class="line">Code Bits Dist  Code Bits   Dist     Code Bits Distance</span><br><span class="line">---- ---- ----  ---- ----  ------    ---- ---- --------</span><br><span class="line"><span class="number">0</span>   <span class="number">0</span>    <span class="number">1</span>     <span class="number">10</span>   <span class="number">4</span>     <span class="number">33</span><span class="number">-48</span>    <span class="number">20</span>    <span class="number">9</span>   <span class="number">1025</span><span class="number">-1536</span></span><br><span class="line"><span class="number">1</span>   <span class="number">0</span>    <span class="number">2</span>     <span class="number">11</span>   <span class="number">4</span>     <span class="number">49</span><span class="number">-64</span>    <span class="number">21</span>    <span class="number">9</span>   <span class="number">1537</span><span class="number">-2048</span></span><br><span class="line"><span class="number">2</span>   <span class="number">0</span>    <span class="number">3</span>     <span class="number">12</span>   <span class="number">5</span>     <span class="number">65</span><span class="number">-96</span>    <span class="number">22</span>   <span class="number">10</span>   <span class="number">2049</span><span class="number">-3072</span></span><br><span class="line"><span class="number">3</span>   <span class="number">0</span>    <span class="number">4</span>     <span class="number">13</span>   <span class="number">5</span>     <span class="number">97</span><span class="number">-128</span>   <span class="number">23</span>   <span class="number">10</span>   <span class="number">3073</span><span class="number">-4096</span></span><br><span class="line"><span class="number">4</span>   <span class="number">1</span>   <span class="number">5</span>,<span class="number">6</span>    <span class="number">14</span>   <span class="number">6</span>    <span class="number">129</span><span class="number">-192</span>   <span class="number">24</span>   <span class="number">11</span>   <span class="number">4097</span><span class="number">-6144</span></span><br><span class="line"><span class="number">5</span>   <span class="number">1</span>   <span class="number">7</span>,<span class="number">8</span>    <span class="number">15</span>   <span class="number">6</span>    <span class="number">193</span><span class="number">-256</span>   <span class="number">25</span>   <span class="number">11</span>   <span class="number">6145</span><span class="number">-8192</span></span><br><span class="line"><span class="number">6</span>   <span class="number">2</span>   <span class="number">9</span><span class="number">-12</span>   <span class="number">16</span>   <span class="number">7</span>    <span class="number">257</span><span class="number">-384</span>   <span class="number">26</span>   <span class="number">12</span>  <span class="number">8193</span><span class="number">-12288</span></span><br><span class="line"><span class="number">7</span>   <span class="number">2</span>  <span class="number">13</span><span class="number">-16</span>   <span class="number">17</span>   <span class="number">7</span>    <span class="number">385</span><span class="number">-512</span>   <span class="number">27</span>   <span class="number">12</span> <span class="number">12289</span><span class="number">-16384</span></span><br><span class="line"><span class="number">8</span>   <span class="number">3</span>  <span class="number">17</span><span class="number">-24</span>   <span class="number">18</span>   <span class="number">8</span>    <span class="number">513</span><span class="number">-768</span>   <span class="number">28</span>   <span class="number">13</span> <span class="number">16385</span><span class="number">-24576</span></span><br><span class="line"><span class="number">9</span>   <span class="number">3</span>  <span class="number">25</span><span class="number">-32</span>   <span class="number">19</span>   <span class="number">8</span>   <span class="number">769</span><span class="number">-1024</span>   <span class="number">29</span>   <span class="number">13</span> <span class="number">24577</span><span class="number">-32768</span></span><br></pre></td></tr></table></figure>
+<p>到这里为止, 我们可以得到一个完整的解码器算法:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> 读取得到数据</span><br><span class="line">   data = read block header</span><br><span class="line">   process header</span><br><span class="line">   loop (until end of block code recognized)</span><br><span class="line">         decode literal/length value from input stream</span><br><span class="line">         <span class="keyword">if</span> value &lt; <span class="number">256</span></span><br><span class="line">            copy value (literal byte) to output stream</span><br><span class="line">         <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> value = end of block (<span class="number">256</span>)</span><br><span class="line">               <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span> (value = <span class="number">257</span>~<span class="number">285</span>)</span><br><span class="line">               decode distance from input stream</span><br><span class="line">               move backwards distance bytes in the output</span><br><span class="line">               stream, <span class="keyword">and</span> copy length bytes from <span class="keyword">this</span></span><br><span class="line">               position to the output stream.</span><br><span class="line">   end loop</span><br></pre></td></tr></table></figure>
+<p>另外, 在数据块中, 还可以选择压缩当前块的方法 type. type = 0 表示不进行压缩, type = 2 表示使用上面说到的方法压缩, type = 1 表示采用一种固定的 huffman 树去编码的, 具体细节在 RFC1951 中. </p>
+<p>最后再提一下, png 这里使用的算法属于 LZ 系列. 这个算法最早由 Lempel 和 Ziv 提出, gif 使用的 LZW 算法, 以及 zip/png 使用的压缩算法均属于这个系列, 在多数情况下, 均能有较良好的表现. 不过, 由于这是一种无损压缩, 在图片压缩这样的领域, 这样的算法压缩率还是有些不足的.</p>
+<h3 id="information-entropy"><a href="#information-entropy" class="headerlink" title="information entropy"></a>information entropy</h3><p>大概看完了 png/zip 使用的压缩算法, 可能会有这样的一个疑问: 为什么数据能够被压缩呢? 要解释这个问题, 应该还是要从信息论的角度出发. 信息论之父香农(Shannon) 提出的<strong>信息熵</strong>这样一个概念就能很好地解决这个问题.</p>
+<p>考虑一个随机事件 X, 当 p(X) 越小时, 说明该事件出现的概率更小, 则如果出现该事件时, 说明它带来的信息 I(X) 更大. 另外, 由概率论知识, 考虑两个不相关的随机事件 X 和 Y, 有 P(X,Y) = P(X) * P(Y). 同时, 信息量应该具有叠加性, 两个不相关事件带来的信息量之间应该可以相加, 因此得到 I(X,Y) = I(X) + I(Y).</p>
+<p>根据以上几个性质, 可以得到信息量的基本公式:</p>
+<p>$$<br>I(X) = -log(p_x)<br>$$</p>
+<p>取遍当前事件空间下的事件集合, 得到信息熵(信息量的期望)为:</p>
+<p>$$<br>H(X) = E(I(X)) = -\Sigma_{i=1}^{n}p_i log_b p_i<br>$$</p>
+<p>其中, 常取 b = 2. 利用这个公式, 我们可以计算出在某个特定分布下数据的信息熵. 比如一个仅由 a,b,c,d 四个字母组成的文本, 给定四个字母出现的概率 p(a)=0.5, p(b)=0.2, p(c)=0.2, p(d)=0.1, 可以得到该分布下, 信息熵为:</p>
+<p>$$<br>H = -(0.5 \cdot log_2 0.5 + 0.2 \cdot log_2 0.2 + 0.2 \cdot log_2 0.2 + 0.1 \cdot log_2 0.1) = 1.2<br>$$</p>
+<p>这个数字告诉我们, 每个字母带来的信息量是 1.2 个比特. 如果我们使用两个比特对数据进行编码, 则对于每个字母, 我们多花了一些比特描述了较少的信息, 这就给数据压缩带来了空间. 使用 huffman 编码, 令 a = 0, b=10, c=110, d=111, 用这样的编码方式可以得到我们编码每个字母使用的比特数的期望为</p>
+<p>$$<br>E = 1 \cdot 0.5 + 2 \cdot 0.2 + 3 \cdot 0.2 + 3 \cdot 0.1 = 1.8<br>$$</p>
+<p>和之前相比, 我们可以使用更少的信息去表达和之前完全一样的信息, 这就是信息的压缩. 而信息熵则给出了无损压缩情形下数据压缩程度的下界(在上面例子下界即为 1.2/2.0 = 0.6). 需要注意的是, <strong>信息熵是基于分布的</strong>, 如果数据是完全随机的, 那么采用无损压缩的方式是不可能对数据进行压缩的. 这也告诉了我们, 之所以能对数据进行压缩, 正是因为数据并不是完全无规律的, 比如英文文本中, 一个字节出现的最多的是 0x61~0x7a(A~Z) 以及 0x41~0x5a(a~z), 因此我们可以使用尽量少的比特数去表示这些字节, 使用多一点的比特数去表示那些用得较少的 ascii 码.</p>
+<h2 id="jpeg"><a href="#jpeg" class="headerlink" title="jpeg"></a>jpeg</h2><p>考虑一个大小为 (1920,1080) 的图片, 假设每个像素包含 RGB 三个通道, 则图片占用的大小为 1920 <em> 1080 </em> 3 ≈ 6M. 使用 png 的话, 即使有 3:1 的压缩率, 最后的大小也要 2M, 这样的代价有些大了. 因此, 图片更经常采用的是压缩率更高的算法, jpeg.</p>
+<p>到 jpeg 这里, 压缩方式则完全不一样了. 之前的几种压缩方式都是属于无损压缩, 而 jpeg 是一种有损压缩的数据格式, 使用 jpeg 压缩过后的数据无法对原有数据完全地还原. 和普通的文件不同, 对于图片来说, 丢失一定的精度的话, 图片还是可以正常浏览, 使用一定精度换取大量的存储空间还是值得的.</p>
+<h3 id="color-space-transformation"><a href="#color-space-transformation" class="headerlink" title="color space transformation"></a>color space transformation</h3><p>考虑这样一个事实: 人的视网膜上的感光细胞中, 主要负责感受光强的细胞数量要远远多于感受光的颜色的细胞数量, 换句话说, 人眼对于光的强弱更加敏感. 因此, 使用 YCbCr 颜色空间要比 RGB 颜色空间要好得多 - 可以方便地分别处理光强和颜色分量. 因此, 编码器在第一步通常会将图片转换到 YCbCr 空间. 具体来说, 则是乘上一个系数矩阵.</p>
+<p>$$<br>\begin{bmatrix}<br>   Y’ \\<br>   C_b \\<br>   C_r \\<br>\end{bmatrix} =<br>\begin{bmatrix}<br>K_R &amp; K_G &amp; K_B \\<br>-\frac{1}{2} \cdot \frac{K_R}{1-K_B} &amp; -\frac{1}{2} \cdot \frac{K_G}{1-K_B} &amp; \frac{1}{2} \\<br>\frac{1}{2} &amp; -\frac{1}{2} \cdot \frac{K_G}{1-K_R} &amp; -\frac{1}{2} \cdot \frac{K_B}{1-K_R}<br>\end{bmatrix}<br>\enspace<br>\begin{bmatrix}<br>   R’ \\<br>   G’ \\<br>   B’ \\<br>\end{bmatrix}<br>$$</p>
+<p>其中, 系数 K 满足 \(K_R + K_G + K_B = 1\), 一种常用的取值为 \(K_R = 0.299, K_G = 0.587, K_B = 0.114\), 这样取值的一个重要理由是: 人眼对于绿色是最敏感的, 而对于蓝紫色是最不敏感的. 因此这里 Y 分量的大小主要是由绿色分量的强度决定.</p>
+<p>此外, 由于得到的 Y Cb Cr 三个矩阵大小是一致的, 而 Cb Cr 分量通常不需要那么多, 因此这里可以进行一个采样操作, 将 Cb 和 Cr 矩阵长宽缩减为原来的一半. 不过, 这一步不是必需的.</p>
+<p>做完这个预处理后, 下一步就是进行分块的操作了. 目的是减小下一个步骤的计算量. jpeg 会将矩阵切成一个个大小为 8x8 的块, 然后将各个块分别扔到下一步进行处理.</p>
+<h3 id="discrete-cosine-transform"><a href="#discrete-cosine-transform" class="headerlink" title="discrete cosine transform"></a>discrete cosine transform</h3><p>再接着的一个步骤, 也是 jpeg 能做到压缩的一个重要步骤, 就是将图像数据转化到频域空间上去. 这种转化的一个经典做法就是离散傅里叶变换. 不过, 在图像上, 更经常采用的是它的一种特殊形式: 离散余弦变换. 考虑一维的情况, 将八个数据点延拓到负半轴, 同时向右位移半个单位, 则可以得到一个实偶函数(实数并且是偶函数). 傅里叶展开后, 虚数项就可以直接抹去, 最后就得到了离散余弦变换的基本格式:</p>
+<p>$$<br>F_{u} = \frac {1}{c} \Sigma_{x=0}^7 f(x) cos(\frac{(2x+1)u\pi}{16})<br>$$</p>
+<p>将其拓展到二维上, 则可以得到二维的 DCT 变换:</p>
+<p>$$<br>G_{u,v}={\frac {1}{4}}\alpha (u)\alpha (v) \Sigma_{x=0}^{7} \Sigma_{y=0}^{7} g_{x,y}\cos [\frac {(2x+1)u\pi }{16}] \cos [\frac {(2y+1)v\pi }{16}]<br>$$</p>
+<p>其中 \( if \enspace u = 0, \alpha(u) = \frac {1}{\sqrt {2}} \quad else \enspace \alpha(u) = 1\), g 是原矩阵各个元素的值, G 是新的矩阵各个元素的值.</p>
+<p>使用这个变换, 我们就可以将原先的图像数据转化到一个频域矩阵. 越靠近左上角表示频率越低的分量, 通常这些低频分量会比较大, 越靠近右上角表示频率越高的分量, 这些高频分量通常比较小, 用于展示图像的细节, 高频分量对于图像来说往往不是那么重要, 如果能舍去高频分量, 那么我们就可以保留低频数据, 实现对图像的压缩.</p>
+<h3 id="quantization"><a href="#quantization" class="headerlink" title="quantization"></a>quantization</h3><p>上一步中得到了频率数据后, 接下来的一个步骤则是去掉高频信息. 然而, 要去掉多大范围的高频信息呢? 为了在尽量保证压缩率的同时避免过多的细节丢失, jpeg specification 中给出了这样一个量化矩阵去进行去高频的操作:</p>
+<p>$$<br>Q={\begin{bmatrix}<br>16&amp;11&amp;10&amp;16&amp;24&amp;40&amp;51&amp;61 \\<br>12&amp;12&amp;14&amp;19&amp;26&amp;58&amp;60&amp;55 \\<br>14&amp;13&amp;16&amp;24&amp;40&amp;57&amp;69&amp;56 \\<br>14&amp;17&amp;22&amp;29&amp;51&amp;87&amp;80&amp;62 \\<br>18&amp;22&amp;37&amp;56&amp;68&amp;109&amp;103&amp;77 \\<br>24&amp;35&amp;55&amp;64&amp;81&amp;104&amp;113&amp;92 \\<br>49&amp;64&amp;78&amp;87&amp;103&amp;121&amp;120&amp;101 \\<br>72&amp;92&amp;95&amp;98&amp;112&amp;100&amp;103&amp;99 \\<br>\end{bmatrix}}<br>$$</p>
+<p>将频域矩阵所有元素除以量化矩阵, 然后再向下取整, 就可以得到经过量化操作后的信息, 即对原有矩阵进行一个这样的操作:</p>
+<p>$$<br>B_{j,k}= round(\frac {G_{j,k}}{Q_{j,k}}) \quad j \in (0,7); k \in (0,7)<br>$$</p>
+<p>可以看到, 量化矩阵 Q 中, 靠近右下角的信息需要除以一个更大的数字, 最终我们可以得到一个系数矩阵 B, 并且 B 中右下角存在大量的 0(大部分高频信息被抹去了), 同时也保证了高频信息的系数较大时, 仍然有一定的保留.</p>
+<h3 id="entropy-encoding"><a href="#entropy-encoding" class="headerlink" title="entropy encoding"></a>entropy encoding</h3><p>拿到量化过后的矩阵后, 最后一步就是编码了. 考虑到左上角到右下角的数据基本是单调递减的, 对于这样的数据, 一个比较好的处理方式就是按照 zig-zag 的方式将其转为数组. 对于每个块, 按照下面的顺序排列成一位数组:</p>
+<p><img src="/2020/07/15/image-compression/zigzag.svg" width="300" height="300"><br>(图来自 wiki)</p>
+<p>最坐上角的元素决定了整个块的色调, 因此被称为 “直流系数”(DC coefficient). 其余的 63 个数字被称为 “交流系数”(AC coefficient). 对于每个块中的 DC coefficient, 其值通常比较大, 采用的是记录每个块的系数的差的方式. 而 AC coefficient 采用的是行程编码(“run-length encoding”).</p>
+<p>按照下面的格式进行:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Symbol1</th>
+<th style="text-align:center">Symbol2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">(length, size)</td>
+<td style="text-align:center">(data)</td>
+</tr>
+</tbody>
+</table>
+<p>length 表示当前位置到上一个非 0 AC 系数中间的 0 的数量, size 表示当前位置的值要用几个位的数字来表示(注意这里不是 data 对应的二进制数字有多少位, 因为 data = 0 不需要编码, size = 0 即可表示, 具体 data 对应的位数可以查表得到), 并且, length 和 size 各占四个 bit, 合起来占据一个字节. data 即为 size 位二进制数, 比如下面这段数字:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">5</span>, <span class="number">16</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>经过编码后, 则变成:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0</span>,<span class="number">3</span>)(<span class="number">5</span>) (<span class="number">0</span>,<span class="number">5</span>)(<span class="number">16</span>) (<span class="number">2</span>,<span class="number">1</span>)(<span class="number">2</span>) (<span class="number">1</span>,<span class="number">1</span>)(<span class="number">3</span>) (<span class="number">3</span>,<span class="number">1</span>)(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>最后, 再将这些数字使用 huffman 编码转成一个比特流(序列化), 就完成了整个 jpeg 的压缩流程了.</p>
+<h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>这篇文章到这里就结束了. 整个文章中, 简单地浏览过了 gif, png, jpeg 的编码方式, 了解了如何对一个图片进行压缩, 后面有时间的话可能再学习一下音视频的编码方式吧.</p>
+<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="https://tronche.com/computer-graphics/gif/gif89a.html" target="_blank" rel="noopener">https://tronche.com/computer-graphics/gif/gif89a.html</a></p>
+<p><a href="https://en.wikipedia.org/wiki/GIF" target="_blank" rel="noopener">gif wiki</a></p>
+<p><a href="https://www.w3.org/TR/PNG/" target="_blank" rel="noopener">png specification on w3.org</a></p>
+<p><a href="ftp://ftp.isi.edu/in-notes/rfc1950.txt" target="_blank" rel="noopener">[RFC-1950]<br>Deutsch, P. and J-L. Gailly, “ZLIB Compressed Data Format Specification version 3.3”, RFC 1950, Aladdin Enterprises, May 1996.</a></p>
+<p><a href="ftp://ftp.isi.edu/in-notes/rfc1951.txt" target="_blank" rel="noopener">[RFC-1951]<br>Deutsch, P., “DEFLATE Compressed Data Format Specification version 1.3”, RFC 1951, Aladdin Enterprises, May 1996.</a></p>
+<p><a href="https://en.wikipedia.org/wiki/JPEG#Downsampling" target="_blank" rel="noopener">jpeg wiki</a></p>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Algorithm/" rel="tag"><i class="fa fa-tag"></i> Algorithm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/22/mit6-828/" rel="next" title="mit6.828 实验小结">
+                <i class="fa fa-chevron-left"></i> mit6.828 实验小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prologue"><span class="nav-number">1.</span> <span class="nav-text">prologue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-Image"><span class="nav-number">2.</span> <span class="nav-text">what is Image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gif"><span class="nav-number">3.</span> <span class="nav-text">gif</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Header"><span class="nav-number">3.1.</span> <span class="nav-text">Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logical-Screen-Descriptor"><span class="nav-number">3.2.</span> <span class="nav-text">Logical Screen Descriptor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Global-Color-Table"><span class="nav-number">3.3.</span> <span class="nav-text">Global Color Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Graphic-Control-Extension"><span class="nav-number">3.4.</span> <span class="nav-text">Graphic Control Extension</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像块"><span class="nav-number">3.5.</span> <span class="nav-text">图像块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trailer"><span class="nav-number">3.6.</span> <span class="nav-text">Trailer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LZW-Algorithm"><span class="nav-number">3.7.</span> <span class="nav-text">LZW Algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encode"><span class="nav-number">3.8.</span> <span class="nav-text">Encode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decode"><span class="nav-number">3.9.</span> <span class="nav-text">Decode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#png"><span class="nav-number">4.</span> <span class="nav-text">png</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#file-format"><span class="nav-number">4.1.</span> <span class="nav-text">file format</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter-method"><span class="nav-number">4.2.</span> <span class="nav-text">filter method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inflate-deflate-algorithm"><span class="nav-number">4.3.</span> <span class="nav-text">inflate/deflate algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Huffman-code"><span class="nav-number">4.3.1.</span> <span class="nav-text">Huffman code</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LZ77-algorithm"><span class="nav-number">4.3.2.</span> <span class="nav-text">LZ77 algorithm</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#information-entropy"><span class="nav-number">4.4.</span> <span class="nav-text">information entropy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jpeg"><span class="nav-number">5.</span> <span class="nav-text">jpeg</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#color-space-transformation"><span class="nav-number">5.1.</span> <span class="nav-text">color space transformation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#discrete-cosine-transform"><span class="nav-number">5.2.</span> <span class="nav-text">discrete cosine transform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quantization"><span class="nav-number">5.3.</span> <span class="nav-text">quantization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#entropy-encoding"><span class="nav-number">5.4.</span> <span class="nav-text">entropy encoding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epilogue"><span class="nav-number">6.</span> <span class="nav-text">epilogue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">7.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">118.8k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
