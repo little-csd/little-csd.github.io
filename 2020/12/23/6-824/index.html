@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="6.824,">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="Prologue这篇博客记录的是自己关于 6.824 的一些学习的心得体会, 以四个实验为核心，记录下自己完成实验过程的心得体会，重点关注 Raft 算法以及一个基本的具有容错性的 K/V 存储系统的实现。 使用下面的命令 clone 6.824 的 git 仓库:  git clone git://g.csail.mit.edu/6.824-golabs-2020 6.824  注: 根据 6.">
+<meta name="keywords" content="6.824">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始的 6.824 学习">
+<meta property="og:url" content="http://yoursite.com/2020/12/23/6-824/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="Prologue这篇博客记录的是自己关于 6.824 的一些学习的心得体会, 以四个实验为核心，记录下自己完成实验过程的心得体会，重点关注 Raft 算法以及一个基本的具有容错性的 K/V 存储系统的实现。 使用下面的命令 clone 6.824 的 git 仓库:  git clone git://g.csail.mit.edu/6.824-golabs-2020 6.824  注: 根据 6.">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/distributed.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/mapreduce.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/raft_arch.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/state.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/mediaplayer.webp">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/raft_state.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/raft_term.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/P3.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/log.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/differ.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/deleted.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/raft_all.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/basic_kv.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/23/6-824/sharded_kv.jpg">
+<meta property="og:updated_time" content="2020-12-27T04:55:09.335Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零开始的 6.824 学习">
+<meta name="twitter:description" content="Prologue这篇博客记录的是自己关于 6.824 的一些学习的心得体会, 以四个实验为核心，记录下自己完成实验过程的心得体会，重点关注 Raft 算法以及一个基本的具有容错性的 K/V 存储系统的实现。 使用下面的命令 clone 6.824 的 git 仓库:  git clone git://g.csail.mit.edu/6.824-golabs-2020 6.824  注: 根据 6.">
+<meta name="twitter:image" content="http://yoursite.com/2020/12/23/6-824/distributed.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/23/6-824/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>从零开始的 6.824 学习 | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/23/6-824/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从零开始的 6.824 学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-23T09:55:44+08:00">
+                2020-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Distributed-System/" itemprop="url" rel="index">
+                    <span itemprop="name">Distributed System</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/12/23/6-824/" class="leancloud_visitors" data-flag-title="从零开始的 6.824 学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  10.6k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Prologue"><a href="#Prologue" class="headerlink" title="Prologue"></a>Prologue</h1><p>这篇博客记录的是自己关于 <a href="https://pdos.csail.mit.edu/6.824/schedule.html" target="_blank" rel="noopener">6.824</a> 的一些学习的心得体会, 以四个实验为核心，记录下自己完成实验过程的心得体会，重点关注 Raft 算法以及一个基本的具有容错性的 K/V 存储系统的实现。</p>
+<p>使用下面的命令 clone 6.824 的 git 仓库:</p>
+<blockquote>
+<p>git clone git://g.csail.mit.edu/6.824-golabs-2020 6.824</p>
+</blockquote>
+<p>注: 根据 6.824 的 collaboration policy，在这整篇博客中不会出现几个实验的源代码。<br>另外，由于笔者也是第一次接触分布式，难免会出现不少问题，还请见谅。</p>
+<h1 id="Why-distributed"><a href="#Why-distributed" class="headerlink" title="Why distributed"></a>Why distributed</h1><p>考虑这样一些问题: </p>
+<blockquote>
+<p>编写一个程序，满足下面的要求:<br>给定 N 个单词(可能有重复)，统计出这 N 个字符中每个单词出现的次数。</p>
+</blockquote>
+<p>一个最直接的解决方法是，使用 HashMap 进行统计，key 为单词，value 为单词出现的次数。顺序遍历每个单词，对遇到的每个单词，将其出现次数 +1 即可。</p>
+<blockquote>
+<p>给定 N 个字符串，要求对所有字符串进行排序并输出。</p>
+</blockquote>
+<p>这种问题解决方法也比较直接，可以使用快速排序、归并排序等方式处理，复杂度为 O(nlogn)。<br>这两种做法当 N 很大时，都会遇到一些问题: 内存不够。当 N 达到 1e9 的级别的时候，需要的内存空间就要按 G 计算了。</p>
+<p>这时，可以将部分数据保存到文件中去，或者将原问题拆分成几个更细小的问题: 对于单词数统计来说，可以把单词分成多份，然后交给多个电脑去分别执行，最后再将几个执行的结果加起来，就得到了正确的最终结果。某种程度上说，这和计算机 CPU 采用多核的方式是很类似的。</p>
+<p>wiki 上对于分布式计算(Distributed Computing)是这样定义的:</p>
+<blockquote>
+<p>A distributed system is a system whose components are located on different networked computers, which communicate and coordinate their action by passing messages to one another.</p>
+</blockquote>
+<p>从笔者的角度上看，分布式系统就是<strong>多个相互之间存在联系的计算机的集合</strong>，并且，这个集合能够接受某个计算任务，正确执行并返回结果。并且至少还要有以下性质:</p>
+<ol>
+<li>fault tolerance. 当某个(或某少数几个)计算机内部因故障出现问题，或者是计算机断开网络连接，无法和其他计算机进行通信时，系统应该依旧能正常的工作。</li>
+<li>configurable. 集合应该是可调整(配置)的，在某个时刻，可能会有多个计算机加入或离开当前集合。</li>
+<li>linear. 对于每个客户端的请求，集合应该按客户端发送顺序正确地执行并返回正确的结果，就像只有一个计算机在处理一样。</li>
+</ol>
+<p>对于计算机之间的联系，有多种处理的方式。比如每台计算机之间建立一个 http 服务器，相互之间使用 http 通信。或者使用类似 RPC(Remote Procedure Control) 的技术，调用目的服务器上的某个方法等等。</p>
+<p><img src="/2020/12/23/6-824/distributed.png" alt="P1"></p>
+<div align="center">图1: 分布式模型</div>
+
+<p>此外，分布式还有另一个重要的功能就是容错。考虑 CS 模型：客户端向服务器请求数据，服务器作出响应并返回结果。在正常情况下并没有什么问题。但是，加入服务器此时因为某些故障而宕机，又或是网络通信出现问题，这时客户端将得不到任何回复。如果此时有另一台可以备用的服务器，当主服务器发生故障时能”临时顶替”一下，直到故障修复好了。这样对于客户端而言，服务器就是一直可用的。</p>
+<h1 id="Lab1-MapReduce"><a href="#Lab1-MapReduce" class="headerlink" title="Lab1: MapReduce"></a>Lab1: MapReduce</h1><p><a href="https://pdos.csail.mit.edu/6.824/papers/mapreduce.pdf" target="_blank" rel="noopener">MapReduce</a> 是分布式计算中，一个处理大数据的算法，或者说是编程模型，在 2004 年由 google 提出。在 MapReduce 的规范中，处理的对象都是键值对这样的数据。用户可以将计算分解为 (一个或多个) Map 和 Reduce 这样的操作，调用 MapReduce 函数库去实现大数据处理的功能。</p>
+<p>Map 函数读取一个键值对，并产生一个中间键值对的集合。MapReduce 库会使用自动将中间键的集合进行分组，并传入 Reduce 函数。<br>Reduce 函数读取一个 key 以及对应的 value 的集合，它将 values 集合进行合并操作，最后产出一个 String 的输出。</p>
+<p>论文中给出的样例如下:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">map</span>(String key, String value):</span><br><span class="line">    <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents</span></span><br><span class="line">    <span class="keyword">for</span> each word w in value:</span><br><span class="line">        EmitIntermediate(w, <span class="string">"1"</span>);</span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values):</span><br><span class="line">    <span class="comment">// key: a word</span></span><br><span class="line">    <span class="comment">// values: a list of counts</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">        result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result));</span><br></pre></td></tr></table></figure>
+<p>在样例中输入的是文件名-文件内容的键值对，map 函数读取出每个文档中的所有单词，对于每个单词 w 产生一个 w-&gt;1 的映射，即单词 w 出现了一次。经过 MapReduce Library 根据 key 分组后，reduce 函数接收到的 key 就是各个单词，values 的数量就是出现的次数，最后输出出来就得到了每个单词的出现次数了。</p>
+<p>简单来说，<strong>map 是一个打散数据的过程，而 reduce 是一个合并数据的过程</strong>。</p>
+<p>仿照上面的例子，我们可以写出符合上述接口的一个排序算法。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">map</span>(String key, String value):</span><br><span class="line">    <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents</span></span><br><span class="line">    <span class="keyword">for</span> each word w in value:</span><br><span class="line">        EmitIntermediate(w.substring(<span class="number">0</span>,<span class="number">2</span>), w);</span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values):</span><br><span class="line">    <span class="comment">// key: prefix of word</span></span><br><span class="line">    <span class="comment">// values: a list of words</span></span><br><span class="line">    result = sort(list(values));</span><br><span class="line">    Emit(AsString(result));</span><br></pre></td></tr></table></figure>
+<p>map 函数将读取每个单词，将单词的前两位作为 key， 在 reduce 函数中，对所有以 key 开头的单词做排序处理，并输出排序好的数据。最后只要再按照 key 的大小排序，即可得到所有单词排序后的结果。</p>
+<p>而在 lab1 中，我们要做的，并不是调用 Map Reduce 这样的方法，而是基于实验中给的代码，完成一个 Map/Reduce 函数库的设计。论文中给出的 Map/Reduce 工作原理如下图所示:</p>
+<p><img src="/2020/12/23/6-824/mapreduce.png" alt="mapreduce"></p>
+<div align="center">图2: MapReduce</div>
+
+<p>在上面的示例中，一共有几个重要的组成单元。</p>
+<ol>
+<li>master。即总控单元，负责 map 和 reduce 任务的分配</li>
+<li>worker。不断从 master 那里请求新的执行任务并进行计算，当计算完毕时将通知 master</li>
+<li>用户的程序，即用户编写的，满足 MapReduce 接口规范的函数。计算开始后，这些程序代码将被 fork 到各个 work 中，以便 worker 可以执行用户的代码进行计算。</li>
+</ol>
+<p>按照上面的单词统计为例子，对于输入部分，以多个文件的形式，每个文件作为一个单独的执行任务，将由 Master 分配到各个 worker 中。每个 worker 将产生一个类似下面格式的中间文件:</p>
+<blockquote>
+<p>mr-x-y: x 表示当前 worker 的编号，y 为需要对该文件进行处理的 reduce 任务编号(可以通过哈希求得，这样对于同一个单词，y 一定是相同的，即在同一个 reduce 任务中进行统计)</p>
+</blockquote>
+<p>worker 处理完毕后将文件写在本地磁盘中。当所有输出文件都经过 map 步骤后，master 将开始进行 reduce 的分配。每个 reduce 可能从多个单元中获取输入，经计算后产生一个输出文件。</p>
+<blockquote>
+<p>对于执行的 reduce 编号为 y 的 worker，将拉取所有编号为 mr-?-y 的文件进行处理。</p>
+</blockquote>
+<p>综上考虑，任务中 master 和 worker 的通信的格式基本上至少要包含如下内容:</p>
+<p>master-&gt;worker:</p>
+<ol>
+<li>task type</li>
+<li>input file urls</li>
+</ol>
+<p>worker-&gt;master:</p>
+<ol>
+<li>task type</li>
+<li>output file urls</li>
+</ol>
+<p>另: 这种简单的实现是会有很多实际问题的，比如 worker 突然宕机，比如负载不均衡等等。</p>
+<h1 id="Lab2-Basic-Raft"><a href="#Lab2-Basic-Raft" class="headerlink" title="Lab2: Basic Raft"></a>Lab2: Basic Raft</h1><p>在实验二中，我们需要实现的是一个 Raft 算法，位于 raft/raft.go 文件中。<br><a href="https://pdos.csail.mit.edu/6.824/papers/raft-extended.pdf" target="_blank" rel="noopener">Raft 算法</a> 是一个共识性算法，它能够保证对于一个集群，只要超过一半的结点是可用的，这个集群就能对外作出响应。由于分布式中在行业广泛使用的 paxos 算法过于晦涩难懂，因此 Raft 作为一个简单易懂的算法被提了出来。在保证较高执行效率的基础上，Raft 容易理解以及编程实现。</p>
+<p>附:<br>结点: 可以理解为一个计算机或者计算单元<br>集群: 一群联系紧密的结点的集合，对外界而言则可以视为一个单一的计算机。</p>
+<p>按惯例，先给例子解释 Raft 能拿来干什么。</p>
+<p><img src="/2020/12/23/6-824/raft_arch.jpg" style="zoom:40%"></p>
+<p><div align="center">图3: Raft 的使用</div></p>
+<p>上面一层是 KVServer，可以理解为 Key-Value 键值对的服务器，一个 KVServer 和一个 Raft 服务器一一对应，各个 KVServer 服务器之间没有任何联系，Raft 服务器之间两两互联。当一个请求过来后，KVServer 会将请求提交给 Raft 层，确保多数 Raft 服务器认可这一个提交。最后会通过管道等方式，将 Raft 中送出来的提交进行处理，并返回给客户端。<br>注: 一个 Raft 和 KVServer 服务器很可能位于同一台计算机上。</p>
+<h2 id="State-machine-amp-Log"><a href="#State-machine-amp-Log" class="headerlink" title="State machine &amp; Log"></a>State machine &amp; Log</h2><p>要理解好 Raft 算法，首先要理解好状态机这样一个概念。状态机模型事实上是一个很广义的概念，现实中的很多东西都能抽象成一个状态机来表示。比如门可以是一个状态机，它包含两种状态: 打开，关闭。我们动作类游戏时，角色的运动状态也是一个状态机: 包括站立，走路，跑步，跳跃等状态。甚至我们人也可以是一个状态机: idle 状态，吃饭状态，洗澡状态，学习状态等等。。</p>
+<p>我个人习惯把状态机模型分为以下三个部分: 状态(state)-刺激(activate)-反应(action)</p>
+<p><img src="/2020/12/23/6-824/state.png" alt="state"></p>
+<p><div align="center">图4: 状态机</div></p>
+<p>其中，反应是一个函数 f，以当前状态和接受的刺激为输入，输出的是下一个状态。怎么理解呢？以玩游戏为例子。在玩游戏时，角色站立(状态)在某个地板上，这时我按下前进键(刺激)，角色切换(反应)到向前走的状态。再按下空格键(刺激)，角色又切换(反应)到了跳跃的状态。最后落地(刺激), 角色再次切换回站立状态。<br>或者说以自己为例，早上起床人处于精神饱满的状态，经过了码一天代码这样的刺激，消耗了大量的能量，到了晚上就是处于一个好困好饿想吃饭睡觉的状态了。</p>
+<p>状态机广泛应用于各个软件开发领域，比如下面的这个图，就是一个典型的状态机模型(Android 中的 Mediaplayer 类)。蓝色表示的是状态，箭头表示的是刺激。</p>
+<p><img src="/2020/12/23/6-824/mediaplayer.webp" alt="mediaplayer"></p>
+<p><div align="center">图5: Mediaplayer</div></p>
+<p>切换回到 Raft 中，对于每个 raft 服务器而言，要保存的就是一个 key-value map。每次一个新的刺激(Put/Append/Get 请求)到来，都有可能会改变当前的状态。使用状态机模型有一个很大的好处，就是保证了一致性。只要<strong>给定相同初始状态以及执行操作序列，以及一个确定的反应函数(如何响应某个操作)，最终服务器的状态一定是一致的</strong>。</p>
+<p>这样一来，就引入了另外一个概念：如何保存执行操作序列？在 Raft 中，使用的是 Log 来保存的。每一个 LogEntry 可能包含如下的一些信息:</p>
+<ol>
+<li>请求类型: 在 Key/Value 存储系统中为 Put、Append、Get 请求</li>
+<li>请求附带的信息: 比如 Get 请求需要一个请求的 Key，Put 和 Append 请求则需要一个 Key 和 Value</li>
+</ol>
+<p>这样，在服务器启动时，我们只要初始化一个空的 map，然后保证集群中所有服务器执行的操作序列都相同，那么服务器的状态就一定会是相同的，对外界而言，这个集群看起来就像是一个单一的结点。</p>
+<p><img src="/2020/12/23/6-824/raft_state.png" alt="raft_state"></p>
+<p><div align="center">图6: Raft 的状态</div></p>
+<h2 id="Leader-election"><a href="#Leader-election" class="headerlink" title="Leader election"></a>Leader election</h2><p>对于一个由多个个体组成的集体，如果要使集体作出统一的决策，一个最简单的办法就是: 通过投票选出一个 leader，由 leader 来做决定，所有的服务器听从 leader 的指挥。当一个请求过来的时候，leader 将这个请求分发给其他服务器，如果有<strong>超过一半的服务器</strong>收到了该请求，那么就说明这个请求被认可。如果某个服务器收到了一个请求，并且它不是 leader，那么它将拒绝对这个请求做处理，客户端将转而尝试发送请求到其他服务器上。</p>
+<h3 id="Term"><a href="#Term" class="headerlink" title="Term"></a>Term</h3><p>在 raft 中，时间是按照 term 进行划分的。每个 term 我们可以理解为一个任期。如下图所示:</p>
+<p><img src="/2020/12/23/6-824/raft_term.png" alt="raft_state"></p>
+<p><div align="center">图7: Term</div></p>
+<p>Raft 保证下面这样的一个性质：在每个 term 中最多只会出现一个 leader (Election safety)。每个 leader 在任期内需要每隔一定的时间(Heartbeat timeout)就向其他服务器发送心跳包，说明 leader 是存活的。</p>
+<ol>
+<li>服务器发起选举机制。而对于每个服务器，如果一定的时间内(Election timeout, 通常是 Heartbeat 的两倍以上)没有收到来自 leader 的心跳包，那么当前服务器就认为 leader 已死，新王当立，于是自己的 <strong>term+1</strong>，同时发起请求，状态转变为 Candidate，先投自己一票并要求其他的服务器给自己投票。</li>
+<li>服务器投票机制。每个服务器在一个 term 中只投出一票，先到先得。</li>
+<li>服务器一旦<strong>收到包含有 term 大于自己的任何请求</strong>，转移到 follower 状态，更新自己的 term，并重新计时。</li>
+</ol>
+<p>注意，Raft 为了避免陷入一直无法选出 leader 的情形(多个 server 同时希望成为 leader)，采用了随机设置 Election timeout 的方式，这样大多数情况下，一个很短的时间内往往只有一个 server 发起投票，从而能够顺利选出 leader。</p>
+<p>另外，按照 Raft 的规则，虽然能够保证一个 term 内最多只有一个 leader，但是在某些状态下，可能会出现不止一个 server 认为自己是 leader! 但上面的规则保证了，它们一定是位于不同的 term 当中。</p>
+<p><img src="/2020/12/23/6-824/P3.jpg" style="zoom:40%"></p>
+<p><div align="center">图8: Server 分裂</div></p>
+<h2 id="Log-replication"><a href="#Log-replication" class="headerlink" title="Log replication"></a>Log replication</h2><p>Raft 算法另一个重要的部分就是 log 的分发/复制(replication)。前面提到，只有 leader 才会接受某个请求，当 leader 收到后，会调用 AppendEntries 尝试将 log 分发给其他 server。当 leader 收到超过一半的服务器的回复后，leader 就认为当前整个 Raft 集群可以接受这个请求了，或者说这个可以被提交(commit)了，server 会增加自己的 committedIndex，当下次再发送 AppendEntries 请求时，携带的 committedIndex 就会告诉其他服务器哪些 log 可以被提交，经过管道送出(按上面的例子，KVServer 就会收到 Raft 送出的 LogEntry)，此时就说这个 Log 被应用(apply)了。</p>
+<p><img src="/2020/12/23/6-824/log.png" alt="log"></p>
+<p><div align="center">图9: 一种可能的 Log 列表</div></p>
+<p>论文中给出的一种可能的情形如上图所示。每一行表示一个服务器的 log 列表，每个小格子中，上面的数字表示 log 提交时 leader 所在的 term，下面的信息表示请求的具体内容(Put 请求)。<br>根据上文的表述，每个 log 隐式地存在<strong>三种状态</strong>:</p>
+<ol>
+<li>存在于某(几)个 server 的 log 列表中</li>
+<li>由于 leader 超过一半收到了 follower 的添加 log 成功回复，log 被 commit 了。</li>
+<li>有新的 log 被 commit 了，因此将它们送出 Raft 层，称为被 apply 了。</li>
+</ol>
+<h3 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h3><p>在某些情况下，会出现下面这样一种情况。当服务器被选举为 leader 时，可能存在某个 follower 位于 a-f 中的某个状态。a,b 可能是因为 follower 还没有收到某个 log，c-f 可能是由于该服务器成为 leader 并收到请求后，还没有将 log 分发到其他服务器上(或只分发了一部分)就 crash 了。</p>
+<p><img src="/2020/12/23/6-824/differ.png" alt="differ"></p>
+<p><div align="center">图10: corner cases</div></p>
+<p>leader 在任期间，会不断地往其他 server 发送请求，并且强制要求所有的 server 的 log 要和 leader 匹配。由于 server 的 log 和 leader 的可能不匹配，leader 需要对每个 server，维护 nextIndex 数组和 matchIndex 数组，分别维护需要发给某个 server 的下一个 log 的 index，以及已知的 server 的 commitIndex。每次 leader 发现 server 的 index 和对应的 nextIndex 不匹配的时候，就会 -1 直到两者匹配，并把 nextIndex ～ leader 的最新的 log 信息全部发送给 server。</p>
+<p>当然，由于上面的性质，一个 log 有可能虽然被提交到了 leader 手上，但却由于 crash 后丢失 leader 地位，导致当前位置的 log 被新 leader 接受的其他 log 替代掉。</p>
+<h3 id="election-restriction"><a href="#election-restriction" class="headerlink" title="election restriction"></a>election restriction</h3><p>前面提到，每个结点在一个 term 内只能投出一票。那么，什么情况下才能投出自己的选票呢?比较明显的一点是，当 term &lt; 自己一定不能投票。但是 term 更大就能投票吗？参考图 3，5 个 server 被分割成两部分，三个的那一部分能正常工作，但两个的那一部分由于没办法获得多数结点的认可，将不断地尝试成为 leader，term 会不停的增加，比此时另一边的 term 要大很多。这时如果再将它们合并在一起，考虑到三个的那一部分很可能已经 commit 过好几个 log 了，这时如果这三个给两个的那一部分投票，那很有可能导致已经 commit 的 log 被再次覆盖! 因此对投票需要再加一个限制:</p>
+<ol>
+<li>term &gt; 自己或 term = 自己并且当前 term 没投过票</li>
+<li>log 不会比自己的更”旧”。(我们说 log A 比 log B 更新，意味着 A.term &gt; B.term 或者 A.term == B.term &amp;&amp; A.index &gt; B.index)</li>
+</ol>
+<h3 id="committed-entries-for-previous-term"><a href="#committed-entries-for-previous-term" class="headerlink" title="committed entries for previous term"></a>committed entries for previous term</h3><p>每个 leader 在自己的任期内，不能<strong>直接</strong>提交非自己任期的 log。考虑下面的一个场景。</p>
+<p><img src="/2020/12/23/6-824/deleted.png" alt="delete"></p>
+<p><div align="center">图11: commit for previous term/dev&gt;</div></p>
+<p>S1-S5 分别对应 5 个不同的 server。一开始 S1 成为了 leader，并接受了一个请求。然后，在 (b) 中，S5 收到了 S3-5 的票成为了 leader，并接受了一个请求，然后又马上 crash。在 (c) 中，S1 重新当上 leader，并把 term = 2 的 log 分发到 S3。此时如果 S1 这个 log 已经分发到多数结点上了，然后 commit 该 log，紧接着马上 crash，随后在 (d) 中 S5 当选，并把 term=3 的块分发给了所有 leader。这时就发生了已经 commit 的 log 被覆盖掉的情况！几个服务器的状态就不一致了。</p>
+<p>因此，leader 只能在 commit 自己的 log 的同时，顺便把前面没提交的 log commit 了。比如图 (e) 中，S1 再次成为 leader 后，将 term = 4 的块分发到 S2 和 S3，并 commit，此时 term = 2 的块也会连带着一起提交了。注意到此后 S5 不可能再次当选! S1-S3 都不会再投票给它了。</p>
+<p>总结上面的各个点，最后得到一副下面完整的 Raft 算法实现思路(同样摘自原论文):</p>
+<p><img src="/2020/12/23/6-824/raft_all.png" alt="raft_all"></p>
+<p><div align="center">图12: Raft 完整实现</div></p>
+<h2 id="Proof"><a href="#Proof" class="headerlink" title="Proof"></a>Proof</h2><p>经过上面的算法，Raft 能保证以下性质:</p>
+<blockquote>
+<p>Election Safety: 每个 term 最多只有一个 leader 当选<br>Leader Append-Only: leader 只会往 log 列表中添加新的 log，而不会删除<br>Log Matching: 如果两个 server 的 log 列表包含一个 index 和 term 都相同的 entry，那么这个 entry 以及它之前的所有 entry 都是相同的。<br>Leader Completeness: 某个 entry 如果已经被 commit，那么它将出现在后面所有 leader 的 log 列表中。<br>State Machine Safety: server 如果 apply 了某个 index 的 entry，它不会再 apply 另一个 index 相同的 entry</p>
+</blockquote>
+<p>其中，第一点可以由每个 server 在每个任期只能投出一票证明。第二点是 Raft 对 leader 的约束。第三点可以由归纳法证: term 相同说明是由同一个 server 接收的，index 相同说明存放的 log 信息是完全相同的。而由于前面提到，follower 只有和 leader 对应的 nextIndex 数组相匹配的时候，它才会接受 leader 分发的 entry，因此可以保证，前面的 log 一定会是相同的。</p>
+<p>第四点的证明则比较复杂。使用反证法证明: 当一个 entry 已经被 commit，则说明超过一半的结点已经接受了这个 entry。这时如果一个新的 leader 出现(它收到了超过一半的结点的投票)但又没有这个 entry，说明至少有一个结点持有了这个 entry 并且给这个新的 leader 投票。但是根据投票的规则，新的 leader 的 log 列表肯定不能比投票给它的结点更旧。这就产生了矛盾。</p>
+<p>有了第四点后，第五点也可以很容易被证明了: 只有 leader 能发起 commit，并且一个 entry 一旦被 commit 后，一定会出现在后面的 leader 的 log 列表中，并且 index 是单调递增的，最后一定会按顺序被 apply。</p>
+<p>到这里就完成了 raft 算法基本的证明。</p>
+<h2 id="Snapshot"><a href="#Snapshot" class="headerlink" title="Snapshot"></a>Snapshot</h2><p>接下来再考虑一个问题: 内存的大小是有限的，对于一个要持续运行的系统，log 不可能无限增长。因此，需要有某种方法可以保存 log。考虑状态机的那个模型，每次 log 的 apply 其实就是状态的一次改变，如果我们把当前的状态保存起来，那么 log 就可以不需要了，这也就是 snapshot。</p>
+<p>因此，系统需要检测当前 log 占用的空间，如果太大了，则使用 snapshot 进行压缩，然后把没用的 log 丢弃。这就涉及到了几个问题。</p>
+<p>第一个问题是如何保证 snapshot 的同步? 只需要在请求时，附带 leader 当前的 commitIndex，term，lastIncludedIndex(snapshot 时最后一个 log 的 index)，以及状态等信息即可。<br>第二个问题是 follower 的 log 列表如果和 server 不一致怎么办？做法其实也比较简单，直接丢弃所有 index 在 lastIncludedIndex 之前的所有请求即可。</p>
+<h1 id="Lab3-Basic-Fault-Tolerant-K-V-System"><a href="#Lab3-Basic-Fault-Tolerant-K-V-System" class="headerlink" title="Lab3: Basic Fault Tolerant K/V System"></a>Lab3: Basic Fault Tolerant K/V System</h1><p>注: 开始实验三前一定要确保实验二的实现是正确的。可以使用 go test 跑个几十次，确保没出问题再继续下一步。</p>
+<p>第三个实验内容大致是: 基于实验二实现的 Raft 算法，实现一个简单的具有容错功能的 K/V 存储系统。第三个实验中，需要编写这样几个类:</p>
+<ol>
+<li>KVServer，存储状态的类，处理 Raft apply 的请求并变更自己的状态。一个 KVServer 和一个 Raft Server 一一对应。同时，需要响应从客户端发起的请求。</li>
+<li>Clerk，存储系统内部相对于 KVServer 的客户端(对于存储系统外部而言，这个类则相当于 Server)，包含 Get，Put，Append 等方法，持有所有 KVServer 的实例(准确来说是能和所有 KVServer 通信)，向 KVServer 发起请求。为了简化，本实验中一个 Clerk 一次只会发起一个请求。</li>
+</ol>
+<p>用图像来表示关系则如图:</p>
+<p><img src="/2020/12/23/6-824/basic_kv.jpg" style="zoom:40%"></p>
+<p><div align="center">图13: Basic kv system</div></p>
+<h2 id="Clerk"><a href="#Clerk" class="headerlink" title="Clerk"></a>Clerk</h2><p>第一步是 clerk 的编写。总共有两个需要注意的地方。</p>
+<h3 id="Timeout-scheme"><a href="#Timeout-scheme" class="headerlink" title="Timeout scheme"></a>Timeout scheme</h3><p>Clerk 的请求是直接发往 KVServer 的，而前面我们知道，KVServer 和 Raft 是一一对应的，这就导致了一个重要问题: 虽然 Clerk 持有 KVServer 的实例，但是它并不知道哪一个 KVServer 是 leader(只有 leader 才能接受往 log 列表中添加请求)。并且，由于实际中通信并不是一直良好，请求有可能丢失导致 KVServer 没有收到。因此，我们需要一个重复发起请求的机制。</p>
+<p>每次发起一个 Get 等请求的时候，需要开启一个计时器，当限定时间内没收到任何请求或者 KVServer 拒绝接受请求时，更换 Server 进行重试，因此代码类似下面这样:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">timer := time.NewTimer(randTimeout())</span><br><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="comment">// 收到 KVServer 的回复时，会从 channel 拿到一个结果</span></span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> reply := &lt;- channel:</span><br><span class="line">        <span class="keyword">if</span> reply.Err == OK &#123;</span><br><span class="line">            <span class="comment">// do something...</span></span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// retry with another server</span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">case</span> &lt;- timer.C:</span><br><span class="line">        <span class="comment">// retry with another server</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注: 这里有一个可行的优化: Clerk 每次收到请求时，记住这个 KVServer，下次优先向这个 server 发起请求，当 leader 不会一直变动时，这时一个很大的优化。</p>
+<h3 id="Duplicate-detection"><a href="#Duplicate-detection" class="headerlink" title="Duplicate detection"></a>Duplicate detection</h3><p>前面的超时重发机制保障了 Clerk 会一直尝试发送请求直到得到结果。这就导致了另外一个问题: 重复! 这里也是这个实验中一个较大的难点，需要保证 KVServer 不会重复处理同一个请求。</p>
+<p>解决这个问题的一个方法是，使用序列号(seqId)来标识每一个请求，使用客户端编号来标识每一个 Clerk。序列号可以是一个从 0/1 开始的无符号整数，Clerk 的编号则应该保证不重复(可使用随机函数生成)。这样，KVServer 可以通过记住每一个 Clerk 发起的最后一个请求的 seqId，当收到 seqId 更小的请求时，说明这是一个重复请求，因此不进行处理。(注意: 这里的做法依赖于实验给的限定条件，即每个 Client 一次只会发起一个请求)</p>
+<h2 id="KVServer"><a href="#KVServer" class="headerlink" title="KVServer"></a>KVServer</h2><p>KVServer 本质上还是一个存储 K/V 对的状态机。它有几个工作:</p>
+<ol>
+<li>接受 Clerk 发过来的请求，并尝试提交给 Raft 层，失败则返回错误信息</li>
+<li>处理从 Raft 的 channel 提交出来的请求，更新自己的状态</li>
+<li>在 Lab3B 中，需要检测 Raft 层占用的空间是否过大，如果超过限定大小需要向 Raft 层发起 Snapshot 请求。</li>
+</ol>
+<p>因此，KVServer 需要保存以下状态: 存储 K/V 的一个 map，每个 Clerk 对应的最大的 seqId，raft 占用的最大空间限制。</p>
+<h3 id="Command-submit"><a href="#Command-submit" class="headerlink" title="Command submit"></a>Command submit</h3><p>第一件需要做的事情是对 Clerk 发起的请求(Op) 进行设计，这里我的设计是:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Op <span class="keyword">struct</span> &#123;</span><br><span class="line">    OpType      <span class="keyword">int</span>     <span class="comment">// 请求的类型</span></span><br><span class="line">    Key         <span class="keyword">string</span>  <span class="comment">// 请求的 Key</span></span><br><span class="line">    Value       <span class="keyword">string</span>  <span class="comment">// 请求的 Value，仅用于 Put/Append 请求</span></span><br><span class="line">    ClientId    <span class="keyword">int64</span>   <span class="comment">// 发起这个请求的客户端的编号</span></span><br><span class="line">    SeqId       <span class="keyword">int</span>     <span class="comment">// 客户端发起的请求的 id，和编号一起用于实现去重</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，当 KVServer 发送请求到 KVServer 时，KVServer 将其封装称一个 Op 对象，然后提交给 Raft，随后等待 Raft 将请求送出并处理完毕，将结果返回给 Clerk，期间出现异常(比如 Raft 不是 leader，无法提交请求)，则将异常信息返回给 Clerk，Clerk 则会向下一个 KVServer 重新发起请求。</p>
+<p>注: 这里等待有多种处理方式，比如 sync.WaitGroup 或者 channel，需要注意请求成功提交给了 Raft 并不意味着这个请求一定会被送出，有可能提交后 Raft 就 crash 了，随后新的 leader 上任，将这个 Log 覆盖掉。</p>
+<h3 id="State-update"><a href="#State-update" class="headerlink" title="State update"></a>State update</h3><p>在本实验中，Raft 通过 channel 将请求送出。因此在初始化 KVServer 的时候，需要开启一个线程去不断地处理从 Raft 中送出的数据。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(KVServer* kv)</span> <span class="title">loop</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> !kv.killed() &#123;</span><br><span class="line">        msg := &lt;- kv.applyCh</span><br><span class="line">        <span class="comment">// process msg</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Log-compaction-Snapshot"><a href="#Log-compaction-Snapshot" class="headerlink" title="Log compaction(Snapshot)"></a>Log compaction(Snapshot)</h3><p>Snapshot 有几个问题需要处理。</p>
+<p>第一个问题是 Snapshot 需要保存的数据。这里我选择的是保存 K/V 键值对以及每个 Clerk 的最大 seqId。这样就可以在重启后依然可以做到去重。</p>
+<p>第二个问题是 Snapshot 的时机。最容易想到的方式是，开启一个新的线程，每隔一定时间判断 raft 大小是否超过要求，如果超过则进行 Snapshot 操作。经过尝试后发现，这种做法时间间隔不好确定。时间间隔太短影响性能，时间间隔太长导致有时候没有及时进行 Snapshot，无法通过测试。因此采用了另一种方式: 在 Raft 层 apply 一批数据后，向 KVServer 发送一个特殊的消息，提醒 KVServer 新数据的到来并进行检查。</p>
+<p>注: 为了发送特殊类型的消息，raft 中送到 KVServer 的消息对象 ApplyMsg 需要进行更改: 添加一个 type 项，标明消息的类型。</p>
+<h1 id="Lab4-Sharded-Fault-Tolerant-K-V-System"><a href="#Lab4-Sharded-Fault-Tolerant-K-V-System" class="headerlink" title="Lab4: Sharded Fault Tolerant K/V System"></a>Lab4: Sharded Fault Tolerant K/V System</h1><p>经过前面的几个实验，已经能够完成一个基本的 K/V 系统。然而这样的一个系统还是存在很多问题: </p>
+<ol>
+<li>服务器是固定不变的，一旦开始运行后就无法发生改变。(raft 的论文中给出了变更 raft 集群大小的方式，实验中不实现这个功能)</li>
+<li>虽然使用了多个服务器保证部分结点故障，系统还能正常使用，但付出了很多通信代价，单从性能上讲，比单个 K/V 服务器要慢很多。为了提高性能，在实验 4 中需要实现一个具有分片功能的 K/V 存储系统。</li>
+</ol>
+<h2 id="Shard"><a href="#Shard" class="headerlink" title="Shard"></a>Shard</h2><p>对于 K/V 存储系统，假设需要管理的数据的量特别大，又或者并发量的要求很高，以致于一个集群并没有办法完全处理。这时显而易见的做法就是将数据集拆分成多个部分，每个集群只负责处理其中的一小部分，这样就使得整体的效率可以有数倍的提升。shard 可以理解成整个 K/V 存储系统中数据的子集。实验三中的实验就可以看成是只有一个 shard 的存储系统。</p>
+<p>比如 Key 以 “a” 开头的所有请求都交给集群 1 处理，以 “b” 开头的所有请求都交给集群 2 处理。在本实验中，使用的下面的函数判断某个 key 该交给哪个 shard 处理:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">key2shard</span><span class="params">(key <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    shard := <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(key) &gt; <span class="number">0</span> &#123;</span><br><span class="line">        shard = <span class="keyword">int</span>(key[<span class="number">0</span>])</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 在本实验中 NShards 为一个固定常量 10</span></span><br><span class="line">    shard %= shardmaster.NShards</span><br><span class="line">    <span class="keyword">return</span> shard</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把数据分成 shard 以后，我们就可以将 shard 分别交给某个集群去处理。为了增加整个系统的灵活性，我们<strong>使用配置(Config) 去管理每个 shard 是由哪个集群负责的</strong>，定义如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Config <span class="keyword">struct</span> &#123;</span><br><span class="line">	Num    <span class="keyword">int</span>              <span class="comment">// config number</span></span><br><span class="line">	Shards [NShards]<span class="keyword">int</span>     <span class="comment">// shard -&gt; gid</span></span><br><span class="line">	Groups <span class="keyword">map</span>[<span class="keyword">int</span>][]<span class="keyword">string</span> <span class="comment">// gid -&gt; servers[]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Num 用来表示当前配置的版本号，每次配置发生变化时都会递增。Shards 是 shard 到 gid(每个集群都有一个 id，这里记为 gid)的映射。Groups 则是 gid 到 servers 的映射，表示每个集群中包含有哪些服务器，用于和服务器的通信。</p>
+<p>此外，既然使用了动态配置，就需要有集群来管理这些配置信息，称之为 ShardMaster。这样整个系统的雏形就有了。每个集群不断向 ShardMaster 询问当前配置信息，当配置信息发生更改后，自身的状态也要发生变更(比如不能再接受某些 shard 等)，遇到不是由自己负责的请求，则返回一个 ErrWrongGroup 这样的错误信息，Clerk 就可以转而向其他集群发起请求。</p>
+<p><img src="/2020/12/23/6-824/sharded_kv.jpg" style="zoom:40%"></p>
+<p><div align="center">图14: Sharded kv system</div></p>
+<p>每个 cluster 的定义见 图13。</p>
+<p>此外，虽然实验中用的是 key 的 hash 值去做分区，那么在实际应用中，类似地也可以使用客户端所在地点等去做分区，每个客户端自动向最近的一个集群发起请求。又或者可以用于实现负载均衡。</p>
+<h2 id="ShardMaster"><a href="#ShardMaster" class="headerlink" title="ShardMaster"></a>ShardMaster</h2><p>ShardMaster，暴露以下接口：</p>
+<ol>
+<li>Join(servers): 添加某(几)个集群，参与提供存储服务</li>
+<li>Leave(gids): 某(几)个集群离开，不再提供存储服务</li>
+<li>Move(shardId, gid): 将第 shardId 个 shard 交给 id 为 gid 的集群负责</li>
+<li>Query(num): 查询版本为 num 的配置信息</li>
+</ol>
+<p>无论是 Join、Leave 还是 Move 都会对配置进行产生更改，因此需要产生一个新的 Config。而对于查询，则只需要直接返回配置信息即可。ShardMaster 的实现基本上代码可以全部照搬实验三，需要考虑的仅有一个点: 如何进行配置的变更。</p>
+<p>Config 类中，对于 Groups 和 Num 的处理方式比较简单，而 shard 的分配则比较麻烦。为了尽可能地提高效率以及均衡负载，对于出现集群加入服务或者离开服务的情况，需要进行再平衡操作。Config 的变更要满足以下要求:</p>
+<ol>
+<li>初始时，所有 Shard 都没有任何集群来负责，因此 Shards 中每个都映射到 gid = 0(即一个非法的 gid)。</li>
+<li>shard 需要尽可能平均地分配给各个集群，即各个集群负责的 shard 的数量的差不能超过 1</li>
+<li>在满足条件 2 基础上，每次变更尽可能小，即使用尽量少的移动实现均匀地分配。</li>
+</ol>
+<p>另外，一个需要注意的陷阱是，这个<strong>算法一定要是确定的(deterministic)</strong>。即对于相同的输入数据要给出相同的结果。而 go 中 map 的顺序是不确定的，因此算法需要兼容 map 遍历乱序的情况。</p>
+<p>为了平均地分配，我们事实上可以这样操作: 统计每个 server 负责的 shard，当负责的 shard 的数量的极差(最大减最小)超过 1 时，将它负责的某个 shard 移交给负责的数量最少的 server。一个可行的算法基本步骤如下:</p>
+<ol>
+<li>clustering。统计每个 gid 负责的 shards，对于没有人负责的 shard(可能由于 leave 引起)，则收集到一起</li>
+<li>将没有人负责的 shard 放置到 gid 最大的那个集群</li>
+<li>对每个集群负责的 shardId 进行排序</li>
+<li>循环遍历各个集群负责的 shards，当出现极差超过 1 时，从负责 shard 数量最多的集群里面拿出 id 最大的几个 shard， 交给负责 shard 数量最少的集群。(负责数量相同则选择 gid 更大的那个，总之一定要保证确定性)</li>
+<li>统计每个 shard 是哪个集群负责的，构造 Config 并返回</li>
+</ol>
+<h2 id="Shard-Design"><a href="#Shard-Design" class="headerlink" title="Shard Design"></a>Shard Design</h2><p>在本实验中，负责某个 shard 的集群常常会发生变动，并且这样的变动对于客户端而言应该是隐藏的。这就要求我们有足够的机制保证 shard 能够从一个集群转移到另一个集群，并且保留有足够的信息去避免发生重复请求或数据丢失的现象。此外，Challenge 中还要求我们要对已经移出的 shard 进行删除操作，以节省空间。这些条件都在说明: <strong>shard 相对于每个集群应该是尽可能独立的</strong>。</p>
+<p>综合上面的条件，可以使用下面这样的结构去描述一个 shard。每个集群要存储的数据就只有 Config 以及集群管理的 shard 对象(一个 shardId 到 shard 数据结构的映射)。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Shard <span class="keyword">struct</span> &#123;</span><br><span class="line">	Data		<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>       <span class="comment">// key-value storage of a shard</span></span><br><span class="line">	SeqMap		<span class="keyword">map</span>[<span class="keyword">int64</span>]<span class="keyword">int</span>           <span class="comment">// clientId -&gt; seq map</span></span><br><span class="line"></span><br><span class="line">	ConfigNum   <span class="keyword">int</span>                     <span class="comment">// currentshard config shard is using</span></span><br><span class="line">	Gid         <span class="keyword">int</span>                     <span class="comment">// gid group owns this shard</span></span><br><span class="line">	ID          <span class="keyword">int</span>                     <span class="comment">// shardId</span></span><br><span class="line">	Servers     []<span class="keyword">string</span>                <span class="comment">// shard in ConfigNum's server</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="State-update-1"><a href="#State-update-1" class="headerlink" title="State update"></a>State update</h3><p>注意对外部而言，集群相当于一个结点，由 leader 负责接受消息以及发送消息到外部。考虑到 shard 的信息在集群内部要保持一致，因此，<strong>所有涉及到 Config 以及 Shards 变更的操作都需要提交到 Raft 层进行处理</strong>。因此，至少需要处理以下几种类型的消息:</p>
+<ol>
+<li>一个新的 Get/Put/Append 请求，做法类似 Lab3</li>
+<li>从 Snapshot 中恢复状态，同样类似 Lab3</li>
+<li>新的 Config 到来</li>
+<li>收到一个来自其他集群的 Shard</li>
+<li>删除某个 Shard</li>
+</ol>
+<h3 id="Shard-Move"><a href="#Shard-Move" class="headerlink" title="Shard Move"></a>Shard Move</h3><p>第一个考虑的问题是移动哪些以及如何移动。很显然，触发 shard 移动的驱动是 Config 的更新，如果 Config 发生了改变，某个 shard 不再由当前集群负责，那么就需要将其交给负责它的某个集群。这里有两种做法: </p>
+<ol>
+<li>pull 形式。当 config 更新后，每个集群查看自己是否持有所有自己负责的 shard，如果某个 shard 没有则查询 Config 并向对应的集群索取。</li>
+<li>push 形式。当 config 更新后，每个集群查看自己是否持有不是自己负责的 shard，如果有则查看 Config 并将其送到应该负责它的集群。</li>
+</ol>
+<p>经过考虑，笔者采用的是第二种形式。(第一种实现起来更加复杂，并且效率上看第二种会更好一点)。和 Put/Append 等操作类似，发送 shard 的集群把自己当做一个客户端，增加一个 RPC 调用，将 shard 包含的数据封装在请求中发送。</p>
+<p>同样的，由于各种潜在的错误，RPC 调用可能会失败，需要有重传的机制保证目标收到请求，这就再次引入了去重的问题。怎么做呢？</p>
+<p>第一种做法是参考 Lab3，每个集群持有一个 id，每个发送 shard 的请求也有一个 id，通过这两个 id 来保证每个请求只会执行一次。但这显得过于麻烦了，其实 <strong>ConfigNum 和 ShardId 已经可以唯一地标识出一个请求</strong>了: 在每个 Config 中，一个 shard 只会由一个集群来负责。每次收到一个 shard 发送请求时，出现重复有以下情形:</p>
+<ol>
+<li>shard 的版本号小于当前版本号(下面会涉及)</li>
+<li>当前集群已经持有了某个 shard 并且 shard 的版本号和持有的相同</li>
+</ol>
+<p>另外，当 shard 不再属于自己后，应该拒绝接受所有属于这个 shard 的请求。</p>
+<h3 id="Config-update"><a href="#Config-update" class="headerlink" title="Config update"></a>Config update</h3><p>在 shardKV 启动的时候，我们需要一个循环不断从 ShardMaster 中拿 config 以更新自己的状态。这就涉及到了一个问题: 怎样去做更新?</p>
+<p>如果不断地拿最新版本的 Config，那么就意味着很有可能会跳过某些版本的 Config，并且对于 shard 的管理也会更加不可控(也许是可行的，但至少也会带来过高的复杂度)。因此，一个比较稳妥的做法是，满足一定条件后，每个集群一次只拿比当前新一个版本的 Config，并针对拿到的 Config 对自己持有的 shard 做调整。</p>
+<p>笔者拿下一个 config 的条件如下:</p>
+<ol>
+<li>当前集群版本下，所有不属于自己的 shard 都被发送出去并收到了回复</li>
+<li>当前集群版本下，所有属于自己的 shard 都已经持有且版本号和集群版本号相同</li>
+</ol>
+<p>这里可以考虑下，如果没有条件 1，可能出现某个 shard 被发送出去并收到，但由于网络问题没收到回复，这时 Config 更新，shard 的持有者又变更了，这时又将同一个 shard 送给了另一个集群，这就导致了系统出现了同一个 shard 的多个副本。如果没有条件 2，可能出现收到了一个旧版本的 shard，但是却没办法确定这是否是一个重复副本的情形。</p>
+<p>另外，收到一个新的 Config 时，需要对 shard 进行变更。当某个 shard 不再属于自己，更新 shard 的持有者，当某个 shard 依然属于自己时，更新版本号。同时对于不再属于自己的 shard，需要不断发起请求尝试将 shard 送给目标集群。当收到目标集群的回复时，则可以往 Raft 层中提交一个删除 shard 请求。删除成功后，就可以继续拉取下一个 Config 了。</p>
+<h2 id="Something-else"><a href="#Something-else" class="headerlink" title="Something else"></a>Something else</h2><p>在做实验 4 的时候，采用的方式是每次只会拉取下一个新的版本的 Config，这在 Config 频繁变动的情况下效率是很低的(实际应用的话应该不会那么频繁变动吧)。是否有办法可以避免这样的情况呢？但这样的话似乎又需要考虑这几个问题:</p>
+<ol>
+<li>如何保证整个系统最多只有一个集群会响应某个 shard(不会出现多个合法副本)</li>
+<li>如何保证 shard 一定会经过多个集群最终顺利送到负责处理该 shard 的集群(即一定会有集群响应某个 shard)</li>
+<li>如何保证非法的副本可以在恰当的时间被回收</li>
+</ol>
+<p>如果有一种机制可以保证整个系统对当前最新的 Config 一致认可(或者能同时知道最新版本是多少)，那这两个问题都可以解决。不过似乎也不太可行。</p>
+<h1 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h1><p>6.824 实验到这里就结束了。尽管实验数量较少，难度却还是很大的。并且由于后面几个实验要用到前面的设计，如果 Raft 没有写好，后面极其容易遇到各种各样的问题，并且调试难度极大。</p>
+<p>此外，另外值得一提的一点是，从第一个视频开始，教授就提到分布式是在单机性能实在无法完成的时候再去考虑的，毕竟分布式在实际应用中需要解决各种各样的 Corner cases，可以单服务器提升性能解决的问题就尽量不要使用分布式比较好。<strong>分布式系统这把双刃剑在提供更丰富的计算资源与系统容错性的同时，也大大增加了系统的复杂性</strong>。</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/6-824/" rel="tag"><i class="fa fa-tag"></i> 6.824</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/15/image-compression/" rel="next" title="Image compression algorithm">
+                <i class="fa fa-chevron-left"></i> Image compression algorithm
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Prologue"><span class="nav-number">1.</span> <span class="nav-text">Prologue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-distributed"><span class="nav-number">2.</span> <span class="nav-text">Why distributed</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lab1-MapReduce"><span class="nav-number">3.</span> <span class="nav-text">Lab1: MapReduce</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lab2-Basic-Raft"><span class="nav-number">4.</span> <span class="nav-text">Lab2: Basic Raft</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#State-machine-amp-Log"><span class="nav-number">4.1.</span> <span class="nav-text">State machine &amp; Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leader-election"><span class="nav-number">4.2.</span> <span class="nav-text">Leader election</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Term"><span class="nav-number">4.2.1.</span> <span class="nav-text">Term</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Log-replication"><span class="nav-number">4.3.</span> <span class="nav-text">Log replication</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#commit"><span class="nav-number">4.3.1.</span> <span class="nav-text">commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#election-restriction"><span class="nav-number">4.3.2.</span> <span class="nav-text">election restriction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#committed-entries-for-previous-term"><span class="nav-number">4.3.3.</span> <span class="nav-text">committed entries for previous term</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proof"><span class="nav-number">4.4.</span> <span class="nav-text">Proof</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snapshot"><span class="nav-number">4.5.</span> <span class="nav-text">Snapshot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lab3-Basic-Fault-Tolerant-K-V-System"><span class="nav-number">5.</span> <span class="nav-text">Lab3: Basic Fault Tolerant K/V System</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Clerk"><span class="nav-number">5.1.</span> <span class="nav-text">Clerk</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Timeout-scheme"><span class="nav-number">5.1.1.</span> <span class="nav-text">Timeout scheme</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Duplicate-detection"><span class="nav-number">5.1.2.</span> <span class="nav-text">Duplicate detection</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVServer"><span class="nav-number">5.2.</span> <span class="nav-text">KVServer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Command-submit"><span class="nav-number">5.2.1.</span> <span class="nav-text">Command submit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#State-update"><span class="nav-number">5.2.2.</span> <span class="nav-text">State update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Log-compaction-Snapshot"><span class="nav-number">5.2.3.</span> <span class="nav-text">Log compaction(Snapshot)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lab4-Sharded-Fault-Tolerant-K-V-System"><span class="nav-number">6.</span> <span class="nav-text">Lab4: Sharded Fault Tolerant K/V System</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Shard"><span class="nav-number">6.1.</span> <span class="nav-text">Shard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ShardMaster"><span class="nav-number">6.2.</span> <span class="nav-text">ShardMaster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shard-Design"><span class="nav-number">6.3.</span> <span class="nav-text">Shard Design</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#State-update-1"><span class="nav-number">6.3.1.</span> <span class="nav-text">State update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shard-Move"><span class="nav-number">6.3.2.</span> <span class="nav-text">Shard Move</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Config-update"><span class="nav-number">6.3.3.</span> <span class="nav-text">Config update</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Something-else"><span class="nav-number">6.4.</span> <span class="nav-text">Something else</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Epilogue"><span class="nav-number">7.</span> <span class="nav-text">Epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">129.4k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
