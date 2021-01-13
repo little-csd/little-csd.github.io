@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/web_favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/ad99dd2b.js","daovoice")
+  daovoice('init', {
+      app_id: "ad99dd2b"
+    });
+  daovoice('update');
+  </script>
+
+
+<meta name="description" content="Prologue这篇博客主要是想记录一下关于 opencv 这个库的一些学习心得，并穿插一些图像处理的基本知识。分析基于 opencv 4.5.1，其他版本可能会存在一些接口的变动，还请注意。 Prep首先是 opencv 的安装。对于 python 版的 opencv，可以直接使用 pip install 进行安装。对于 C++ 版则可以自己下载源码进行编译与安装。这里介绍在 ubuntu 下如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="opencv 源码初探">
+<meta property="og:url" content="http://yoursite.com/2021/01/11/opencv/index.html">
+<meta property="og:site_name" content="Little csd&#39;s blog">
+<meta property="og:description" content="Prologue这篇博客主要是想记录一下关于 opencv 这个库的一些学习心得，并穿插一些图像处理的基本知识。分析基于 opencv 4.5.1，其他版本可能会存在一些接口的变动，还请注意。 Prep首先是 opencv 的安装。对于 python 版的 opencv，可以直接使用 pip install 进行安装。对于 C++ 版则可以自己下载源码进行编译与安装。这里介绍在 ubuntu 下如">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2021/01/11/opencv/morph_kernel.jpg">
+<meta property="og:updated_time" content="2021-01-13T09:51:45.927Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="opencv 源码初探">
+<meta name="twitter:description" content="Prologue这篇博客主要是想记录一下关于 opencv 这个库的一些学习心得，并穿插一些图像处理的基本知识。分析基于 opencv 4.5.1，其他版本可能会存在一些接口的变动，还请注意。 Prep首先是 opencv 的安装。对于 python 版的 opencv，可以直接使用 pip install 进行安装。对于 C++ 版则可以自己下载源码进行编译与安装。这里介绍在 ubuntu 下如">
+<meta name="twitter:image" content="http://yoursite.com/2021/01/11/opencv/morph_kernel.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/01/11/opencv/">
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>opencv 源码初探 | Little csd's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Little csd's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/11/opencv/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little csd">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user_image.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Little csd's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">opencv 源码初探</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-01-11T08:51:16+08:00">
+                2021-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/dip/" itemprop="url" rel="index">
+                    <span itemprop="name">dip</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2021/01/11/opencv/" class="leancloud_visitors" data-flag-title="opencv 源码初探">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  6.6k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Prologue"><a href="#Prologue" class="headerlink" title="Prologue"></a>Prologue</h1><p>这篇博客主要是想记录一下关于 opencv 这个库的一些学习心得，并穿插一些图像处理的基本知识。<br>分析基于 opencv 4.5.1，其他版本可能会存在一些接口的变动，还请注意。</p>
+<h1 id="Prep"><a href="#Prep" class="headerlink" title="Prep"></a>Prep</h1><p>首先是 opencv 的安装。对于 python 版的 opencv，可以直接使用 pip install 进行安装。对于 C++ 版则可以自己下载源码进行编译与安装。这里介绍在 ubuntu 下如何编译源码:</p>
+<blockquote>
+<p>工具: git、cmake</p>
+</blockquote>
+<p>首先需要下载源码:</p>
+<blockquote>
+<p>git clone <a href="https://github.com/opencv/opencv" target="_blank" rel="noopener">https://github.com/opencv/opencv</a></p>
+</blockquote>
+<p>由于 git 可能较慢，linux 或 mac 下可以使用 wget/curl 等指令利用代理进行下载，以加快下载速度。</p>
+<p>其次是配置，opencv 的配置需要用到 cmake。</p>
+<blockquote>
+<p>mkdir build &amp;&amp; cd build // 新建 build 文件夹用于构建<br>cmake .. // 生成 makefile 文件<br>make &amp;&amp; make install // 编译并安装</p>
+</blockquote>
+<p>注: 编译选项可以在 cmake 生成 Makefile 的时候进行配置。另外由于项目较大，编译耗时较长，也可以加上 -j4 等利用多线程进行编译。<br>调用 cmake 的时候如果报错提示需要创建另一个文件来存放编译产物这样的信息，可以试下把 CMakeCache.txt 删掉。</p>
+<p>安装完毕后，可以使用简单的 demo 进行测试。</p>
+<p>C++:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/opencv.hpp&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/// 将文件的路径传入 opencv 读取</span></span><br><span class="line">    Mat a = imread(argv[<span class="number">1</span>]);</span><br><span class="line">    imshow(<span class="string">"test"</span>, a);</span><br><span class="line">    waitKey(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CMakefile:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">2.8</span>)</span><br><span class="line"><span class="keyword">project</span>( LearnOpenCV ) <span class="comment"># 文件名字随便起，和下面对应就行</span></span><br><span class="line"><span class="keyword">find_package</span>( OpenCV REQUIRED )</span><br><span class="line"><span class="keyword">include_directories</span> ( <span class="variable">$&#123;OpenCV_INCLUDE_DIRS&#125;</span> )</span><br><span class="line"><span class="keyword">add_executable</span>( LearnOpenCV <span class="keyword">test</span>.cpp ) <span class="comment"># 输入文件名也要对应</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>( LearnOpenCV <span class="variable">$&#123;OpenCV_LIBS&#125;</span> )</span><br></pre></td></tr></table></figure>
+<p>最后使用 CMake 还有 make 进行编译即可。找一张图片测试下如果能正常展示出来应该就没问题了。<br>当然也可以使用 g++/clang++ 等直接进行编译，但需要注意链接的时候要加上 opencv 的二进制文件。</p>
+<h1 id="Arch"><a href="#Arch" class="headerlink" title="Arch"></a>Arch</h1><p>opencv 的项目文件结构的安排同样是按照模块进行划分的，源文件基本都放在了 modules 文件夹下。其中，几个重要的模块如下:</p>
+<ol>
+<li>core，包含一些基本的类定义，比如矩阵类 Mat，以及 mask，blend 操作等</li>
+<li>imgproc，包含大量图像处理算法，也是这个博客的重点</li>
+<li>highgui, imgcodecs, videoio，包含图像/视频的编解码等功能</li>
+<li>feature2d，包含 2d 图像特征检测相关的 api</li>
+<li>calib3d，3d 摄像机相关的库</li>
+</ol>
+<p>对于每个模块，基本的文件结构如下:</p>
+<ul>
+<li>doc 包含模块相关文档</li>
+<li>include 包含模块的头文件(.hpp)</li>
+<li>misc 包含其他语言的一些源文件，包括 python，java，oc 等</li>
+<li>perf 包含性能测试相关文件</li>
+<li>src 模块源文件</li>
+<li>test 包含单元测试相关文件</li>
+</ul>
+<h1 id="Read-Write-Show"><a href="#Read-Write-Show" class="headerlink" title="Read / Write / Show"></a>Read / Write / Show</h1><p>使用图像前往往对图像进行读取。api 如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Mat <span class="title">imread</span><span class="params">( <span class="keyword">const</span> String&amp; filename, <span class="keyword">int</span> flags = IMREAD_COLOR )</span></span>;</span><br></pre></td></tr></table></figure>
+<p>对应的实现在 imgcodecs 模块中的 loadsave.cpp 文件中。做一定的检查并初始化一个 Mat 容器，然后调用同一个文件中的 imread_ 函数。化简后的步骤如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">bool</span></span><br><span class="line">imread_( <span class="keyword">const</span> String&amp; filename, <span class="keyword">int</span> flags, Mat&amp; mat )</span><br><span class="line">&#123;</span><br><span class="line">    ImageDecoder decoder;</span><br><span class="line">    decoder = findDecoder( filename ); <span class="comment">/// 找到一个合适的 decoder 去解析文件</span></span><br><span class="line">    <span class="keyword">if</span>( !decoder )&#123; <span class="comment">/// 找不到则返回</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> scale_denom = <span class="number">1</span>;</span><br><span class="line">    ...</span><br><span class="line">    decoder-&gt;setScale( scale_denom ); <span class="comment">/// 设置 scale</span></span><br><span class="line">    decoder-&gt;setSource( filename ); <span class="comment">/// 设置源文件名</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/// 确保 decode 的文件大小不会过大</span></span><br><span class="line">    Size size = validateInputImageSize(Size(decoder-&gt;width(), decoder-&gt;height()));</span><br><span class="line">    <span class="comment">/// 获取 decoder 对应的图片的类型</span></span><br><span class="line">    <span class="keyword">int</span> type = decoder-&gt;type();</span><br><span class="line">    type = ...</span><br><span class="line">    <span class="comment">/// 创建大小为 height * width，类型为 type 的矩阵</span></span><br><span class="line">    mat.create( size.height, size.width, type );</span><br><span class="line">    <span class="comment">/// 读取图片数据</span></span><br><span class="line">    <span class="keyword">bool</span> success = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (decoder-&gt;readData(mat))</span><br><span class="line">            success = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> ...</span><br><span class="line">    <span class="keyword">if</span> (!success)</span><br><span class="line">    &#123;</span><br><span class="line">        mat.release();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>经过这样一个步骤，图片就会根据具体的类型调用能解码对应类型的图像解码器，readData 将文件读取到矩阵当中。最后返回 true 表示读取成功。每种类型的图片的读取方式都不太相同，但最终都会转化一个矩阵的形式(通常为 BGR 或者灰度图)，此后的处理就都是针对矩阵了。</p>
+<p>写操作类似，首先是搜索找到一个合适的图像编码器，然后将类型传入，设置好目的文件名，然后具体的写入逻辑就转交给编码器了。</p>
+<p>imshow 位于 highgui 模块的 window.cpp 中。定义如下图所示:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> cv::imshow( <span class="keyword">const</span> String&amp; winname, InputArray _img )</span><br><span class="line">&#123;</span><br><span class="line">    CV_TRACE_FUNCTION();</span><br><span class="line">    <span class="keyword">const</span> Size size = _img.size();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HAVE_OPENGL</span></span><br><span class="line">    <span class="comment">/// show with cvShowImage</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> useGl = getWindowProperty(winname, WND_PROP_OPENGL);</span><br><span class="line">    CV_Assert(size.width&gt;<span class="number">0</span> &amp;&amp; size.height&gt;<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (useGl &lt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/// show with cvShowImage</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">        setOpenGlContext(winname);</span><br><span class="line">        cv::ogl::Texture2D&amp; tex = ownWndTexs[winname];</span><br><span class="line">        <span class="comment">/// copy buffer from image to texture</span></span><br><span class="line">        <span class="keyword">if</span> (_img.kind() == _InputArray::CUDA_GPU_MAT)</span><br><span class="line">        &#123;</span><br><span class="line">            cv::ogl::Buffer&amp; buf = ownWndBufs[winname];</span><br><span class="line">            buf.copyFrom(_img);</span><br><span class="line">            buf.setAutoRelease(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">            tex.copyFrom(buf);</span><br><span class="line">            tex.setAutoRelease(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            tex.copyFrom(_img);</span><br><span class="line">        &#125;</span><br><span class="line">        setOpenGlDrawCallback(winname, glDrawTextureCallback, &amp;tex);</span><br><span class="line">        updateWindow(winname);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>绘图的逻辑中，总共有两条支线。如果可以使用 opengl，优先使用 opengl 进行绘制(目前默认没有使用 opengl)。如果不支持 opengl，opencv 还提供了 gtk，qt，w32，winrt 等绘图 api。cv 这个命名空间中的几个 cvUpdateWindow, setOpenGlDrawCallback 函数等为空实现。如果配置中选择了相应的库，则加入编译。这样就做到了动态地配置绘图实现方式。</p>
+<h1 id="Dip"><a href="#Dip" class="headerlink" title="Dip"></a>Dip</h1><p>图像处理涉及到的知识面十分复杂，因此这里仅选择 filter，canny，morphology 三个比较重要的部分，分析源码是如何实现的。</p>
+<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><p>滤波是图像处理中的一个核心步骤，C++ 层接口如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W <span class="keyword">void</span> <span class="title">filter2D</span><span class="params">( InputArray src, OutputArray dst, <span class="keyword">int</span> ddepth,</span></span></span><br><span class="line"><span class="function"><span class="params">                            InputArray kernel, Point anchor = Point(<span class="number">-1</span>,<span class="number">-1</span>),</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">double</span> delta = <span class="number">0</span>, <span class="keyword">int</span> borderType = BORDER_DEFAULT )</span></span>;</span><br></pre></td></tr></table></figure>
+<p>opencv 中的 filter2D 并不是数学意义上的卷积，而是相关(Correlation)。数学上的卷积需要先对核进行翻转操作。如果核范围超过了图像，则使用给定的 border 模式对图像进行插值。经过数值提取后，函数的实现如下(位于 imgproc 模块的 filter.dispatch.cpp 文件中):</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> res;</span><br><span class="line">res = replacementFilter2D(...);</span><br><span class="line"><span class="keyword">if</span> (res)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">res = dftFilter2D(...);</span><br><span class="line"><span class="keyword">if</span> (res)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">ocvFilter2D(...);</span><br></pre></td></tr></table></figure>
+<p>可以看到，滤波函数的处理总共有三种分支。第一种是 replacementFilter2D，使用 ipp(Integrated Performance Primitives, 包含一套硬件实现的高速算法)。如果不支持 ipp，则采用第二种方式，即基于 dft(逆傅里叶变换) 的滤波方式。最后在没有其他可行的方式的情况下，才采用最原始的方式进行计算。</p>
+<h3 id="ocvFilter2D"><a href="#ocvFilter2D" class="headerlink" title="ocvFilter2D"></a>ocvFilter2D</h3><p>ocvFilter2D 中，调用 createLinearFilter 函数创建一个 FilterEngine。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ocvFilter2D</span><span class="params">(...)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    Ptr&lt;FilterEngine&gt; f = createLinearFilter(...);</span><br><span class="line">    f-&gt;apply(...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>createLinearFilter 中又调用了 getLinearFilter 函数获取线性滤波器，然后将其包装在 FilterEngine 内。getLinearFilter 最后又用到了 filter.simd.hpp 中 Filter2D 这个模板类。</p>
+<p>apply 函数中调用到了 FilterEngine__apply 函数。先是使用 FilterEngine__start 进行初始化以及校验的工作，然后调用 FilterEngine__proceed，最后调用到的是 Filter2D 的 operator() 实现滤波的(本质上还是两个 for 循环实现的)。</p>
+<h3 id="dftFilter2D"><a href="#dftFilter2D" class="headerlink" title="dftFilter2D"></a>dftFilter2D</h3><p>使用 dft 版本的 滤波器如下: 首先会根据硬件是否支持以及原矩阵和目标矩阵的类型决定最大的核的大小。如果核很小，则返回 false，表示不采用 dft 方式，最后就会使用线性滤波实现。通常核大于 11 x 11 时就会采用 dft。</p>
+<p>条件检查过后，会创建一个新的 temp 矩阵，然后调用 crossCorr 进行计算，最后再将 temp 矩阵拷贝到 dst，然后返回成功信息。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">dftFilter2D</span><span class="params">(...)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">int</span> dft_filter_size = ... ? <span class="number">130</span> : <span class="number">50</span>;</span><br><span class="line">        <span class="keyword">if</span> (kernel_width * kernel_height &lt; dft_filter_size)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// crossCorr doesn't accept non-zero delta with multiple channels</span></span><br><span class="line">    <span class="keyword">if</span> (src_channels != <span class="number">1</span> &amp;&amp; delta != <span class="number">0</span>) &#123;</span><br><span class="line">        create Mat temp</span><br><span class="line">        crossCorr(src, kernel, temp, anchor, <span class="number">0</span>, borderType);</span><br><span class="line">        add(temp, delta, temp);</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        create Mat tmp</span><br><span class="line">        crossCorr(src, kernel, temp, anchor, delta, borderType);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>crossCorr 函数的实现在 imgproc module 的 templmatch.cpp 文件中。实现较复杂这里就不再贴上来，基本的思路就是: 计算出一个合适的 dft 后的矩阵大小，将原图像以及核都分别进行 dft 操作，然后在频域空间上进行相乘(调用了 mulSpectrums 函数)，最后再使用 idft 还原到原来的大小。其中最复杂的点在于矩阵的大小的确定: 过小会导致精度的丢失，过大则增加了计算的复杂度。最合适的大小在 opencv 中是 hardcode 的:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举 2^32 以内所有最佳大小，最后使用二分查找计算得到一个最合适的大小</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> optimalDFTSizeTab[] = &#123;</span><br><span class="line">    <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">15</span>, <span class="number">16</span>, ...&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Medium-Filter"><a href="#Medium-Filter" class="headerlink" title="Medium Filter"></a>Medium Filter</h3><p>中值滤波在图像处理中也比较常见，实现位于 imgproc 模块的 mediun_blur.dispatch.cpp 文件中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">medianBlur</span><span class="params">( InputArray _src0, OutputArray _dst, <span class="keyword">int</span> ksize )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 1. 优先使用 opencl, 如果能够成功计算结果则直接返回</span></span><br><span class="line">    CV_OCL_RUN(_dst.isUMat(),</span><br><span class="line">               ocl_medianFilter(_src0,_dst, ksize))</span><br><span class="line"></span><br><span class="line">    Mat src0 = _src0.getMat();</span><br><span class="line">    _dst.create( src0.size(), src0.type() );</span><br><span class="line">    Mat dst = _dst.getMat();</span><br><span class="line">    <span class="comment">// 2. 尝试使用 cv_hal_medianBlur 函数进行中值滤波，当前版本下这个函数默认为空。</span></span><br><span class="line">    <span class="comment">// 这里应该是预留了自行定制中值滤波函数的入口</span></span><br><span class="line">    CALL_HAL(medianBlur, cv_hal_medianBlur, src0.data, src0.step, dst.data, dst.step, src0.cols, src0.rows, src0.depth(),</span><br><span class="line">             src0.channels(), ksize);</span><br><span class="line">    <span class="comment">// 3. 尝试使用 openvx 进行中值滤波</span></span><br><span class="line">    CV_OVX_RUN(<span class="literal">true</span>,</span><br><span class="line">               openvx_medianFilter(_src0, _dst, ksize))</span><br><span class="line">    <span class="comment">// 4. 最后使用 medianBlur.simd.hpp 进行中值滤波的计算</span></span><br><span class="line">    CV_CPU_DISPATCH(medianBlur, (src0, dst, ksize),</span><br><span class="line">        CV_CPU_DISPATCH_MODES_ALL);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进一步分析，进入 medianBlur.simd.hpp 文件中查看 opencv 内置的中值滤波的实现方式。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">medianBlur</span><span class="params">(<span class="keyword">const</span> Mat&amp; src0, <span class="comment">/*const*/</span> Mat&amp; dst, <span class="keyword">int</span> ksize)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">bool</span> useSortNet = ...;</span><br><span class="line">    Mat src;</span><br><span class="line">    <span class="keyword">if</span> ( useSortNet ) &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span>( src.depth() == CV_8U )</span><br><span class="line">            medianBlur_SortNet&lt;MinMax8u, MinMaxVec8u&gt;( src, dst, ksize );</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( src.depth() == CV_16U )</span><br><span class="line">            medianBlur_SortNet&lt;MinMax16u, MinMaxVec16u&gt;( src, dst, ksize );</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( src.depth() == CV_16S )</span><br><span class="line">            medianBlur_SortNet&lt;MinMax16s, MinMaxVec16s&gt;( src, dst, ksize );</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( src.depth() == CV_32F )</span><br><span class="line">            medianBlur_SortNet&lt;MinMax32f, MinMaxVec32f&gt;( src, dst, ksize );</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            CV_Error(CV_StsUnsupportedFormat, <span class="string">""</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/// 创建 border</span></span><br><span class="line">        cv::copyMakeBorder( src0, src, <span class="number">0</span>, <span class="number">0</span>, ksize/<span class="number">2</span>, ksize/<span class="number">2</span>, BORDER_REPLICATE|BORDER_ISOLATED);</span><br><span class="line">        <span class="keyword">if</span>( ksize &lt;= ...) medianBlur_8u_Om( src, dst, ksize );</span><br><span class="line">        <span class="keyword">else</span> medianBlur_8u_O1( src, dst, ksize );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，中值滤波一共有三个出口。首先根据核的大小(3 或者 5)判断是否使用 SortNet，是则进入 medianBlur_SortNet 方法。然后再次根据核大小判断，核比较小则采用一般的 Om 的一个中值滤波器，核比较大时，则使用一个 O1 的中值滤波器。</p>
+<p>下面再进入 medianBlur_SortNet 方法查看实现。可以看到，这里只处理 m = 3 和 m = 5 情况下的中值滤波。同时，这个方法是一个泛型方法，传入的是 Op 和 VecOp 这两个类，分别对应于两个值之间的大小比较以及两个向量之间的大小比较。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Op</span>, <span class="title">class</span> <span class="title">VecOp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">static</span> <span class="title">void</span></span></span><br><span class="line"><span class="class"><span class="title">medianBlur_SortNet</span>( <span class="title">const</span> <span class="title">Mat</span>&amp; _<span class="title">src</span>, <span class="title">Mat</span>&amp; _<span class="title">dst</span>, <span class="title">int</span> <span class="title">m</span> )</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    CV_INSTRUMENT_REGION();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> Op::value_type T;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> Op::arg_type WT;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> VecOp::arg_type VT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> T* src = _src.ptr&lt;T&gt;();</span><br><span class="line">    T* dst = _dst.ptr&lt;T&gt;();</span><br><span class="line">    <span class="keyword">int</span> sstep = (<span class="keyword">int</span>)(_src.step/<span class="keyword">sizeof</span>(T));</span><br><span class="line">    <span class="keyword">int</span> dstep = (<span class="keyword">int</span>)(_dst.step/<span class="keyword">sizeof</span>(T));</span><br><span class="line">    Size size = _dst.size();</span><br><span class="line">    <span class="keyword">int</span> i, j, k, cn = _src.channels();</span><br><span class="line">    Op op;</span><br><span class="line">    VecOp vop;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>( m == <span class="number">3</span> ) &#123;</span><br><span class="line">        <span class="keyword">if</span>( size.width == <span class="number">1</span> || size.height == <span class="number">1</span> ) &#123;</span><br><span class="line">            <span class="comment">/// 处理极端情况</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        size.width *= cn;</span><br><span class="line">        <span class="comment">/// 遍历每一行</span></span><br><span class="line">        <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; size.height; i++, dst += dstep ) &#123;</span><br><span class="line">            <span class="keyword">const</span> T* row0 = src + <span class="built_in">std</span>::max(i - <span class="number">1</span>, <span class="number">0</span>)*sstep;</span><br><span class="line">            <span class="keyword">const</span> T* row1 = src + i*sstep;</span><br><span class="line">            <span class="keyword">const</span> T* row2 = src + <span class="built_in">std</span>::min(i + <span class="number">1</span>, size.height<span class="number">-1</span>)*sstep;</span><br><span class="line">            <span class="keyword">int</span> limit = cn;</span><br><span class="line">            <span class="comment">/// 遍历每一列</span></span><br><span class="line">            <span class="keyword">for</span>(j = <span class="number">0</span>;; ) &#123;</span><br><span class="line">                <span class="comment">/// 遍历 cn 个像素点，对每个通道都进行比较得到中值</span></span><br><span class="line">                <span class="keyword">for</span>( ; j &lt; limit; j++ )</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">int</span> j0 = j &gt;= cn ? j - cn : j;</span><br><span class="line">                    <span class="keyword">int</span> j2 = j &lt; size.width - cn ? j + cn : j;</span><br><span class="line">                    WT p0 = row0[j0], p1 = row0[j], p2 = row0[j2];</span><br><span class="line">                    WT p3 = row1[j0], p4 = row1[j], p5 = row1[j2];</span><br><span class="line">                    WT p6 = row2[j0], p7 = row2[j], p8 = row2[j2];</span><br><span class="line">                    <span class="comment">/// op(p1, p2) 作用是当 p1 &lt; p2 时交换两个数字</span></span><br><span class="line">                    op(p1, p2); op(p4, p5); op(p7, p8); op(p0, p1);</span><br><span class="line">                    op(p3, p4); op(p6, p7); op(p1, p2); op(p4, p5);</span><br><span class="line">                    op(p7, p8); op(p0, p3); op(p5, p8); op(p4, p7);</span><br><span class="line">                    op(p3, p6); op(p1, p4); op(p2, p5); op(p4, p7);</span><br><span class="line">                    op(p4, p2); op(p6, p4); op(p4, p2);</span><br><span class="line">                    dst[j] = (T)p4;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>( limit == size.width )</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span>( ; j &lt;= size.width - VecOp::SIZE - cn; j += VecOp::SIZE )</span><br><span class="line">                &#123;</span><br><span class="line">                    VT p0 = vop.load(row0+j-cn), p1 = vop.load(row0+j), p2 = vop.load(row0+j+cn);</span><br><span class="line">                    VT p3 = vop.load(row1+j-cn), p4 = vop.load(row1+j), p5 = vop.load(row1+j+cn);</span><br><span class="line">                    VT p6 = vop.load(row2+j-cn), p7 = vop.load(row2+j), p8 = vop.load(row2+j+cn);</span><br><span class="line"></span><br><span class="line">                    vop(p1, p2); vop(p4, p5); vop(p7, p8); vop(p0, p1);</span><br><span class="line">                    vop(p3, p4); vop(p6, p7); vop(p1, p2); vop(p4, p5);</span><br><span class="line">                    vop(p7, p8); vop(p0, p3); vop(p5, p8); vop(p4, p7);</span><br><span class="line">                    vop(p3, p6); vop(p1, p4); vop(p2, p5); vop(p4, p7);</span><br><span class="line">                    vop(p4, p2); vop(p6, p4); vop(p4, p2);</span><br><span class="line">                    vop.store(dst+j, p4);</span><br><span class="line">                &#125;</span><br><span class="line">                limit = size.width;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>( m == <span class="number">5</span> ) &#123;</span><br><span class="line">        <span class="comment">/// 类似上面 m == 3 的处理方式，使用尽量少的比较得到中值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Op 的实现在同个文件中的 MinMax? 类，？ 分别为 8u，16u, 16s, 32f。具体操作是在第一个参数比第一个参数大的时候交换这两个数。注意到 MinMax8u 对应的类中的 operator() 方法有点不同:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> t = CV_FAST_CAST_8U(a - b);</span><br><span class="line">b += t; a -= t;</span><br></pre></td></tr></table></figure>
+<p>另外，如果没有启用 CV_SIMD(Simple instruction multiple data，硬件级别的优化)，VecOp 则和 Op 是等价的。这个方法中一个比较大的优化是，使用了循环展开，并用多次 MinMax 操作将获取中值，而不是使用循环遍历，加快了代码的执行速度。</p>
+<p>另外一个实现中值滤波的方法 medianBlur_8u_Om 的实现则完全不同。一个比较有趣的点是: 它计算中值的方式是直接统计核覆盖的矩阵中 0 ~ 255 的像素点出现次数。然后只要遍历查看某个 x 的出现次数大于核的大小的一半，结果矩阵中就把 x 填入。这样导致的问题是，最坏情况下每次要遍历 256 个值，因此算法中采用了一个简单的优化: 使用区间统计。用一个新的大小为 16 的数组表示分别表示 [0..15], [16..31]… 的出现次数。这样在寻找中值点的时候速度就要快了很多，最坏情况下只需要遍历 32 个值即可得到中值点。</p>
+<h2 id="Canny"><a href="#Canny" class="headerlink" title="Canny"></a>Canny</h2><p>Canny 算法是很经典的边缘提取算法，opencv 的 imgproc 模块有一个单独的 canny.cpp 文件负责完成 canny 算法。入口函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// src 为输入矩阵，dst 为输出矩阵</span></span><br><span class="line"><span class="comment">/// low_thresh 和 high_thresh 分别为高低阈值</span></span><br><span class="line"><span class="comment">/// aperture_size 为 Sobel 孔径大小(3、5 或 7)</span></span><br><span class="line"><span class="comment">/// L2Gradient 表示是否使用 L2 梯度</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Canny</span><span class="params">( InputArray _src, OutputArray _dst,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">double</span> low_thresh, <span class="keyword">double</span> high_thresh,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">int</span> aperture_size, <span class="keyword">bool</span> L2gradient )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/// 一些基本的条件检查</span></span><br><span class="line">    <span class="keyword">const</span> Size size = _src.size();</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/// 依次尝试使用 opencl，hal，openvx 以及 ipp 完成 Canny 算法的计算，成功会直接返回</span></span><br><span class="line">    CV_OCL_RUN(...)</span><br><span class="line">    CALL_HAL(...);</span><br><span class="line">    CV_OVX_RUN(...)</span><br><span class="line">    CV_IPP_RUN_FAST(...)</span><br><span class="line">    <span class="comment">/// 使用 L2Gradient，需要修正 thresh</span></span><br><span class="line">    <span class="keyword">if</span> (L2gradient)</span><br><span class="line">    &#123;</span><br><span class="line">        low_thresh = <span class="built_in">std</span>::min(<span class="number">32767.0</span>, low_thresh);</span><br><span class="line">        high_thresh = <span class="built_in">std</span>::min(<span class="number">32767.0</span>, high_thresh);</span><br><span class="line">        <span class="keyword">if</span> (low_thresh &gt; <span class="number">0</span>) low_thresh *= low_thresh;</span><br><span class="line">        <span class="keyword">if</span> (high_thresh &gt; <span class="number">0</span>) high_thresh *= high_thresh;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> low = cvFloor(low_thresh);</span><br><span class="line">    <span class="keyword">int</span> high = cvFloor(high_thresh);</span><br><span class="line">    <span class="comment">/// 根据当前的 opencv 中运行的线程数以及 cpu 核的数量计算使用多少个线程去计算 canny</span></span><br><span class="line">    <span class="keyword">int</span> numOfThreads = ...;</span><br><span class="line"></span><br><span class="line">    Mat <span class="built_in">map</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">deque</span>&lt;uchar*&gt; <span class="built_in">stack</span>;</span><br><span class="line">    <span class="comment">/// 并行计算 canny</span></span><br><span class="line">    parallel_for_(Range(<span class="number">0</span>, src.rows), parallelCanny(src, <span class="built_in">map</span>, <span class="built_in">stack</span>, low, high, aperture_size, L2gradient), numOfThreads);</span><br><span class="line">    <span class="comment">/// 进行依次全局的 edge track</span></span><br><span class="line">    <span class="keyword">ptrdiff_t</span> mapstep = <span class="built_in">map</span>.cols;</span><br><span class="line">    <span class="keyword">while</span> (!<span class="built_in">stack</span>.empty())</span><br><span class="line">    &#123;</span><br><span class="line">        uchar* m = <span class="built_in">stack</span>.back();</span><br><span class="line">        <span class="built_in">stack</span>.pop_back();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep<span class="number">-1</span>]) CANNY_PUSH((m-mapstep<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep])   CANNY_PUSH((m-mapstep), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep+<span class="number">1</span>]) CANNY_PUSH((m-mapstep+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[<span class="number">-1</span>])         CANNY_PUSH((m<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[<span class="number">1</span>])          CANNY_PUSH((m+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep<span class="number">-1</span>])  CANNY_PUSH((m+mapstep<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep])    CANNY_PUSH((m+mapstep), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep+<span class="number">1</span>])  CANNY_PUSH((m+mapstep+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/// 最后遍历一遍 map，将 map 中标记为 edge 的点转成 255，其余点转成 0</span></span><br><span class="line">    parallel_for_(Range(<span class="number">0</span>, src.rows), finalPass(<span class="built_in">map</span>, dst), src.total()/(<span class="keyword">double</span>)(<span class="number">1</span>&lt;&lt;<span class="number">16</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，核心的计算函数就是 parallelCanny，利用多线程进行计算，计算的流程可以拆分成下面几个步骤(不考虑 SIMD 的情况下，考虑 SIMD 的话部分代码会有些不同):</p>
+<h3 id="sobel-算子"><a href="#sobel-算子" class="headerlink" title="sobel 算子"></a>sobel 算子</h3><p>canny 的第一步是使用 sobel 算子计算每个点在 x，y 方向上的梯度，核心的两个函数调用如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(needGradient)</span><br><span class="line">&#123;</span><br><span class="line">    Sobel(src.rowRange(rowStart, rowEnd), dx, CV_16S, <span class="number">1</span>, <span class="number">0</span>, aperture_size, scale, <span class="number">0</span>, BORDER_REPLICATE);</span><br><span class="line">    Sobel(src.rowRange(rowStart, rowEnd), dy, CV_16S, <span class="number">0</span>, <span class="number">1</span>, aperture_size, scale, <span class="number">0</span>, BORDER_REPLICATE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据给定的参数，参与计算的 sobel 的核为:</p>
+<blockquote>
+<p>kernelX = [[-1, 0, 1]]<br>kernelY = [[-1],[0],[1]]</p>
+</blockquote>
+<p>计算的结果保存在 dx，dy 这两个矩阵中:</p>
+<h3 id="Edge-detect"><a href="#Edge-detect" class="headerlink" title="Edge detect"></a>Edge detect</h3><p>为了更好地利用空间，此处使用了循环 buffer 来保存图像中每一行中各个点的强度(magnitude)大小。mag_a 表示当前行，mag_p 表示上一行，mag_n 表示下一行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AutoBuffer&lt;<span class="keyword">int</span>&gt; buffer(<span class="number">3</span> * (mapstep * cn));</span><br><span class="line">_mag_p = buffer.data() + <span class="number">1</span>;</span><br><span class="line">_mag_a = _mag_p + mapstep * cn;</span><br><span class="line">_mag_n = _mag_a + mapstep * cn;</span><br></pre></td></tr></table></figure>
+<p>接下来遍历线程所负责的每一行，计算 magnitude 的大小。然后再进行非极大值抑制，得到每个点是否属于 edge 的相关信息。用矩阵 pmap 表示，每个点 2 表示这个点是边，1 表示这个点不可能是边，0 表示这个点可能是边。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// rowStart 和 end 分别表示当前线程所负责的图像的行</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = rowStart; i &lt;= boundaries.end; ++i) &#123;</span><br><span class="line">    <span class="comment">/*  计算 magnitude 部分  */</span></span><br><span class="line">    <span class="comment">/// 计算下一行的 magnitude</span></span><br><span class="line">    <span class="keyword">if</span>(i &lt; rowEnd) &#123;</span><br><span class="line">        _dx = dx.ptr&lt;<span class="keyword">short</span>&gt;(i - rowStart);</span><br><span class="line">        _dy = dy.ptr&lt;<span class="keyword">short</span>&gt;(i - rowStart);</span><br><span class="line">        <span class="comment">/// 使用 L2 计算梯度</span></span><br><span class="line">        <span class="keyword">if</span> (L2gradient)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> j = <span class="number">0</span>, width = src.cols * cn;</span><br><span class="line">            <span class="keyword">for</span> ( ; j &lt; width; ++j)</span><br><span class="line">                _mag_n[j] = <span class="keyword">int</span>(_dx[j])*_dx[j] + <span class="keyword">int</span>(_dy[j])*_dy[j];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/// 使用 L1 计算梯度</span></span><br><span class="line">            <span class="keyword">int</span> j = <span class="number">0</span>, width = src.cols * cn;</span><br><span class="line">            <span class="keyword">for</span> ( ; j &lt; width; ++j)</span><br><span class="line">                _mag_n[j] = <span class="built_in">std</span>::<span class="built_in">abs</span>(<span class="keyword">int</span>(_dx[j])) + <span class="built_in">std</span>::<span class="built_in">abs</span>(<span class="keyword">int</span>(_dy[j]));</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/*  非极大值抑制部分  */</span></span><br><span class="line">    <span class="comment">/// tan22 大小为 13573/(1&lt;&lt;16)，用整数提高精度</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> TG22 = <span class="number">13573</span>;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; j &lt; src.cols; j++) &#123;</span><br><span class="line">        <span class="keyword">int</span> m = _mag_a[j];</span><br><span class="line">        <span class="keyword">if</span> (m &gt; low) &#123;</span><br><span class="line">            <span class="keyword">short</span> xs = _dx[j];</span><br><span class="line">            <span class="keyword">short</span> ys = _dy[j];</span><br><span class="line">            <span class="keyword">int</span> x = (<span class="keyword">int</span>)<span class="built_in">std</span>::<span class="built_in">abs</span>(xs);</span><br><span class="line">            <span class="keyword">int</span> y = (<span class="keyword">int</span>)<span class="built_in">std</span>::<span class="built_in">abs</span>(ys) &lt;&lt; <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">int</span> tg22x = x * TG22;</span><br><span class="line">            <span class="comment">/// 梯度位于水平方向上</span></span><br><span class="line">            <span class="keyword">if</span> (y &lt; tg22x)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (m &gt; _mag_a[j - <span class="number">1</span>] &amp;&amp; m &gt;= _mag_a[j + <span class="number">1</span>])</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">/// 判断点的梯度是否大于阈值 high，若是则 push 进堆栈，同时 pmap 设为 0</span></span><br><span class="line">                    <span class="comment">/// 下面类似</span></span><br><span class="line">                    CANNY_CHECK(m, high, (_pmap+j), <span class="built_in">stack</span>);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">/// 梯度位于垂直方向上</span></span><br><span class="line">                <span class="keyword">int</span> tg67x = tg22x + (x &lt;&lt; <span class="number">16</span>);</span><br><span class="line">                <span class="keyword">if</span> (y &gt; tg67x)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (m &gt; _mag_p[j] &amp;&amp; m &gt;= _mag_n[j])</span><br><span class="line">                    &#123;</span><br><span class="line">                        CANNY_CHECK(m, high, (_pmap+j), <span class="built_in">stack</span>);</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">/// 梯度位于斜方向上</span></span><br><span class="line">                    <span class="keyword">int</span> s = (xs ^ ys) &lt; <span class="number">0</span> ? <span class="number">-1</span> : <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span>(m &gt; _mag_p[j - s] &amp;&amp; m &gt; _mag_n[j + s])</span><br><span class="line">                    &#123;</span><br><span class="line">                        CANNY_CHECK(m, high, (_pmap+j), <span class="built_in">stack</span>);</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        _pmap[j] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Edge-track"><a href="#Edge-track" class="headerlink" title="Edge track"></a>Edge track</h3><p>前面的函数中，已经计算得到了 pmap 表示每个结点是否可能为边这样的信息。双阈值要求算法需要对于可能为边的结点，仅当周围八个点中存在一定为边的结点才能计为边，否则当前点不属于边。因此，算法使用了栈这样的数据结构来实现，所有一定为边的结点入栈，处理每个结点时周围八个结点如果存在可能为边的结点，则标记为边并入栈，直到栈为空。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (!<span class="built_in">stack</span>.empty())</span><br><span class="line">&#123;</span><br><span class="line">    uchar *m = <span class="built_in">stack</span>.back();</span><br><span class="line">    <span class="built_in">stack</span>.pop_back();</span><br><span class="line">    <span class="keyword">if</span>(<span class="comment">/* 不是位于边界 */</span> (<span class="keyword">unsigned</span>)(m - pmapLower) &lt; pmapDiff) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep<span class="number">-1</span>]) CANNY_PUSH((m-mapstep<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep])   CANNY_PUSH((m-mapstep), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[-mapstep+<span class="number">1</span>]) CANNY_PUSH((m-mapstep+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[<span class="number">-1</span>])         CANNY_PUSH((m<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[<span class="number">1</span>])          CANNY_PUSH((m+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep<span class="number">-1</span>])  CANNY_PUSH((m+mapstep<span class="number">-1</span>), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep])    CANNY_PUSH((m+mapstep), <span class="built_in">stack</span>);</span><br><span class="line">        <span class="keyword">if</span> (!m[mapstep+<span class="number">1</span>])  CANNY_PUSH((m+mapstep+<span class="number">1</span>), <span class="built_in">stack</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/// 处理边界情况</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上边步骤结束后，由于只在局部进行了 edge track 的操作，边界上可能还会有些问题，因此 opencv 的 canny 算法还增加了一个全局的 track 操作，代码和上方类似，不再赘述。</p>
+<h3 id="Final-pass"><a href="#Final-pass" class="headerlink" title="Final pass"></a>Final pass</h3><p>最后的一个步骤就是把 pmap 中标记为 2 的点映射到 255，0 或 1 则映射到 0。代码如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// the final pass, form the final image</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = boundaries.start; i &lt; boundaries.end; i++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    uchar *pdst = dst.ptr&lt;uchar&gt;(i);</span><br><span class="line">    <span class="keyword">const</span> uchar *pmap = <span class="built_in">map</span>.ptr&lt;uchar&gt;(i + <span class="number">1</span>);</span><br><span class="line">    pmap += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (; j &lt; dst.cols; j++)</span><br><span class="line">    &#123;</span><br><span class="line">        pdst[j] = (uchar)-(pmap[j] &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到代码中 pmap+1 是因为 pmap 在原图像基础上加上了一个宽度为 1 的边界。<br>uchar 则表示 uchar 类型的 0，pmap[j] &gt;&gt; 1 后仅当 pmap[j] = 2 时才为 1，因此最后就将 2 映射到了 255(白色), 0/1 映射到了 0(黑色)，即得到了边界提取后的图像。</p>
+<h2 id="Morph"><a href="#Morph" class="headerlink" title="Morph"></a>Morph</h2><p>morph.dispatch.cpp 类中提供了一个构造形态学操作的核的一个方法，如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Mat <span class="title">getStructuringElement</span><span class="params">(<span class="keyword">int</span> shape, Size ksize, Point anchor)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">0</span>, c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">double</span> inv_r2 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    anchor = normalizeAnchor(anchor, ksize);</span><br><span class="line">    <span class="keyword">if</span>( ksize == Size(<span class="number">1</span>,<span class="number">1</span>) )</span><br><span class="line">        shape = MORPH_RECT;</span><br><span class="line">    <span class="keyword">if</span>( shape == MORPH_ELLIPSE )</span><br><span class="line">    &#123;</span><br><span class="line">        r = ksize.height/<span class="number">2</span>;</span><br><span class="line">        c = ksize.width/<span class="number">2</span>;</span><br><span class="line">        inv_r2 = r ? <span class="number">1.</span>/((<span class="keyword">double</span>)r*r) : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">Mat <span class="title">elem</span><span class="params">(ksize, CV_8U)</span></span>;</span><br><span class="line">    <span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; ksize.height; i++ )</span><br><span class="line">    &#123;</span><br><span class="line">        uchar* ptr = elem.ptr(i);</span><br><span class="line">        <span class="keyword">int</span> j1 = <span class="number">0</span>, j2 = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">/// 形状为矩形或者十字刚好处于横着的那一行时，直接填充一整行</span></span><br><span class="line">        <span class="keyword">if</span>( shape == MORPH_RECT || (shape == MORPH_CROSS &amp;&amp; i == anchor.y) )</span><br><span class="line">            j2 = ksize.width;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( shape == MORPH_CROSS )</span><br><span class="line">            j1 = anchor.x, j2 = j1 + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> dy = i - r;</span><br><span class="line">            <span class="keyword">if</span>( <span class="built_in">std</span>::<span class="built_in">abs</span>(dy) &lt;= r )</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">/// 计算近似的椭圆的宽度</span></span><br><span class="line">                <span class="keyword">int</span> dx = saturate_cast&lt;<span class="keyword">int</span>&gt;(c*<span class="built_in">std</span>::<span class="built_in">sqrt</span>((r*r - dy*dy)*inv_r2));</span><br><span class="line">                j1 = <span class="built_in">std</span>::max( c - dx, <span class="number">0</span> );</span><br><span class="line">                j2 = <span class="built_in">std</span>::min( c + dx + <span class="number">1</span>, ksize.width );</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/// 填充 j1 ~ j2 区间内的数字</span></span><br><span class="line">        <span class="keyword">for</span>( j = <span class="number">0</span>; j &lt; j1; j++ )</span><br><span class="line">            ptr[j] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>( ; j &lt; j2; j++ )</span><br><span class="line">            ptr[j] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>( ; j &lt; ksize.width; j++ )</span><br><span class="line">            ptr[j] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elem;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到总共有三种形状的核，分别对应如下:</p>
+<p><img src="/2021/01/11/opencv/morph_kernel.jpg" alt="morph_kernel"></p>
+<p>注意到上图是以中点为中心(Anchor) 的，也可以以其他点为中心的操作(相当于对图像做了偏移)。</p>
+<p>另外，各种形态学相关操作最后基本都转化为 erode 和 dilate 操作。几种常见的形态学操作如下(位于 morph.dispatch.cpp 文件中的 morphologyEx 方法中):</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>( op )</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">case</span> MORPH_ERODE: <span class="comment">/// 腐蚀操作</span></span><br><span class="line">    erode( src, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_DILATE: <span class="comment">/// 扩张操作</span></span><br><span class="line">    dilate( src, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_OPEN: <span class="comment">/// 开操作</span></span><br><span class="line">    erode( src, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dilate( dst, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_CLOSE: <span class="comment">/// 闭操作</span></span><br><span class="line">    dilate( src, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    erode( dst, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_GRADIENT: <span class="comment">/// 梯度计算操作</span></span><br><span class="line">    erode( src, temp, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dilate( src, dst, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dst -= temp;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_TOPHAT: <span class="comment">/// 顶帽操作</span></span><br><span class="line">    <span class="keyword">if</span>( src.data != dst.data )</span><br><span class="line">        temp = dst;</span><br><span class="line">    erode( src, temp, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dilate( temp, temp, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dst = src - temp;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> MORPH_BLACKHAT: <span class="comment">/// 黑帽操作</span></span><br><span class="line">    <span class="keyword">if</span>( src.data != dst.data )</span><br><span class="line">        temp = dst;</span><br><span class="line">    dilate( src, temp, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    erode( temp, temp, kernel, anchor, iterations, borderType, borderValue );</span><br><span class="line">    dst = temp - src;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>dilate 和 erode 两个操作统一用到了 morphOp 方法。接着调用到 morph 方法。这个方法中会提供一个空的 cv_hal_morph 方法供用户自行定义 morph 方法的实现。若没有自己定义的实现，则调用 opencv 内置提供的 ocvMorph 方法。和其他滤波器类似，在该方法中，调用了 createMorphologyFilter 得到一个 FilterEngine，最后调用 apply 方法进行计算。最后实际进行图形学滤波运算的是 MorphFilter 这样一个模板类:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Op</span>, <span class="title">class</span> <span class="title">VecOp</span>&gt; <span class="title">struct</span> <span class="title">MorphFilter</span> :</span> BaseFilter</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> Op::rtype T;</span><br><span class="line">    MorphFilter( <span class="keyword">const</span> Mat&amp; _kernel, Point _anchor ) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> uchar** src, uchar* dst, <span class="keyword">int</span> dststep, <span class="keyword">int</span> count, <span class="keyword">int</span> width, <span class="keyword">int</span> cn)</span> CV_OVERRIDE</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        width *= cn;</span><br><span class="line">        <span class="comment">/// 遍历每一行</span></span><br><span class="line">        <span class="keyword">for</span>( ; count &gt; <span class="number">0</span>; count--, dst += dststep, src++ )</span><br><span class="line">        &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="comment">/// 遍历每一列</span></span><br><span class="line">            <span class="keyword">for</span>( ; i &lt; width; i++ )</span><br><span class="line">            &#123;</span><br><span class="line">                T s0 = kp[<span class="number">0</span>][i];</span><br><span class="line">                <span class="comment">/// 滤波操作</span></span><br><span class="line">                <span class="keyword">for</span>( k = <span class="number">1</span>; k &lt; nz; k++ )</span><br><span class="line">                    s0 = op(s0, kp[k][i]);</span><br><span class="line">                D[i] = s0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对于 erode 和 dilate 两种操作，只需要分别传入 MinOp(返回值更小的那个) 和 MaxOp(返回值更大的那个) 即可。以 erode 为例，传入 MinOp 之后，对于<strong>核上每一个为 1 的点，覆盖到图像上的对应位置也必须为 1</strong>，否则由于 min 操作的特性，只要有一个是 0 最后的结果就会是 0，这个操作的结果就是，将核中心放在结果图像上任意一个为 1 的点，都能够被原图像包裹，即结果图像是源图像的腐蚀。膨胀则使用最大值，分析类似。</p>
+<h1 id="Python-extension"><a href="#Python-extension" class="headerlink" title="Python extension"></a>Python extension</h1><p>opencv 的代码是由 C++ 编写的，但它同时也提供了 python 的库，这是怎么做到的呢？这就是 python 的扩展了。官方文档中提供了一个 Python.h 的库给开发者使用，里面提供了各种各样的用于 C++ 和 python 交互的 api，例如:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PyModule_Create  <span class="comment">/// 创建一个 python module</span></span><br><span class="line">PyModule_AddObject  <span class="comment">/// 往 module 中添加一个对象</span></span><br><span class="line">PyModule_AddIntConstant  <span class="comment">/// 往 module 中添加 int 常量</span></span><br><span class="line">PyModule_AddStringConstant  <span class="comment">/// 往 module 中添加一个 string 常量</span></span><br><span class="line">Py_DECREF <span class="comment">/// 回收一个 python 对象</span></span><br><span class="line">PyObject_Call  <span class="comment">/// 调用一个 python 函数并返回结果的指针</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这样，对于每个需要暴露给 python 的 C++ 方法，只需要创建一个包装方法(包装类)，最后将结果作为一个 python 对象返回即可，类似下面的代码:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> PyObject *</span><br><span class="line">spam_system(PyObject *self, PyObject *args)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *command;</span><br><span class="line">    <span class="keyword">int</span> sts;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!PyArg_ParseTuple(args, <span class="string">"s"</span>, &amp;command))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    sts = system(command);</span><br><span class="line">    <span class="keyword">return</span> PyLong_FromLong(sts);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，需要再加入 PyInit_xxx 名字的类，进行 module 的创建工作。编译完成后，启动 python，调用 import 后 python 解释器会找到 PyInit_cv2 这样的名字的函数并调用这个方法，我们就只要在这个方法内部创建 module 以及添加模块内的方法即可。</p>
+<p>opencv 中，init 函数位于 python module 下的 cv2.cpp 文件中:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PyObject* <span class="title">PyInit_cv2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    import_array(); <span class="comment">// from numpy</span></span><br><span class="line">    PyObject* m = PyModule_Create(&amp;cv2_moduledef);</span><br><span class="line">    <span class="keyword">if</span> (!init_body(m))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>init_body 函数中，依次创建每一个子模块并把函数签名传入。</p>
+<p>包装类和包装方法则是由 python 模块下的 gen2.py 和 hdr_parser.py 生成的，在编译期间会自动运行这两个函数以生成转换代码。gen2.py 调用 hdr_parser.py 依次解析每个模块对应的头文件，根据 CV_EXPORTS_W，CV_WRAP 等宏标识某个函数/类是否需要生成中间转换代码。编译生成完毕后，运行期间就由 python 解释器自己查找对应的函数区执行了。</p>
+<h1 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h1><p>到这里 opencv 源码的学习就告一段落，在学习 opencv 的过程中遇到了不少问题: 各种 #define 套娃，函数参数多而杂，为了提供一个函数的多个实现而使用了大量条件编译，部分函数完全没有注释等。此外，网上几乎没有可用的中文参考资料也加大了阅读难度。当然看源码的过程中也学习到了大型项目的一些设计方法，包括但不限于充分利用模块化，在恰当的地方使用条件编译，typedef 等。</p>
+
+      
+    </div>
+    
+    
+    
+
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------------- The artical is over <i class="fa fa-paw"></i> Thanks for your reading -------------</div>
+    
+</div>
+      
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/23/6-824/" rel="next" title="从零开始的 6.824 学习">
+                <i class="fa fa-chevron-left"></i> 从零开始的 6.824 学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/user_image.jpg" alt="little csd">
+            
+              <p class="site-author-name" itemprop="name">little csd</p>
+              <p class="site-description motion-element" itemprop="description">A programmer's thinking</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/little-csd" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:little_csd@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.facebook.com/littlecsd" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Prologue"><span class="nav-number">1.</span> <span class="nav-text">Prologue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prep"><span class="nav-number">2.</span> <span class="nav-text">Prep</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Arch"><span class="nav-number">3.</span> <span class="nav-text">Arch</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Read-Write-Show"><span class="nav-number">4.</span> <span class="nav-text">Read / Write / Show</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dip"><span class="nav-number">5.</span> <span class="nav-text">Dip</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Filter"><span class="nav-number">5.1.</span> <span class="nav-text">Filter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ocvFilter2D"><span class="nav-number">5.1.1.</span> <span class="nav-text">ocvFilter2D</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dftFilter2D"><span class="nav-number">5.1.2.</span> <span class="nav-text">dftFilter2D</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Medium-Filter"><span class="nav-number">5.1.3.</span> <span class="nav-text">Medium Filter</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canny"><span class="nav-number">5.2.</span> <span class="nav-text">Canny</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sobel-算子"><span class="nav-number">5.2.1.</span> <span class="nav-text">sobel 算子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Edge-detect"><span class="nav-number">5.2.2.</span> <span class="nav-text">Edge detect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Edge-track"><span class="nav-number">5.2.3.</span> <span class="nav-text">Edge track</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Final-pass"><span class="nav-number">5.2.4.</span> <span class="nav-text">Final pass</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Morph"><span class="nav-number">5.3.</span> <span class="nav-text">Morph</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-extension"><span class="nav-number">6.</span> <span class="nav-text">Python extension</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Epilogue"><span class="nav-number">7.</span> <span class="nav-text">Epilogue</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little csd</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">136k</span>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("LEyK85NggiOAWGo4KXwW9VQr-gzGzoHsz", "bhAOME91QJmKyjdDU4BTjHEg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":100,"height":150},"mobile":{"show":true}});</script></body>
+</html>
