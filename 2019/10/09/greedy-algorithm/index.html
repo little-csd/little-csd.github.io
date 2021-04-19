@@ -105,7 +105,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/10/09/greedy-algorithm/huffman-coding.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/09/greedy-algorithm/huffman-solve.png">
-<meta property="og:updated_time" content="2020-07-15T15:18:12.876Z">
+<meta property="og:updated_time" content="2021-04-19T02:18:53.555Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Greedy algorithm &amp; Dynamic programming">
 <meta name="twitter:description" content="Prologue　　这是算法导论系列的第二篇笔记，这篇文章的主题是贪心算法和动态规划，主要讲一下两者的思想以及一些简单应用。最后还会将两者做一个简单的对比。当然，贪心和动态规划毫无疑问是算法大家庭中十分重要的两个概念，因此都应该掌握。 Greedy algorithm　　贪心思想如果用一句话来概括的话，就是不断地寻找局部的最优解以尝试求得全局的最优解。如果把程序看成是一个状态机的话，贪心算法就是找">
@@ -505,7 +505,7 @@
 <p>　　然而，这种写法的复杂度过高了，通常情况下，我们会采取第二种做法——贪心。如果我们换一个角度考虑，对于当前的第i个元素，假设dp[i]=p，说明以第i个元素为结尾的子数组最大长度为p，那么前面i-1个元素必然包含一个长度为p-1的子数组。也就是说，\(\exists k &lt; i, dp[k] = p-1\)。采用贪心的思想，我们只需要取满足条件的k中<strong>a[k]最大的那个</strong>就可以了!<br>　　…待续</p>
 <h3 id="Knapsack-problem"><a href="#Knapsack-problem" class="headerlink" title="Knapsack problem"></a>Knapsack problem</h3><h3 id="State-compression"><a href="#State-compression" class="headerlink" title="State compression"></a>State compression</h3><h2 id="Differences"><a href="#Differences" class="headerlink" title="Differences"></a>Differences</h2><p>　　可以看到，贪心算法和动态规划之间的关系是很紧密的。两种在应用的时候，都要求被解决的问题有最优子结构，并且能够子问题能够合成原问题，但贪心算法的要求会更”高”一些。如果单纯应用贪心算法，我们并不一定能得到一个最优解，而动态规划能保证我们会获得一个最优的结果。并且，动态规划的应用范围要比贪心算法更加广泛，分支也有很多，像是序列的题目LCS，LIS，和LCIS，或是背包问题，区间/树上DP，状态压缩类DP，插头DP等。贪心的话往往是要结合具体题目去分析。</p>
 <h2 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h2><p>　　这篇博客主要是写贪心算法和动态规划算法的一些知识，并对两者做一个简单的对比。后续如果有时间的话，还是会尽量补上的。(咕咕咕</p>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
       
     </div>

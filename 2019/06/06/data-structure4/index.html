@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/06/06/data-structure4/lct2.png">
 <meta property="og:image" content="http://yoursite.com/2019/06/06/data-structure4/lct3.png">
 <meta property="og:image" content="http://yoursite.com/2019/06/06/data-structure4/lct4.png">
-<meta property="og:updated_time" content="2020-03-13T00:09:28.496Z">
+<meta property="og:updated_time" content="2021-04-19T02:18:39.685Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Data Structure Note(IV) —— Link&#x2F;Cut Tree">
 <meta name="twitter:description" content="prologue　　这是数据结构大杂烩系列的第四篇文章。在上一篇文章中，我们一起学习了两种平衡树——Treap和Splay，并简单地提到几道应用问题。在这篇文章中，我们再次换一个方向，学习一下Link/Cut Tree。这同样是一种比较难的数据结构，用于解决动态树问题。 tree chain split　　在正式介绍LCT之前，我们先来了解一下树链剖分。这是一种常见的树上的算法，用于维护树上的路径">
@@ -485,7 +485,7 @@
 <h4 id="split"><a href="#split" class="headerlink" title="split"></a>split</h4><p>　　接下来，还有一个常见的操作，就是区间的提取。为了方便区间的操作，我们再分离出这样的一个函数，可以把x和y路径上的所有节点提取出来(保证x和y连接)。最后我们可以通过y节点获取整条路径的信息。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    mk_root(x);</span><br><span class="line">    access(y);</span><br><span class="line">    <span class="comment">// 此处还是需要splay(y) 因为access后x不一定是splay的根了</span></span><br><span class="line">    splay(y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="summary"><a href="#summary" class="headerlink" title="summary"></a>summary</h3><p>　　LCT是一种灵活性极强的数据结构，可以实现很多意想不到的功能，当然，它也有一些缺点，比如代码量往往比较大，容易写出bug，还有虽然复杂度是O(log<sup>2</sup>n)，但是常数比较大等等。但这也不影响它的广泛应用。如果有时间的话，还是可以好好了解一下的。比如做两道题什么的<br>　　推荐题目:<br>　　　<a href="https://lydsy.com/JudgeOnline/problem.php?id=2049" target="_blank" rel="noopener">Sdoi2008Cave</a><br>　　　<a href="https://www.luogu.org/problemnew/show/P3690" target="_blank" rel="noopener">洛谷P3690</a></p>
 <h2 id="epilogue"><a href="#epilogue" class="headerlink" title="epilogue"></a>epilogue</h2><p>　　这样，到这里，我们的数据结构大杂烩系列的第四期就结束了，在这篇文章中，我们一开始先简单地提到了树链剖分(很重要的算法，最好要会)，接着，由树链剖分的思想，我们引申到了LCT这种神奇的结构，并且，讲了LCT一些基本的函数和它的思想，最后推荐大家还是去做两道题熟练一下吧。<br>　　然后之前说好的第四期写红黑树。。网上的介绍太多了，而且我看了下它们讲的好详细啊。所以我想想还是不写了。<del>对，没错，我就是鸽子王！</del><br>　　接下来的话，感觉短时间内可能不会继续更新了，或者换一个话题写了。<br>　　参考资料：<a href="https://oi-wiki.org/ds/lct/" target="_blank" rel="noopener">oi-wiki/Link Cut Tree</a></p>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
       
     </div>

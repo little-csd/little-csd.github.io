@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/10/22/advance-data-structure/disjoint-set.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/22/advance-data-structure/fib-heap.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/22/advance-data-structure/consolidate.png">
-<meta property="og:updated_time" content="2019-10-27T02:08:12.854Z">
+<meta property="og:updated_time" content="2021-04-19T02:17:36.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Data Structure Note(VI) —— Advance-Data-Structure">
 <meta name="twitter:description" content="Prologue　　这是数据结构大杂烩系列的第六篇文章。在这篇文章中，我们将一起学习算法导论中高级数据结构的部分，内容主要是书中部分知识的整理和记录。 B-TreeDefinition　　B树是为磁盘或其他直接存取的辅助存储设备而设计的一种平衡搜索树。B树是具有以下性质的有根树:  每个结点有以下属性 x.n，表示当前结点中的关键字个数 x.n个关键字本身\(x.key_1,x.key_2,…,x">
@@ -596,7 +596,7 @@
 <p>　　这里 +2 表示的是当前结点和第一个孩子。再次使用归纳法，假设\(s_k &gt;= F_{k+2}\)。</p>
 <p>$$<br>\begin{align}<br>s_k &amp;\geq 2+\Sigma_{i=2}^k s_{i-2} &gt;= 2+\Sigma_{i=2}^k F_i = 1+\Sigma_{i=0}^k F_i \\<br>&amp;= F_{k+2}　\\<br>&amp;\geq \phi^k<br>\end{align}<br>$$</p>
 <p>　　因此，我们得到了\(size(x) \geq s_k \geq F_{k+2} \geq \phi^k\)。若 n 是斐波那契堆中所有的结点的个数，则\(n \geq size(x) \geq \phi^k，即 k \leq log_{\phi}n\)<br>　　假设得证。</p>
-<h2 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h2><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<h2 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h2><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
       
     </div>
